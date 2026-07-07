@@ -554,14 +554,12 @@
 
     <script>
         (function() {
-            // 全局变量
-            var gender = null; // 'male' 或 'female'
-            var heart = 100; // 孝心值
-            var round = 1; // 当前回合数（用于显示）
-            var currentNode = 'r1'; // 当前剧情节点ID
-            var isProcessing = false; // 防连点
+            var gender = null;
+            var heart = 100;
+            var round = 1;
+            var currentNode = 'r1';
+            var isProcessing = false;
 
-            // DOM元素
             var chatArea = document.getElementById('chatArea');
             var heartDisplay = document.getElementById('heartDisplay');
             var roundDisplay = document.getElementById('roundDisplay');
@@ -572,77 +570,20 @@
             var btnMale = document.getElementById('btnMale');
             var btnFemale = document.getElementById('btnFemale');
 
-            // 结局定义
             var endings = {
-                "ending_earphone": {
-                    emoji: "\uD83C\uDFA7",
-                    name: "\uD83C\uDFA7 耳机战士（男）",
-                    desc: "要了两三百买耳机，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。",
-                    rank: "60%"
-                },
-                "ending_skincare": {
-                    emoji: "\uD83D\uDC84",
-                    name: "\uD83D\uDC84 护肤品守护者（女）",
-                    desc: "要了两三百买护肤品，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。",
-                    rank: "60%"
-                },
-                "ending_keyboard": {
-                    emoji: "\u2328\uFE0F",
-                    name: "\u2328\uFE0F 键盘败家子（男）",
-                    desc: "要了五百买键盘，妈妈转了。但附言是\u201C下个月的生活费减两百\u201D。",
-                    rank: "45%"
-                },
-                "ending_coat": {
-                    emoji: "\uD83D\uDC57",
-                    name: "\uD83D\uDC57 大衣梦想家（女）",
-                    desc: "要了五百买大衣，妈妈转了。但附言是\u201C下个月的生活费减两百\u201D。",
-                    rank: "45%"
-                },
-                "ending_giveup": {
-                    emoji: "\uD83C\uDF19",
-                    name: "\uD83C\uDF19 深夜emo",
-                    desc: "你放弃了要钱。妈妈回了一个\u201C嗯\u201D，然后对话框安静了。你盯着天花板，有点后悔。",
-                    rank: "35%"
-                },
-                "ending_negotiate": {
-                    emoji: "\uD83D\uDCB8",
-                    name: "\uD83D\uDCB8 谈判专家",
-                    desc: "你成功把扣款从两百砍到了一百。妈妈叹了口气说\u201C你也就这点出息\u201D。",
-                    rank: "55%"
-                },
-                "ending_accept": {
-                    emoji: "\uD83E\uDD10",
-                    name: "\uD83E\uDD10 忍气吞声",
-                    desc: "你接受了减两百的条件。钱到手了，但你已经开始心疼下个月了。",
-                    rank: "40%"
-                },
-                "ending_debt_small": {
-                    emoji: "\uD83E\uDD1D",
-                    name: "\uD83E\uDD1D 母子和解",
-                    desc: "你坦白欠了几百块。妈妈骂了你一顿，但还是把钱转给你了。附言：\u201C下不为例\u201D。",
-                    rank: "30%"
-                },
-                "ending_debt_big": {
-                    emoji: "\uD83D\uDC80",
-                    name: "\uD83D\uDC80 爸的审判",
-                    desc: "妈妈挂了电话。五分钟后，爸爸的电话打进来了。你颤抖着按下接听键……",
-                    rank: "15%"
-                },
-                "ending_debt_explode": {
-                    emoji: "\uD83D\uDD25",
-                    name: "\uD83D\uDD25 彻底爆发",
-                    desc: "\u201C没敢算？\u201D妈妈的声音提高了八度。接下来是长达二十分钟的电话训话。你感觉耳朵在燃烧。",
-                    rank: "10%"
-                },
-                "ending_rebel": {
-                    emoji: "\u26A1",
-                    name: "\u26A1 叛逆的代价",
-                    desc: "\u201C那又怎样，我自己的事\u201D——你听到电话那头沉默了三秒。第二天，爸爸的电话打来了。",
-                    rank: "20%"
-                }
+                "ending_earphone": { emoji: "\uD83C\uDFA7", name: "\uD83C\uDFA7 耳机战士（男）", desc: "要了两三百买耳机，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。", rank: "60%" },
+                "ending_skincare": { emoji: "\uD83D\uDC84", name: "\uD83D\uDC84 护肤品守护者（女）", desc: "要了两三百买护肤品，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。", rank: "60%" },
+                "ending_keyboard": { emoji: "\u2328\uFE0F", name: "\u2328\uFE0F 键盘败家子（男）", desc: "要了五百买键盘，妈妈转了。但附言是\u201C下个月的生活费减两百\u201D。", rank: "45%" },
+                "ending_coat": { emoji: "\uD83D\uDC57", name: "\uD83D\uDC57 大衣梦想家（女）", desc: "要了五百买大衣，妈妈转了。但附言是\u201C下个月的生活费减两百\u201D。", rank: "45%" },
+                "ending_giveup": { emoji: "\uD83C\uDF19", name: "\uD83C\uDF19 深夜emo", desc: "你放弃了要钱。妈妈回了一个\u201C嗯\u201D，然后对话框安静了。你盯着天花板，有点后悔。", rank: "35%" },
+                "ending_negotiate": { emoji: "\uD83D\uDCB8", name: "\uD83D\uDCB8 谈判专家", desc: "你成功把扣款从两百砍到了一百。妈妈叹了口气说\u201C你也就这点出息\u201D。", rank: "55%" },
+                "ending_accept": { emoji: "\uD83E\uDD10", name: "\uD83E\uDD10 忍气吞声", desc: "你接受了减两百的条件。钱到手了，但你已经开始心疼下个月了。", rank: "40%" },
+                "ending_debt_small": { emoji: "\uD83E\uDD1D", name: "\uD83E\uDD1D 母子和解", desc: "你坦白欠了几百块。妈妈骂了你一顿，但还是把钱转给你了。附言：\u201C下不为例\u201D。", rank: "30%" },
+                "ending_debt_big": { emoji: "\uD83D\uDC80", name: "\uD83D\uDC80 爸的审判", desc: "妈妈挂了电话。五分钟后，爸爸的电话打进来了。你颤抖着按下接听键……", rank: "15%" },
+                "ending_debt_explode": { emoji: "\uD83D\uDD25", name: "\uD83D\uDD25 彻底爆发", desc: "\u201C没敢算？\u201D妈妈的声音提高了八度。接下来是长达二十分钟的电话训话。你感觉耳朵在燃烧。", rank: "10%" },
+                "ending_rebel": { emoji: "\u26A1", name: "\u26A1 叛逆的代价", desc: "\u201C那又怎样，我自己的事\u201D——你听到电话那头沉默了三秒。第二天，爸爸的电话打来了。", rank: "20%" }
             };
 
-            // 辅助函数：根据性别动态决定结局ID（用于r8a节点）
             function getGenderEnding(endingType) {
                 if (endingType === 'earphone_or_skincare') {
                     return gender === 'male' ? 'ending_earphone' : 'ending_skincare';
@@ -650,13 +591,11 @@
                 if (endingType === 'keyboard_or_coat') {
                     return gender === 'male' ? 'ending_keyboard' : 'ending_coat';
                 }
-                return endingType; // 非性别相关
+                return endingType;
             }
 
-            // 剧情节点定义
             var storyNodes = {};
 
-            // 第1轮
             storyNodes['r1'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 text: "还没睡？",
@@ -668,7 +607,6 @@
                 ]
             };
 
-            // 第2轮
             storyNodes['r2a'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 text: "那你快睡，明天不是还要上课吗？",
@@ -684,7 +622,7 @@
                 text: "忙什么呢忙到现在？别跟我说又在打游戏。",
                 os: "她怎么知道我在打游戏……",
                 choices: [
-                    { text: "在赶作业呢，明天要交", nextNode: "r3a" },
+                    { text: "在赶论文呢，明天要交", nextNode: "r3a" },
                     { text: "跟室友开了两把黑……", nextNode: "r3b" },
                     { text: "在刷招聘信息，看看实习", nextNode: "r3c" }
                 ]
@@ -700,7 +638,6 @@
                 ]
             };
 
-            // 第3轮（需要区分性别的节点）
             function buildR3Node(suffix) {
                 var node = { speaker: "\uD83D\uDC69 母后大人", choices: [], genderChoices: true };
                 if (suffix === 'a') {
@@ -717,17 +654,17 @@
                         { text: "凑合过吧……月底了嘛", nextNode: "r4c" }
                     ];
                 } else if (suffix === 'b') {
-                    node.text = "我就知道你又在玩。作业写完了吗？";
+                    node.text = "我就知道你又在玩。最近课业不忙吗？论文项目都搞完了？";
                     node.os = "完了完了，被抓现行了……";
                     node.choicesMale = [
-                        { text: "写完了写完了", nextNode: "r4a" },
-                        { text: "还差一点点……", nextNode: "r4b" },
-                        { text: "明天再写，不急", nextNode: "r4c" }
+                        { text: "都搞完了，您放心", nextNode: "r4a" },
+                        { text: "还差个论文没写完……", nextNode: "r4b" },
+                        { text: "明天再说，不急", nextNode: "r4c" }
                     ];
                     node.choicesFemale = [
-                        { text: "写完了写完了", nextNode: "r4a" },
-                        { text: "还差一点点……", nextNode: "r4b" },
-                        { text: "明天再写，不急", nextNode: "r4c" }
+                        { text: "都搞完了，您放心", nextNode: "r4a" },
+                        { text: "还差个报告没写完……", nextNode: "r4b" },
+                        { text: "明天再说，不急", nextNode: "r4c" }
                     ];
                 } else if (suffix === 'c') {
                     node.text = "想什么呢？跟妈说说。";
@@ -749,7 +686,6 @@
             storyNodes['r3b'] = buildR3Node('b');
             storyNodes['r3c'] = buildR3Node('c');
 
-            // 第4轮
             storyNodes['r4a'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 text: "食堂能吃这么好？我看你朋友圈昨天还晒火锅了呢。",
@@ -781,7 +717,6 @@
                 ]
             };
 
-            // 第5轮
             storyNodes['r5a'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 text: "行了不说你了。对了，你上次说那个实习/考研/考公，怎么样了？",
@@ -813,7 +748,6 @@
                 ]
             };
 
-            // 第6轮
             storyNodes['r6a'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 text: "行，你自己上点心就行。我也不想天天念叨你。……不过话说回来，你最近手头怎么样？",
@@ -845,7 +779,6 @@
                 ]
             };
 
-            // 第7轮
             storyNodes['r7a'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 text: "行，那你自己省着点花。别又像上个月一样，月中就跑来说没钱了。",
@@ -878,7 +811,6 @@
                 ]
             };
 
-            // 第8轮（部分节点需要性别分流结局）
             storyNodes['r8a'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 text: "行了行了，看你这可怜样。我给你转点，但你听好了——",
@@ -910,7 +842,6 @@
                 ]
             };
 
-            // 为性别分流结局添加占位节点（实际不会执行到，但方便处理）
             storyNodes['ending_gender1'] = { isEnding: true, genderEnding: 'earphone_or_skincare' };
             storyNodes['ending_gender2'] = { isEnding: true, genderEnding: 'keyboard_or_coat' };
             storyNodes['ending_rebel'] = { isEnding: true, endingId: 'ending_rebel' };
@@ -921,26 +852,22 @@
             storyNodes['ending_debt_big'] = { isEnding: true, endingId: 'ending_debt_big' };
             storyNodes['ending_debt_explode'] = { isEnding: true, endingId: 'ending_debt_explode' };
 
-            // 获取节点的选项数组（处理性别分化）
             function getChoicesForNode(node) {
                 if (node.genderChoices === true) {
                     if (gender === 'male' && node.choicesMale) return node.choicesMale;
                     if (gender === 'female' && node.choicesFemale) return node.choicesFemale;
-                    // 默认回退
                     return node.choicesMale || node.choicesFemale || [];
                 }
                 if (node.choices) return node.choices;
                 return [];
             }
 
-            // 获取节点的文本（处理r7b的性别分化）
             function getNodeText(node) {
                 if (node.textMale && gender === 'male') return node.textMale;
                 if (node.textFemale && gender === 'female') return node.textFemale;
                 return node.text || '';
             }
 
-            // 更新顶栏显示
             function updateTopbar() {
                 heartDisplay.textContent = heart;
                 roundDisplay.textContent = round;
@@ -953,14 +880,12 @@
                 }
             }
 
-            // 滚动到底部
             function scrollToBottom() {
                 setTimeout(function() {
                     chatArea.scrollTop = chatArea.scrollHeight;
                 }, 80);
             }
 
-            // 添加聊天气泡
             function addBubble(speaker, text, isPlayer) {
                 var row = document.createElement('div');
                 row.className = 'bubble-row ' + (isPlayer ? 'player' : 'mom');
@@ -979,7 +904,6 @@
                 return row;
             }
 
-            // 添加打字动画
             function addTypingBubble() {
                 var row = document.createElement('div');
                 row.className = 'bubble-row mom';
@@ -1002,7 +926,6 @@
                 if (row) row.remove();
             }
 
-            // 添加内心OS
             function addInnerOS(osText) {
                 if (!osText) return;
                 var osDiv = document.createElement('div');
@@ -1012,9 +935,7 @@
                 scrollToBottom();
             }
 
-            // 渲染选项按钮
             function renderChoices(choices) {
-                // 移除旧选项
                 removeChoices();
                 var container = document.createElement('div');
                 container.className = 'choices-container';
@@ -1050,40 +971,26 @@
                 }
             }
 
-            // 处理选项点击
             function handleChoiceClick(index, choices) {
                 if (isProcessing) return;
                 isProcessing = true;
                 var choice = choices[index];
                 var playerText = choice.text;
-
-                // 显示玩家气泡
                 addBubble("\uD83D\uDC69 母后大人", playerText, true);
-
-                // 禁用选项按钮
                 removeChoices();
-
-                // 更新孝心值
                 if (typeof choice.heartChange !== 'undefined') {
                     heart += choice.heartChange;
                     if (heart < 0) heart = 0;
                     if (heart > 200) heart = 200;
                 }
                 updateTopbar();
-
                 var nextId = choice.nextNode;
-
-                // 处理性别相关结局
                 if (choice.genderEnding) {
                     nextId = getGenderEnding(choice.genderEnding);
                 }
-
-                // 判断是否是结局节点
                 if (nextId && (nextId.indexOf('ending_') === 0 || storyNodes[nextId] && storyNodes[nextId].isEnding)) {
-                    // 直接弹出结局
                     setTimeout(function() {
                         var finalEndingId = nextId;
-                        // 如果节点定义了endingId，优先使用
                         var node = storyNodes[nextId];
                         if (node && node.endingId) finalEndingId = node.endingId;
                         if (node && node.genderEnding) finalEndingId = getGenderEnding(node.genderEnding);
@@ -1092,8 +999,6 @@
                     }, 1200);
                     return;
                 }
-
-                // 非结局：显示打字动画
                 setTimeout(function() {
                     addTypingBubble();
                     setTimeout(function() {
@@ -1104,22 +1009,17 @@
                 }, 400);
             }
 
-            // 处理节点
             function processNode(nodeId) {
                 currentNode = nodeId;
                 round += 1;
-
                 var node = storyNodes[nodeId];
                 if (!node) {
-                    // 如果找不到节点，可能是结局ID
                     if (nodeId && nodeId.indexOf('ending_') === 0) {
                         showEnding(nodeId);
                         return;
                     }
                     return;
                 }
-
-                // 如果节点标记为结局，则直接显示
                 if (node.isEnding) {
                     var endingId = node.endingId || nodeId;
                     if (node.genderEnding) {
@@ -1128,47 +1028,35 @@
                     showEnding(endingId);
                     return;
                 }
-
-                // 显示妈妈气泡
                 var nodeText = getNodeText(node);
                 addBubble(node.speaker, nodeText, false);
-
-                // 显示内心OS
                 var osText = node.os || '';
                 if (osText) {
                     setTimeout(function() {
                         addInnerOS(osText);
                     }, 300);
                 }
-
                 updateTopbar();
-
-                // 获取选项
                 var choices = getChoicesForNode(node);
                 setTimeout(function() {
                     renderChoices(choices);
                 }, 500);
             }
 
-            // 显示结局
             function showEnding(endingId) {
                 var ending = endings[endingId];
                 if (!ending) {
-                    ending = endings['ending_giveup']; // 默认回退
+                    ending = endings['ending_giveup'];
                 }
                 updateTopbar();
-
                 var html = '';
                 html += '<div class="ending-emoji">' + ending.emoji + '</div>';
                 html += '<div class="ending-name">' + ending.name + '</div>';
                 html += '<div class="ending-desc">' + ending.desc + '</div>';
                 html += '<div class="ending-rank">击败了全国 ' + ending.rank + ' 的大学生</div>';
                 html += '<button class="replay-btn" id="replayBtn">再来一次</button>';
-
                 endingCard.innerHTML = html;
                 endingOverlay.classList.remove('hidden');
-
-                // 绑定重玩按钮
                 setTimeout(function() {
                     var replayBtn = document.getElementById('replayBtn');
                     if (replayBtn) {
@@ -1177,11 +1065,9 @@
                         });
                     }
                 }, 100);
-
                 scrollToBottom();
             }
 
-            // 重置游戏
             function resetGame() {
                 heart = 100;
                 round = 1;
@@ -1199,7 +1085,6 @@
                 chatArea.scrollTop = 0;
             }
 
-            // 开始游戏
             function startGame() {
                 if (!gender) return;
                 introOverlay.classList.add('hidden');
@@ -1212,7 +1097,6 @@
                 processNode('r1');
             }
 
-            // 事件绑定
             btnMale.addEventListener('click', function() {
                 if (isProcessing && gender) return;
                 gender = 'male';
@@ -1234,7 +1118,6 @@
                 }
             });
 
-            // 初始化
             function init() {
                 updateTopbar();
                 chatArea.innerHTML = '';
@@ -1251,9 +1134,8 @@
             }
             init();
 
-            // 防止触摸事件穿透
             document.addEventListener('touchmove', function(e) {}, { passive: true });
-            console.log('深夜母子对话 - 聊天叙事游戏 已就绪（逻辑完善版）');
+            console.log('深夜母子对话 - 聊天叙事游戏 已就绪（大学语境版）');
             console.log('12个结局 | 8轮对话 | 性别分流 | 节点状态机');
         })();
     </script>
