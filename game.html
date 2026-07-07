@@ -600,18 +600,6 @@
                     desc: "你放弃了要钱。妈妈回了一个\u201C嗯\u201D，然后对话框安静了。你盯着天花板，有点后悔。",
                     rank: "35%"
                 },
-                "ending_negotiate": {
-                    emoji: "\uD83D\uDCB8",
-                    name: "\uD83D\uDCB8 谈判专家",
-                    desc: "你成功把扣款从两百砍到了一百。妈妈叹了口气说\u201C你也就这点出息\u201D。",
-                    rank: "55%"
-                },
-                "ending_accept": {
-                    emoji: "\uD83E\uDD10",
-                    name: "\uD83E\uDD10 忍气吞声",
-                    desc: "你接受了减两百的条件。钱到手了，但你已经开始心疼下个月了。",
-                    rank: "40%"
-                },
                 "ending_debt_small": {
                     emoji: "\uD83E\uDD1D",
                     name: "\uD83E\uDD1D 母子和解",
@@ -831,12 +819,11 @@
                 ]
             };
 
+            // 结局占位节点（用于统一定向）
             storyNodes['ending_gender1'] = { isEnding: true, genderEnding: 'earphone_or_skincare' };
             storyNodes['ending_gender2'] = { isEnding: true, genderEnding: 'keyboard_or_coat' };
             storyNodes['ending_rebel'] = { isEnding: true, endingId: 'ending_rebel' };
             storyNodes['ending_giveup'] = { isEnding: true, endingId: 'ending_giveup' };
-            storyNodes['ending_negotiate'] = { isEnding: true, endingId: 'ending_negotiate' };
-            storyNodes['ending_accept'] = { isEnding: true, endingId: 'ending_accept' };
             storyNodes['ending_debt_small'] = { isEnding: true, endingId: 'ending_debt_small' };
             storyNodes['ending_debt_big'] = { isEnding: true, endingId: 'ending_debt_big' };
             storyNodes['ending_debt_explode'] = { isEnding: true, endingId: 'ending_debt_explode' };
@@ -979,10 +966,13 @@
                     nextId = getGenderEnding(choice.genderEnding);
                 }
 
-                var node = storyNodes[nextId];
-                if (node && node.isEnding) {
-                    var finalEndingId = node.endingId || nextId;
-                    if (node.genderEnding) finalEndingId = getGenderEnding(node.genderEnding);
+                // 统一处理结局
+                var targetNode = storyNodes[nextId];
+                if (targetNode && targetNode.isEnding) {
+                    var finalEndingId = targetNode.endingId || nextId;
+                    if (targetNode.genderEnding) {
+                        finalEndingId = getGenderEnding(targetNode.genderEnding);
+                    }
                     setTimeout(function() {
                         showEnding(finalEndingId);
                         isProcessing = false;
@@ -990,6 +980,7 @@
                     return;
                 }
 
+                // 正常流程
                 setTimeout(function() {
                     addTypingBubble();
                     setTimeout(function() {
@@ -1114,8 +1105,8 @@
             init();
 
             document.addEventListener('touchmove', function(e) {}, { passive: true });
-            console.log('深夜母子对话 - 聊天叙事游戏 已就绪（逻辑修复版）');
-            console.log('12个结局 | 节点状态机 | 自然汇合 | r7c仅欠债可触达');
+            console.log('深夜母子对话 - 聊天叙事游戏 已就绪（交互修复版）');
+            console.log('✅ 所有结局正常触发 | ✅ 防连点 | ✅ r7c仅欠债可触达');
         })();
     </script>
 </body>
