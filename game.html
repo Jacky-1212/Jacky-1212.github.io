@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>小树洞 · 深夜对话</title>
+    <style>
+        body {
+            background: #1a1a2e;
+            color: #eee;
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 20px;
+            line-height: 1.8;
+        }
+        .dialogue {
+            background: #16213e;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .choices button {
+            display: block;
+            width: 100%;
+            background: #0f3460;
+            color: white;
+            border: none;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .choices button:hover {
+            background: #e94560;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dialogue" id="text">
+    晚上11点，你刚写完作业，手机震了一下。是妈妈发来的："还没睡？"
+    你盯着屏幕，手指悬在键盘上。
+</div>
+
+<div class="choices" id="choices">
+    <button onclick="choose(1)">回："睡了"</button>
+    <button onclick="choose(2)">回："还没，在写作业"</button>
+    <button onclick="choose(3)">不回，把手机扣桌上</button>
+</div>
+
+<script>
+    const scenes = {
+        1: {
+            text: '"睡了？"妈妈又发来一条："那你快睡。"\n你放下手机，其实才刚翻开第二天要用的PPT。',
+            choices: [
+                { text: "算了，再熬会儿吧", next: 4 },
+                { text: "真的睡了", next: 5 }
+            ]
+        },
+        2: {
+            text: '"还没，在写作业。"\n妈妈秒回："那你也注意身体，别老熬夜。"\n你心想，这边下午6点，国内凌晨12点，她也没睡啊。',
+            choices: [
+                { text: "问她怎么也没睡", next: 6 },
+                { text: "说"你也是"，然后继续写作业", next: 7 }
+            ]
+        },
+        3: {
+            text: "手机又震了一下："怎么不回妈？是不是烦我了？"\n你叹了口气，拿起手机。",
+            choices: [
+                { text: "回："没烦，刚在想事情"", next: 8 },
+                { text: "回个表情包糊弄过去", next: 9 }
+            ]
+        },
+        4: { text: "你又熬到了凌晨2点。PPT 做完了，但心里有点空。---（结局：假装睡着的夜晚）", choices: [] },
+        5: { text: "你真的躺下了，但闭眼全是明天due的影子。---（结局：身体睡了，脑子没）", choices: [] },
+        6: { text: '"怎么也没睡？"\n"给你爸守夜呢，他打呼。"\n你笑了，眼睛有点湿。---（结局：隔着时差的一句废话）', choices: [] },
+        7: { text: "你继续写作业，妈妈那边没再发。第二天早上看到她凌晨1点朋友圈晒了你小学照片。---（结局：她也想你了）", choices: [] },
+        8: { text: '"没烦，刚在想事情。"\n"想啥呢？"\n"……想回家。"\n那边沉默了三秒："嗯，快了。"', choices: [] },
+        9: { text: "你发了个猫猫打滚的表情包。妈妈回了个"乖"。\n糊弄过去了，但你知道下次视频还得交代。", choices: [] }
+    };
+
+    function choose(id) {
+        const scene = scenes[id];
+        document.getElementById('text').innerText = scene.text;
+        const choicesDiv = document.getElementById('choices');
+        choicesDiv.innerHTML = '';
+        if (scene.choices && scene.choices.length > 0) {
+            scene.choices.forEach(c => {
+                const btn = document.createElement('button');
+                btn.innerText = c.text;
+                btn.onclick = () => choose(c.next);
+                choicesDiv.appendChild(btn);
+            });
+        } else {
+            choicesDiv.innerHTML = '<button onclick="location.reload()">🔁 再玩一次</button>';
+        }
+    }
+</script>
+
+</body>
+</html>
