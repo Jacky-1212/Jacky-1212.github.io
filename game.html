@@ -1,489 +1,1333 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>晚上 11:47</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #0a0a0f; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; min-height: 100vh; overflow-x: hidden; }
-::-webkit-scrollbar { display: none; }
-.page { display: none; min-height: 100vh; padding: 20px; }
-.page.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深夜母子对话 - 聊天叙事游戏</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --chat-bg: #111118;
+            --bubble-mom: #2a2a35;
+            --bubble-player: #1a3c2a;
+            --bubble-player-border: #2a5a3a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #999;
+            --text-os: #666;
+            --gold: #c9a96e;
+            --gold-hover: #e0c080;
+            --border-subtle: #333;
+            --topbar-bg: #14141c;
+            --overlay-bg: rgba(0, 0, 0, 0.85);
+            --btn-bg: #1a1a25;
+            --btn-border: #444;
+            --font-size-sm: 14px;
+            --font-size-md: 16px;
+            --padding-sm: 10px;
+            --padding-md: 20px;
+        }
 
-/* 开场页 */
-#startScreen { background: #0a0a0f; }
-.time-display { font-size: 72px; font-weight: 300; color: #ffffff; letter-spacing: 4px; margin-bottom: 10px; }
-.subtitle { font-size: 18px; color: #888; margin-bottom: 8px; }
-.desc { font-size: 14px; color: #555; margin-bottom: 50px; }
-.gender-select { display: flex; gap: 30px; margin-bottom: 40px; }
-.gender-btn { width: 100px; height: 100px; border-radius: 50%; border: 2px solid #333; background: #1a1a2e; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #ccc; cursor: pointer; transition: all 0.3s; }
-.gender-btn:hover { border-color: #ffd700; color: #ffd700; transform: scale(1.05); }
-.gender-btn.selected { border-color: #ffd700; color: #ffd700; background: #2a2a3e; }
-.start-btn { padding: 14px 50px; font-size: 16px; background: linear-gradient(135deg, #ffd700, #ff8c00); color: #0a0a0f; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; transition: transform 0.2s; display: none; }
-.start-btn:hover { transform: scale(1.05); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* 游戏页 */
-#gameScreen { background: #0a0a0f; padding: 0; position: relative; }
-.top-bar { position: fixed; top: 0; left: 0; right: 0; background: #111118; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid #1a1a2e; }
-.top-bar-left { display: flex; align-items: center; gap: 8px; }
-.top-bar-avatar { width: 32px; height: 32px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-.top-bar-name { font-size: 14px; color: #ccc; }
-.top-bar-status { font-size: 11px; color: #4caf50; }
-.top-bar-right { display: flex; align-items: center; gap: 12px; font-size: 13px; }
-.heart-value { color: #ff6b6b; }
-.round-info { color: #888; }
-.chat-container { margin-top: 56px; padding: 16px; padding-bottom: 120px; overflow-y: auto; height: calc(100vh - 56px); }
-.message { margin-bottom: 16px; display: flex; flex-direction: column; }
-.message.mom { align-items: flex-start; }
-.message.me { align-items: flex-end; }
-.bubble { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.5; }
-.message.mom .bubble { background: #1a1a2e; color: #e0e0e0; border-bottom-left-radius: 4px; }
-.message.me .bubble { background: #2d5a27; color: #fff; border-bottom-right-radius: 4px; }
-.typing-indicator { display: none; margin-bottom: 16px; align-items: flex-start; }
-.typing-dots { background: #1a1a2e; padding: 12px 16px; border-radius: 18px; border-bottom-left-radius: 4px; }
-.typing-dots span { display: inline-block; width: 8px; height: 8px; background: #666; border-radius: 50%; margin: 0 2px; animation: typing 1.4s infinite; }
-.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes typing { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
-.choices-container { position: fixed; bottom: 0; left: 0; right: 0; background: #111118; border-top: 1px solid #1a1a2e; padding: 12px 16px; padding-bottom: max(12px, env(safe-area-inset-bottom)); z-index: 100; }
-.choice-btn { display: block; width: 100%; padding: 14px 16px; margin-bottom: 8px; background: #1a1a2e; border: 1px solid #2a2a4e; border-radius: 12px; color: #e0e0e0; font-size: 15px; cursor: pointer; text-align: left; transition: all 0.2s; }
-.choice-btn:last-child { margin-bottom: 0; }
-.choice-btn:hover { border-color: #ffd700; background: #1a1a3e; }
-.choice-btn:active { transform: scale(0.98); }
+        body {
+            background: var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+            overflow-x: hidden;
+        }
 
-/* 结局页 */
-#endingScreen { background: #0a0a0f; }
-.ending-card { background: #111118; border: 1px solid #2a2a4e; border-radius: 20px; padding: 40px 30px; text-align: center; max-width: 360px; width: 90%; }
-.ending-emoji { font-size: 64px; margin-bottom: 16px; }
-.ending-name { font-size: 22px; font-weight: bold; color: #ffd700; margin-bottom: 12px; }
-.ending-desc { font-size: 14px; color: #999; line-height: 1.8; margin-bottom: 20px; }
-.ending-rank { font-size: 14px; color: #666; margin-bottom: 30px; }
-.ending-rank span { color: #ffd700; font-weight: bold; font-size: 18px; }
-.restart-btn { padding: 14px 50px; font-size: 16px; background: linear-gradient(135deg, #ffd700, #ff8c00); color: #0a0a0f; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; transition: transform 0.2s; }
-.restart-btn:hover { transform: scale(1.05); }
-</style>
+        /* 主容器 */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            max-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--chat-bg);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 顶部栏 */
+        .topbar {
+            background: var(--topbar-bg);
+            padding: 12px var(--padding-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-subtle);
+            z-index: 10;
+            flex-shrink: 0;
+            min-height: 50px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .topbar .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: var(--font-size-md);
+            color: var(--text-primary);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .topbar .contact-info .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4caf50;
+            display: inline-block;
+            flex-shrink: 0;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(76, 175, 80, 0);
+            }
+        }
+        .topbar .stats {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .topbar .stats span {
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+        .topbar .stats .heart-val {
+            color: #ff7b7b;
+            font-weight: 600;
+        }
+
+        /* 聊天区域 */
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--padding-md);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 30px;
+        }
+        .chat-area::-webkit-scrollbar {
+            width: 3px;
+        }
+        .chat-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-area::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        /* 气泡 */
+        .bubble-row {
+            display: flex;
+            width: 100%;
+            animation: fadeInUp 0.35s ease-out;
+        }
+        .bubble-row.mom {
+            justify-content: flex-start;
+        }
+        .bubble-row.player {
+            justify-content: flex-end;
+        }
+        .bubble {
+            max-width: 78%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: var(--font-size-md);
+            line-height: 1.55;
+            word-break: break-word;
+            position: relative;
+        }
+        .bubble.mom {
+            background: var(--bubble-mom);
+            color: #d0d0d0;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        .bubble.player {
+            background: var(--bubble-player);
+            color: #c8e8c8;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--bubble-player-border);
+        }
+        .bubble .speaker-label {
+            font-size: 10px;
+            color: #888;
+            margin-bottom: 3px;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+        .bubble.player .speaker-label {
+            color: #7ab87a;
+            text-align: right;
+        }
+
+        /* 打字动画气泡 */
+        .typing-bubble {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+            min-width: 50px;
+            justify-content: center;
+        }
+        .typing-bubble .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #888;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+        .typing-bubble .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .typing-bubble .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-bubble .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typingBounce {
+            0%,
+            80%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            40% {
+                transform: translateY(-8px);
+                opacity: 1;
+            }
+        }
+
+        /* 内心OS */
+        .inner-os {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            padding: 6px 0;
+            font-style: italic;
+            animation: fadeInUp 0.5s ease-out 0.3s both;
+            letter-spacing: 0.3px;
+        }
+
+        /* 选项容器 */
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 8px 0;
+            animation: fadeInUp 0.4s ease-out 0.15s both;
+        }
+        .choice-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--btn-bg);
+            border: 1.5px solid var(--btn-border);
+            border-radius: 12px;
+            color: #ccc;
+            font-size: var(--font-size-md);
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            letter-spacing: 0.3px;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .choice-btn:hover {
+            border-color: var(--gold-hover);
+            color: var(--gold-hover);
+            background: #1e1e2a;
+            box-shadow: 0 0 16px rgba(201, 169, 110, 0.15);
+            transform: translateX(2px);
+        }
+        .choice-btn:active {
+            transform: scale(0.97);
+            transition: transform 0.1s ease;
+            background: #1c1c28;
+        }
+        .choice-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+            border-color: #333;
+            color: #666;
+        }
+
+        /* 开场覆盖层 */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--overlay-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 30px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .overlay.hidden {
+            display: none;
+        }
+        .overlay .time-display {
+            font-size: 64px;
+            font-weight: 200;
+            color: #fff;
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+        }
+        .overlay .subtitle {
+            font-size: 15px;
+            color: #999;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+        .overlay .subtitle2 {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 28px;
+            letter-spacing: 0.5px;
+        }
+        .overlay .gender-btns {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .overlay .gender-btn {
+            padding: 14px 32px;
+            font-size: 18px;
+            border-radius: 30px;
+            border: 2px solid #555;
+            background: transparent;
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            letter-spacing: 1px;
+            min-width: 90px;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+        .overlay .gender-btn:hover {
+            border-color: #999;
+            color: #fff;
+        }
+        .overlay .gender-btn.selected {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(201, 169, 110, 0.1);
+            box-shadow: 0 0 20px rgba(201, 169, 110, 0.2);
+        }
+        .overlay .start-btn {
+            padding: 13px 40px;
+            font-size: 16px;
+            border-radius: 30px;
+            border: 2px solid var(--gold);
+            background: rgba(201, 169, 110, 0.15);
+            color: var(--gold);
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: all 0.4s ease;
+        }
+        .overlay .start-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .overlay .start-btn:hover {
+            background: rgba(201, 169, 110, 0.3);
+            box-shadow: 0 0 24px rgba(201, 169, 110, 0.3);
+        }
+        .overlay .start-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 结局覆盖层 */
+        .ending-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--overlay-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 60;
+            padding: 30px;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            animation: fadeIn 0.5s ease-out;
+        }
+        .ending-overlay.hidden {
+            display: none;
+        }
+        .ending-card {
+            background: #1a1a28;
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 28px 24px;
+            text-align: center;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            animation: scaleIn 0.5s ease-out;
+        }
+        .ending-card .ending-emoji {
+            font-size: 56px;
+            margin-bottom: 12px;
+        }
+        .ending-card .ending-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .ending-card .ending-desc {
+            font-size: 14px;
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+        .ending-card .ending-rank {
+            font-size: 13px;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+        .ending-card .replay-btn {
+            padding: 12px 30px;
+            font-size: 15px;
+            border-radius: 25px;
+            border: 2px solid var(--gold);
+            background: rgba(201, 169, 110, 0.15);
+            color: var(--gold);
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+        .ending-card .replay-btn:hover {
+            background: rgba(201, 169, 110, 0.3);
+            box-shadow: 0 0 20px rgba(201, 169, 110, 0.25);
+        }
+        .ending-card .replay-btn:active {
+            transform: scale(0.94);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .app-container {
+                max-width: 100%;
+                height: 100vh;
+                height: 100dvh;
+                border-radius: 0;
+            }
+            .chat-area {
+                padding: var(--padding-sm);
+                gap: 8px;
+            }
+            .bubble {
+                font-size: 14px;
+                padding: 8px 12px;
+                border-radius: 14px;
+                max-width: 82%;
+            }
+            .choice-btn {
+                font-size: 14px;
+                padding: 10px 14px;
+                border-radius: 10px;
+            }
+            .topbar {
+                padding: 10px var(--padding-sm);
+                font-size: 13px;
+            }
+            .topbar .stats span {
+                font-size: 10px;
+                padding: 2px 6px;
+            }
+            .overlay .time-display {
+                font-size: 48px;
+            }
+            .overlay .gender-btn {
+                padding: 12px 24px;
+                font-size: 16px;
+                min-width: 70px;
+            }
+            .ending-card {
+                padding: 22px 18px;
+                border-radius: 16px;
+            }
+            .ending-card .ending-emoji {
+                font-size: 42px;
+            }
+            .ending-card .ending-name {
+                font-size: 17px;
+            }
+        }
+        @media (min-width: 481px) {
+            .app-container {
+                border-radius: 12px;
+                height: 92vh;
+                max-height: 820px;
+                margin: 0 16px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- 开场页 -->
-<div id="startScreen" class="page active">
-  <div class="time-display">23:47</div>
-  <div class="subtitle">你妈发来一条消息</div>
-  <div class="desc">每一个大学生都经历过的深夜拷问</div>
-  <div class="gender-select">
-    <div class="gender-btn" onclick="selectGender('male')">&#9794; 男</div>
-    <div class="gender-btn" onclick="selectGender('female')">&#9792; 女</div>
-  </div>
-  <button class="start-btn" id="startBtn" onclick="startGame()">开始挑战</button>
-</div>
+    <div class="app-container" id="appContainer">
+        <!-- 顶部栏 -->
+        <div class="topbar" id="topbar">
+            <div class="contact-info">
+                <span class="status-dot"></span> 👩 母后大人 · 在线
+            </div>
+            <div class="stats">
+                <span>❤️ 孝心值: <span class="heart-val" id="heartDisplay">100</span></span>
+                <span>第<span id="roundDisplay">1</span>幕</span>
+            </div>
+        </div>
 
-<!-- 游戏页 -->
-<div id="gameScreen" class="page">
-  <div class="top-bar">
-    <div class="top-bar-left">
-      <div class="top-bar-avatar">&#128104;</div>
-      <div>
-        <div class="top-bar-name">母后大人</div>
-        <div class="top-bar-status">&#9679; 在线</div>
-      </div>
+        <!-- 聊天区域 -->
+        <div class="chat-area" id="chatArea"></div>
+
+        <!-- 开场覆盖层 -->
+        <div class="overlay" id="introOverlay">
+            <div class="time-display">23:47</div>
+            <div class="subtitle">你妈发来一条消息</div>
+            <div class="subtitle2">每一个大学生都经历过的深夜拷问</div>
+            <div class="gender-btns" id="genderBtns">
+                <button class="gender-btn" data-gender="male" id="btnMale">♂ 男</button>
+                <button class="gender-btn" data-gender="female" id="btnFemale">♀ 女</button>
+            </div>
+            <button class="start-btn" id="startBtn">开始挑战</button>
+        </div>
+
+        <!-- 结局覆盖层 -->
+        <div class="ending-overlay hidden" id="endingOverlay">
+            <div class="ending-card" id="endingCard"></div>
+        </div>
     </div>
-    <div class="top-bar-right">
-      <span class="heart-value" id="heartDisplay">&#10084;&#65039; 孝心值: 100</span>
-      <span class="round-info" id="roundDisplay">第1幕</span>
-    </div>
-  </div>
-  <div class="chat-container" id="chatContainer">
-    <div class="typing-indicator" id="typingIndicator">
-      <div class="typing-dots"><span></span><span></span><span></span></div>
-    </div>
-  </div>
-  <div class="choices-container" id="choicesContainer"></div>
-</div>
 
-<!-- 结局页 -->
-<div id="endingScreen" class="page">
-  <div class="ending-card">
-    <div class="ending-emoji" id="endingEmoji"></div>
-    <div class="ending-name" id="endingName"></div>
-    <div class="ending-desc" id="endingDesc"></div>
-    <div class="ending-rank" id="endingRank"></div>
-    <button class="restart-btn" onclick="restartGame()">再来一次</button>
-  </div>
-</div>
+    <script>
+        (function() {
+            // ============ 全局变量 ============
+            var gender = null; // 'male' 或 'female'
+            var heart = 100;
+            var round = 1;
+            var currentNodeId = 'r1';
+            var isProcessing = false; // 防止快速点击
 
-<script>
-var gender = "male";
-var heart = 100;
-var round = 1;
-var currentNode = "";
-var chatContainer = document.getElementById("chatContainer");
-var choicesContainer = document.getElementById("choicesContainer");
-var typingIndicator = document.getElementById("typingIndicator");
+            // ============ DOM 引用 ============
+            var chatArea = document.getElementById('chatArea');
+            var heartDisplay = document.getElementById('heartDisplay');
+            var roundDisplay = document.getElementById('roundDisplay');
+            var introOverlay = document.getElementById('introOverlay');
+            var endingOverlay = document.getElementById('endingOverlay');
+            var endingCard = document.getElementById('endingCard');
+            var startBtn = document.getElementById('startBtn');
+            var btnMale = document.getElementById('btnMale');
+            var btnFemale = document.getElementById('btnFemale');
+            var topbar = document.getElementById('topbar');
 
-var story = {
-  "start": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "还没睡？",
-    "choices": [
-      {"text": "正准备睡呢妈\uD83D\uDE0A", "next": "r2_a"},
-      {"text": "刚忙完，准备睡了", "next": "r2_b"},
-      {"text": "还没呢\u2026\u2026", "next": "r2_c"}
-    ]
-  },
-  "r2_a": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "哦哦那你快睡，明天早八别迟到",
-    "choices": [
-      {"text": "知道了妈\uD83D\uDE0A", "next": "r3_a"},
-      {"text": "明天第一节就是专业课\u2026\u2026", "next": "r3_b"},
-      {"text": "明天没课！爽了一个月了\uD83C\uDF89", "next": "r3_c"}
-    ]
-  },
-  "r2_b": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "行，你喜欢晚上干活儿，随我",
-    "choices": [
-      {"text": "那必须是遗传了妈的优秀基因", "next": "r3_a"},
-      {"text": "也不是喜欢，是作业太多了", "next": "r3_b"},
-      {"text": "晚上游戏体验更好呢\uD83D\uDE0F", "next": "r3_c"}
-    ]
-  },
-  "r2_c": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "没睡就没睡吧，你明天有课吗？",
-    "choices": [
-      {"text": "有啊，早八的课\uD83D\uDE2D", "next": "r3_a"},
-      {"text": "没课！爽了一个月了\uD83C\uDF89", "next": "r3_b"},
-      {"text": "有课但不重要\u2026\u2026", "next": "r3_c"}
-    ]
-  },
-  "r3_a": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "那你吃饭了没？别老吃注册食品",
-    "choices": [
-      {"text": "挺好的，食堂随便吃吃", "next": "r4_a"},
-      {"text": "偶尔跟室友出去搓一顿", "next": "r4_b"},
-      {"text": "凑合过吧\u2026\u2026月底了嘛", "next": "r4_c", "effect": "heart-=5"}
-    ]
-  },
-  "r3_b": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "作业多就别熬太晚，饭要按时吃",
-    "choices": [
-      {"text": "吃了吃了，室友煮的面条", "next": "r4_a"},
-      {"text": "喝了杯奶茶就当一顿了", "next": "r4_b"},
-      {"text": "凑合过吧\u2026\u2026月底了嘛", "next": "r4_c", "effect": "heart-=5"}
-    ]
-  },
-  "r3_c": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "没课也别昼夜颠倒，吃饭了吗？",
-    "choices": [
-      {"text": "吃了吃了，食堂今天还不错", "next": "r4_a"},
-      {"text": "点了外卖，又吃了一顿注册食品", "next": "r4_b"},
-      {"text": "凑合过吧\u2026\u2026月底了嘛", "next": "r4_c", "effect": "heart-=5"}
-    ]
-  },
-  "r4_a": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "你最近是不是有什么事瞒着我？",
-    "choices": [
-      {"text": "没有啊妈，能有什么事", "next": "r5_deny"},
-      {"text": "嗯\u2026\u2026有点小事", "next": "r5_half"},
-      {"text": "您怎么知道的？", "next": "r5_exposed"}
-    ]
-  },
-  "r4_b": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "又吃注册食品？你最近花销很大吧？",
-    "choices": [
-      {"text": "不是啊妈，我省着呢", "next": "r5_deny"},
-      {"text": "嗯\u2026\u2026有点大", "next": "r5_half"},
-      {"text": "您怎么知道我吃什么了？", "next": "r5_exposed"}
-    ]
-  },
-  "r4_c": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "月底了就知道省了。你钱包里还有多少？",
-    "choices": [
-      {"text": "多着呢妈，不用操心", "next": "r5_deny"},
-      {"text": "剩\u2026\u2026剩不多了", "next": "r5_half"},
-      {"text": "您怎么什么都知道了？", "next": "r5_exposed"}
-    ]
-  },
-  "r5_deny": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "真的没事？那我问你，钱还够花吗？",
-    "choices": [
-      {"text": "够的够的，妈您放心", "next": "r6_safe", "effect": "heart+=5"},
-      {"text": "还行吧\u2026\u2026就是最近花销有点大", "next": "r6_hint"},
-      {"text": "妈我想跟您商量个事儿", "next": "r6_ask"}
-    ]
-  },
-  "r5_half": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "什么事？你说。钱不够了？",
-    "choices": [
-      {"text": "也不是不够\u2026\u2026就是有点紧张", "next": "r6_hint"},
-      {"text": "其实我想买个东西", "next": "r6_ask"},
-      {"text": "算了，不说了", "next": "r6_giveup"}
-    ]
-  },
-  "r5_exposed": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "我刚看了你朋友圈，你上周跟同学去吃火锅了。跟我说食堂吃腻了？",
-    "choices": [
-      {"text": "妈您还翻我朋友圈！！", "next": "r6_deflect"},
-      {"text": "对不起妈\u2026\u2026我确实花多了", "next": "r6_hint"},
-      {"text": "那又怎样，我自己的钱", "next": "ending_rebel", "effect": "heart-=50"}
-    ]
-  },
-  "r6_safe": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "够就好，不够跟妈说。你先睡吧，明天再聊。",
-    "choices": [
-      {"text": "好的妈，晚安\uD83D\uDC98", "next": "ending_good"}
-    ]
-  },
-  "r6_hint": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "花销大在哪了？说来听听。",
-    "choices": [
-      {"text": "就\u2026\u2026吃饭交通什么的", "next": "ending_vague"},
-      {"text": "其实我看上个东西，打折呢", "next": "r7_money"},
-      {"text": "没什么，就随口一说", "next": "ending_coward"}
-    ]
-  },
-  "r6_ask": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "什么事？你说。要钱？",
-    "choices": [
-      {"text": "不是要钱\u2026\u2026就是想买个耳机/护肤品", "next": "r7_money"},
-      {"text": "要不然我觉得生活费有点紧", "next": "r7_money"},
-      {"text": "算了不说了，您早点睡吧", "next": "ending_coward"}
-    ]
-  },
-  "r6_giveup": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "说变就变了，你要是没钱了跟我说。",
-    "choices": [
-      {"text": "真的不用妈，我能搞定", "next": "ending_strong"}
-    ]
-  },
-  "r6_deflect": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "你都快比我校长得明白了。说吧，要多少？",
-    "choices": [
-      {"text": "不多，就两三百", "next": "r7_video"},
-      {"text": "五百\u2026\u2026", "next": "r7_video"},
-      {"text": "其实我欠了室友一点钱", "next": "ending_debt"}
-    ]
-  },
-  "r7_money": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "行，明天给你转。但是\u2014\u2014现在开个视频，我看看你宿舍收拾得怎么样。",
-    "choices": [
-      {"text": "妈我头发乱糟糟的\u2026\u2026", "next": "r8_video"},
-      {"text": "行吧\u2014\u2014", "next": "r8_video"},
-      {"text": "不用了妈，我不要了", "next": "ending_no_money"}
-    ]
-  },
-  "r7_video": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "明天给你转。现在开个视频，我看看你宿舍怎样。",
-    "choices": [
-      {"text": "妈我头发乱糟糟的\u2026\u2026", "next": "r8_video"},
-      {"text": "行吧\u2014\u2014", "next": "r8_video"},
-      {"text": "不用了妈，我不要了", "next": "ending_no_money"}
-    ]
-  },
-  "r8_video": {
-    "speaker": "\uD83D\uDC69 母后大人",
-    "text": "宿舍这么乱？地上那么多东西，床上那是什么？你买了什么？",
-    "choices": [
-      {"text": "就\u2026\u2026就是一个耳机/护肤品，每天用得着", "next": "ending_earphone"},
-      {"text": "是觉得生活质量提高了些\u2026\u2026", "next": "ending_keyboard"},
-      {"text": "妈您还是先睡吧，天快亮了", "next": "ending_stay_up"}
-    ]
-  }
-};
+            // ============ 结局定义 ============
+            var endings = {
+                "ending_good": {
+                    emoji: "\uD83C\uDFC6",
+                    name: "\uD83C\uDFC6 妈的好大儿/贴心棉袄",
+                    desc: "你属于那种\u201C妈我一切都好\u201D的顶级乖孩子。即使银行卡余额只剩两位数，你也会说\u201C够花\u201D。",
+                    rank: "92%"
+                },
+                "ending_rebel": {
+                    emoji: "\uD83D\uDD25",
+                    name: "\uD83D\uDD25 叛逆的代价",
+                    desc: "\u201C那又怎样，我自己的事\u201D\u2014\u2014你听到电话那头沉默了三秒。第二天，爸爸的电话打来了。",
+                    rank: "20%"
+                },
+                "ending_earphone": {
+                    emoji: "\uD83C\uDFA7",
+                    name: "\uD83C\uDFA7 耳机战士",
+                    desc: "要了两三百买耳机，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。",
+                    rank: "60%"
+                },
+                "ending_skincare": {
+                    emoji: "\uD83D\uDC84",
+                    name: "\uD83D\uDC84 护肤品守护者",
+                    desc: "要了两三百买护肤品，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。",
+                    rank: "60%"
+                },
+                "ending_keyboard": {
+                    emoji: "\u2328\uFE0F",
+                    name: "\u2328\uFE0F 键盘败家子",
+                    desc: "要了五百买键盘，妈妈转了。但附言是\u201C下个月的生活费减两百\u201D。",
+                    rank: "45%"
+                },
+                "ending_coat": {
+                    emoji: "\uD83D\uDC57",
+                    name: "\uD83D\uDC57 大衣梦想家",
+                    desc: "要了五百买大衣，妈妈转了。但附言是\u201C下个月的生活费减两百\u201D。",
+                    rank: "45%"
+                },
+                "ending_coward": {
+                    emoji: "\uD83D\uDE47",
+                    name: "\uD83D\uDE47 话到嘴边又咽下",
+                    desc: "到嘴边的\u201C我想买\u201D又咽了回去。妈妈回了一个\u201C好吧\u201D，你知道自己错过了什么。",
+                    rank: "70%"
+                },
+                "ending_nomoney": {
+                    emoji: "\uD83D\uDE4F",
+                    name: "\uD83D\uDE4F 嘴硬到底",
+                    desc: "钱到了嘴边却说\u201C不要了\u201D。妈妈回了一个\u201C嗯\u201D，然后再也没然后了。你突然觉得有点空虚。",
+                    rank: "40%"
+                },
+                "ending_strong": {
+                    emoji: "\uD83D\uDCAA",
+                    name: "\uD83D\uDCAA 硬撑之王",
+                    desc: "\u201C宽裕宽裕\u201D\u2014\u2014你说得理直气壮，背后却是饭卡余额三位数的现实。妈妈回了一个\u201C好吧\u201D，她不信你。",
+                    rank: "65%"
+                },
+                "ending_debt": {
+                    emoji: "\uD83C\uDF1F",
+                    name: "\uD83C\uDF1F 负债的秘密（隐藏）",
+                    desc: "你坦白了欠室友钱的事实。妈妈沉默了十秒，然后说\u201C这个月生活费冻结，你自己想办法还\u201D。",
+                    rank: "25%"
+                },
+                "ending_dad": {
+                    emoji: "\uD83D\uDC80",
+                    name: "\uD83D\uDC80 爸的审判（终极隐藏）",
+                    desc: "妈妈挂了电话后，你的手机再次响起\u2014\u2014屏幕上显示\u201C老爸\u201D。你颤抖着按下接听键……",
+                    rank: "10%"
+                },
+                "ending_happy": {
+                    emoji: "\uD83C\uDF89",
+                    name: "\uD83C\uDF89 皆大欢喜",
+                    desc: "你成功说服了妈妈，钱到手了还没有任何附加条件。但这种好事，一辈子可能只有一次。",
+                    rank: "80%"
+                }
+            };
 
-var endings = {
-  "ending_good": {
-    "emoji": "\uD83C\uDFC6", "name": "\uD83C\uDFC6 妈的好大儿/贴心棉袄",
-    "desc": "你属于那种\u201C妈我一切都好\u201D的顶级乖孩子。即使银行卡余额只剩两位数，你也会说\u201C够花\u201D。",
-    "rank": "92%"
-  },
-  "ending_vague": {
-    "emoji": "\uD83D\uDE05", "name": "\uD83D\uDE05 穷鬼的润",
-    "desc": "你嘴上说够，但眼神已经在要钱了。妈妈秒懂，第二天转账记录多了500块。",
-    "rank": "78%"
-  },
-  "ending_coward": {
-    "emoji": "\uD83D\uDE47", "name": "\uD83D\uDE47 话到嘴边又咽下",
-    "desc": "到嘴边的\u201C我想买\u201D又咽了回去。妈妈回了一个\u201C好吧\u201D，你知道自己错过了什么。",
-    "rank": "72%"
-  },
-  "ending_strong": {
-    "emoji": "\uD83D\uDCAA", "name": "\uD83D\uDCAA 硬撑之王",
-    "desc": "\u201C我能搞定\u201D\u2014\u2014你说得理直气壮，背后却是饭卡余额三位数的现实。妈妈回了一个\u201C好吧\u201D，她不信你。",
-    "rank": "68%"
-  },
-  "ending_earphone": {
-    "emoji": "\uD83C\uDFA7", "name": "\uD83C\uDFA7 耳机战士/护肤品守护者",
-    "desc": "要了两三百买耳机/护肤品，妈妈签了字\u201C行\u201D。但附加了一条：每天晚上视频通话一次，直到下个月。",
-    "rank": "65%"
-  },
-  "ending_keyboard": {
-    "emoji": "\u2328\uFE0F", "name": "\u2328\uFE0F 键盘败家子/衣柜永远缺一件",
-    "desc": "要了五百买键盘/一件大衣，妈妈的表情很复杂。钱转到了，但附言是\u201C下个月的生活费减两百\u201D。",
-    "rank": "50%"
-  },
-  "ending_no_money": {
-    "emoji": "\uD83D\uDE4F", "name": "\uD83D\uDE4F 嘴硬到底",
-    "desc": "钱到了嘴边却说\u201C不要了\u201D。妈妈回了一个\u201C嗯\u201D，然后再也没然后了。你突然觉得有点僵了。",
-    "rank": "45%"
-  },
-  "ending_stay_up": {
-    "emoji": "\uD83C\uDF19", "name": "\uD83C\uDF19 深夜蛋壳",
-    "desc": "宿舍乱七八糟，妈妈看得直摇头。你被训了半小时，最终要求\u201C明天一天不许玩游戏了\u201D。钱？不可能。",
-    "rank": "38%"
-  },
-  "ending_rebel": {
-    "emoji": "\uD83D\uDD25", "name": "\uD83D\uDD25 叛逆的代价",
-    "desc": "\u201C那又怎样，我自己的钱\u201D\u2014\u2014你听到电话那头沉默了三秒。第二天，爸爸的电话打来了。",
-    "rank": "20%"
-  },
-  "ending_debt": {
-    "emoji": "\uD83C\uDF1F", "name": "\uD83C\uDF1F 负债的秘密\uFF08隐藏结局\uFF09",
-    "desc": "\u201C我欠了室友一点钱\u201D\u2014\u2014妈妈的表情完全冻结了。你知道，这个月的生活费不会提前到账了。",
-    "rank": "25%"
-  }
-};
+            // ============ 内心OS映射 ============
+            var innerOSMap = {
+                'r2_a': "呼，还好没被发现我在熬夜……",
+                'r2_b': "呼，还好没被发现我在熬夜……",
+                'r2_c': "呼，还好没被发现我在熬夜……",
+                'r3_a': "糟糕，她怎么知道我昨晚点外卖了……",
+                'r3_b': "糟糕，她怎么知道我昨晚点外卖了……",
+                'r3_c': "糟糕，她怎么知道我昨晚点外卖了……",
+                'r4_a': "完了完了，她好像看出什么了",
+                'r4_b': "完了完了，她好像看出什么了",
+                'r4_c': "完了完了，她好像看出什么了",
+                'r5_deny': "她怎么一副早就料到的表情……",
+                'r5_half': "她怎么一副早就料到的表情……",
+                'r5_exposed': "她怎么一副早就料到的表情……",
+                'r6_transition': "等等，她怎么突然转到钱上了？",
+                'r7_negotiate': "她记性也太好了吧……这下不好糊弄了",
+                'r8_final': "终于到这一步了……"
+            };
 
-function selectGender(g) {
-  gender = g;
-  var btns = document.querySelectorAll(".gender-btn");
-  for (var i = 0; i < btns.length; i++) { btns[i].classList.remove("selected"); }
-  if (g === "male") { btns[0].classList.add("selected"); }
-  else { btns[1].classList.add("selected"); }
-  document.getElementById("startBtn").style.display = "block";
-}
+            // ============ 剧情节点定义 ============
+            var storyNodes = {};
 
-function startGame() {
-  heart = 100;
-  round = 1;
-  currentNode = "start";
-  chatContainer.innerHTML = "";
-  typingIndicator = document.getElementById("typingIndicator");
-  document.getElementById("startScreen").classList.remove("active");
-  document.getElementById("gameScreen").classList.add("active");
-  document.getElementById("endingScreen").classList.remove("active");
-  showNode(currentNode);
-}
+            // --- 第1轮 ---
+            storyNodes['r1'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "还没睡？",
+                choices: [
+                    { text: "正准备睡呢妈\uD83D\uDE0A", next: "r2_a" },
+                    { text: "刚忙完，准备睡了", next: "r2_b" },
+                    { text: "还没呢……", next: "r2_c" }
+                ]
+            };
 
-function showNode(nodeId) {
-  var node = story[nodeId];
-  if (!node) { return; }
-  currentNode = nodeId;
-  document.getElementById("roundDisplay").textContent = "第" + round + "幕";
-  document.getElementById("heartDisplay").textContent = "\u2764\uFE0F 孝心值: " + heart;
+            // --- 第2轮 ---
+            storyNodes['r2_a'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "哦哦那你快睡，明天早八别迟到",
+                choices: [
+                    { text: "知道了妈\uD83D\uDE0A", next: "r3_a" },
+                    { text: "明天第一节就是专业课……", next: "r3_b" },
+                    { text: "明天没课！爽了一个月了\uD83C\uDF89", next: "r3_c" }
+                ]
+            };
+            storyNodes['r2_b'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "喜得你像我，喜欢晚上干活儿",
+                choices: [
+                    { text: "那必须是遗传了妈的优秀基因", next: "r3_a" },
+                    { text: "也不是喜欢，是作业太多了", next: "r3_b" },
+                    { text: "晚上游戏体验更好呢\uD83D\uDE0F", next: "r3_c" }
+                ]
+            };
+            storyNodes['r2_c'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "没睡就没睡吧，你明天有课吗？",
+                choices: [
+                    { text: "有啊，早八的课\uD83D\uDE2D", next: "r3_a" },
+                    { text: "没课！爽了一个月了\uD83C\uDF89", next: "r3_b" },
+                    { text: "有课但不重要……", next: "r3_c" }
+                ]
+            };
 
-  var messageDiv = document.createElement("div");
-  messageDiv.className = "message mom";
-  var bubbleDiv = document.createElement("div");
-  bubbleDiv.className = "bubble";
-  bubbleDiv.innerHTML = "<b>" + node.speaker + "</b><br>" + node.text;
-  messageDiv.appendChild(bubbleDiv);
-  chatContainer.appendChild(messageDiv);
+            // --- 第3轮（gender分化） ---
+            function getR3Node(suffix) {
+                var nodeId = 'r3_' + suffix;
+                var node = {
+                    speaker: "\uD83D\uDC69 母后大人",
+                    choices_male: [],
+                    choices_female: []
+                };
 
-  scrollToBottom();
+                if (suffix === 'a') {
+                    node.text = "最近吃饭怎么样？别老吃外卖。";
+                    node.choices_male = [
+                        { text: "挺好的，食堂随便吃吃", next: "r4_a" },
+                        { text: "偶尔跟室友出去撸串", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
+                    ];
+                    node.choices_female = [
+                        { text: "挺好的，跟室友搭伙做饭", next: "r4_a" },
+                        { text: "偶尔喝杯奶茶就当一顿了", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
+                    ];
+                } else if (suffix === 'b') {
+                    node.text = "作业多就别熬太晚，饭要按时吃";
+                    node.choices_male = [
+                        { text: "吃了吃了，室友煮的面条", next: "r4_a" },
+                        { text: "点了外卖，又吃了一顿烧烤", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
+                    ];
+                    node.choices_female = [
+                        { text: "吃了吃了，室友煮了粥", next: "r4_a" },
+                        { text: "喝了杯奶茶就当一顿了", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
+                    ];
+                } else if (suffix === 'c') {
+                    node.text = "没课也别昼夜颠倒，吃饭了吗？";
+                    node.choices_male = [
+                        { text: "吃了吃了，食堂今天还不错", next: "r4_a" },
+                        { text: "跟室友出去搓了一顿", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
+                    ];
+                    node.choices_female = [
+                        { text: "吃了吃了，食堂今天还不错", next: "r4_a" },
+                        { text: "跟室友去喝了杯奶茶", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
+                    ];
+                }
+                return node;
+            }
 
-  if (node.choices && node.choices.length > 0) {
-    setTimeout(function() { showChoices(node.choices); }, 500);
-  }
-}
+            // 将r3节点注册到storyNodes
+            ['a', 'b', 'c'].forEach(function(s) {
+                storyNodes['r3_' + s] = getR3Node(s);
+            });
 
-function showChoices(choices) {
-  choicesContainer.innerHTML = "";
-  for (var i = 0; i < choices.length; i++) {
-    var btn = document.createElement("button");
-    btn.className = "choice-btn";
-    btn.textContent = choices[i].text;
-    btn.onclick = (function(choice) {
-      return function() { selectChoice(choice); };
-    })(choices[i]);
-    choicesContainer.appendChild(btn);
-  }
-}
+            // --- 第4轮 ---
+            storyNodes['r4_a'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "你是不是有什么事瞒着我？",
+                choices: [
+                    { text: "没有啊妈，能有什么事", next: "r5_deny" },
+                    { text: "嗯……有点小事", next: "r5_half" },
+                    { text: "您怎么知道的？", next: "r5_exposed" }
+                ]
+            };
+            storyNodes['r4_b'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "又出去潇洒？你最近花销很大吧？",
+                choices: [
+                    { text: "不是啊妈，我省着呢", next: "r5_deny" },
+                    { text: "嗯……有点大", next: "r5_half" },
+                    { text: "您怎么知道我吃什么了？", next: "r5_exposed" }
+                ]
+            };
+            storyNodes['r4_c'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "月底了就知道省了。你钱包里还有多少？",
+                choices: [
+                    { text: "多着呢妈，不用操心", next: "r5_deny" },
+                    { text: "剩余不多了……", next: "r5_half" },
+                    { text: "您怎么什么都知道了？", next: "r5_exposed" }
+                ]
+            };
 
-function selectChoice(choice) {
-  var effect = choice.effect || "";
-  if (effect.indexOf("heart+=") >= 0) {
-    heart += parseInt(effect.split("heart+=")[1]);
-  } else if (effect.indexOf("heart-=") >= 0) {
-    heart += parseInt(effect.split("heart-=")[1]);
-  }
+            // --- 第5轮 ---
+            storyNodes['r5_deny'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "真的没事？那我问你，你上次说那个实习/考研/考公，怎么样了？",
+                choices: [
+                    { text: "投了几家了，等消息呢", next: "r6_transition" },
+                    { text: "还没开始准备……最近有点忙", next: "r6_transition" },
+                    { text: "妈您别急，我心里有数", next: "r6_transition", heartChange: 5 }
+                ]
+            };
+            storyNodes['r5_half'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "什么事？你说。你上次说那个实习/考研/考公，进展如何？",
+                choices: [
+                    { text: "投了几家了，等消息呢", next: "r6_transition" },
+                    { text: "还没开始准备……最近有点忙", next: "r6_transition" },
+                    { text: "算了，不说了", next: "r6_transition" }
+                ]
+            };
+            storyNodes['r5_exposed'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "我刚看了你朋友圈，你昨天又跟同学出去吃饭了。你上次说那个实习/考研/考公，到底怎么样了？",
+                choices: [
+                    { text: "妈您还翻我朋友圈！！", next: "r6_transition" },
+                    { text: "对不起妈……我确实没准备好", next: "r6_transition" },
+                    { text: "那又怎样，我自己的事", next: "ending_rebel", heartChange: -50 }
+                ]
+            };
 
-  var messageDiv = document.createElement("div");
-  messageDiv.className = "message me";
-  var bubbleDiv = document.createElement("div");
-  bubbleDiv.className = "bubble";
-  bubbleDiv.textContent = choice.text;
-  messageDiv.appendChild(bubbleDiv);
-  chatContainer.appendChild(messageDiv);
+            // --- 第6轮过渡 ---
+            storyNodes['r6_transition'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "行吧，你自己心里有数就行。我也不想天天念叨你，免得你又嫌我烦。……不过说到这个，你最近手头还宽裕吗？",
+                choices: [
+                    { text: "宽裕宽裕，妈您放心", next: "ending_good", isEnding: true },
+                    { text: "还行吧……就是最近花销有点大", next: "r7_negotiate" },
+                    { text: "呃……其实我想跟您商量个事儿", next: "r7_negotiate" }
+                ]
+            };
 
-  choicesContainer.innerHTML = "";
-  round++;
-  document.getElementById("roundDisplay").textContent = "第" + round + "幕";
-  document.getElementById("heartDisplay").textContent = "\u2764\uFE0F 孝心值: " + heart;
+            // --- 第7轮斡旋 ---
+            storyNodes['r7_negotiate'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "花销大？我看你朋友圈昨天还跟同学去吃饭了。你上个月也说花销大，结果转完钱你买了个什么玩意儿来着？",
+                choices: [
+                    { text: "妈您记性也太好了吧……", next: "r8_final" },
+                    { text: "那次是意外！这次是真的有需要", next: "r8_final" },
+                    { text: "您到底给不给嘛\uD83D\uDE05", next: "r8_final" }
+                ]
+            };
 
-  scrollToBottom();
+            // --- 第8轮最终 ---
+            storyNodes['r8_final'] = {
+                speaker: "\uD83D\uDC69 母后大人",
+                text: "行吧，看你这可怜样。但我先说好\u2014\u2014",
+                choices_male: [
+                    { text: "谢谢妈！我一定省着花", next: "ending_earphone", isEnding: true },
+                    { text: "妈您说，我听着", next: "ending_keyboard", isEnding: true },
+                    { text: "算了，不要了，我自己想办法", next: "ending_coward", isEnding: true,
+                    heartChange: -10 }
+                ],
+                choices_female: [
+                    { text: "谢谢妈！我一定省着花", next: "ending_skincare", isEnding: true },
+                    { text: "妈您说，我听着", next: "ending_coat", isEnding: true },
+                    { text: "算了，不要了，我自己想办法", next: "ending_coward", isEnding: true,
+                    heartChange: -10 }
+                ]
+            };
 
-  if (story[choice.next]) {
-    showTyping(function() { showNode(choice.next); });
-  } else if (endings[choice.next]) {
-    showTyping(function() { showEnding(choice.next); });
-  }
-}
+            // ============ 获取节点的choices（根据gender） ============
+            function getChoices(node) {
+                if (node.choices) {
+                    return node.choices;
+                }
+                if (gender === 'male' && node.choices_male) {
+                    return node.choices_male;
+                }
+                if (gender === 'female' && node.choices_female) {
+                    return node.choices_female;
+                }
+                // fallback
+                if (node.choices_male) return node.choices_male;
+                if (node.choices_female) return node.choices_female;
+                return node.choices || [];
+            }
 
-function showTyping(callback) {
-  var typing = document.createElement("div");
-  typing.className = "typing-indicator";
-  typing.style.display = "flex";
-  typing.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
-  chatContainer.appendChild(typing);
-  scrollToBottom();
-  setTimeout(function() {
-    typing.remove();
-    callback();
-  }, 1500);
-}
+            // ============ 更新顶部栏 ============
+            function updateTopbar() {
+                heartDisplay.textContent = heart;
+                roundDisplay.textContent = round;
+                if (heart < 30) {
+                    heartDisplay.style.color = '#ff4444';
+                } else if (heart < 60) {
+                    heartDisplay.style.color = '#ff9966';
+                } else {
+                    heartDisplay.style.color = '#ff7b7b';
+                }
+            }
 
-function scrollToBottom() {
-  setTimeout(function() {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-  }, 100);
-}
+            // ============ 滚动到底部 ============
+            function scrollToBottom() {
+                setTimeout(function() {
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                }, 80);
+            }
 
-function showEnding(endingId) {
-  var ending = endings[endingId];
-  document.getElementById("gameScreen").classList.remove("active");
-  document.getElementById("endingScreen").classList.add("active");
-  document.getElementById("endingEmoji").textContent = ending.emoji;
-  document.getElementById("endingName").textContent = ending.name;
-  document.getElementById("endingDesc").textContent = ending.desc;
-  document.getElementById("endingRank").innerHTML = "击败了全国 <span>" + ending.rank + "</span> 的大学生";
-}
+            // ============ 添加消息气泡 ============
+            function addBubble(speaker, text, isPlayer) {
+                var row = document.createElement('div');
+                row.className = 'bubble-row ' + (isPlayer ? 'player' : 'mom');
 
-function restartGame() {
-  document.getElementById("endingScreen").classList.remove("active");
-  document.getElementById("startScreen").classList.add("active");
-  document.getElementById("startBtn").style.display = "none";
-  var btns = document.querySelectorAll(".gender-btn");
-  for (var i = 0; i < btns.length; i++) { btns[i].classList.remove("selected"); }
-}
-</script>
+                var bubble = document.createElement('div');
+                bubble.className = 'bubble ' + (isPlayer ? 'player' : 'mom');
+
+                if (!isPlayer) {
+                    var label = document.createElement('span');
+                    label.className = 'speaker-label';
+                    label.textContent = speaker;
+                    bubble.appendChild(label);
+                } else {
+                    var labelP = document.createElement('span');
+                    labelP.className = 'speaker-label';
+                    labelP.textContent = '我';
+                    bubble.appendChild(labelP);
+                }
+
+                var textSpan = document.createElement('span');
+                textSpan.textContent = text;
+                bubble.appendChild(textSpan);
+
+                row.appendChild(bubble);
+                chatArea.appendChild(row);
+                scrollToBottom();
+                return row;
+            }
+
+            // ============ 添加打字动画气泡 ============
+            function addTypingBubble() {
+                var row = document.createElement('div');
+                row.className = 'bubble-row mom';
+                row.id = 'typingBubbleRow';
+
+                var bubble = document.createElement('div');
+                bubble.className = 'bubble mom typing-bubble';
+
+                for (var i = 0; i < 3; i++) {
+                    var dot = document.createElement('span');
+                    dot.className = 'dot';
+                    bubble.appendChild(dot);
+                }
+
+                row.appendChild(bubble);
+                chatArea.appendChild(row);
+                scrollToBottom();
+                return row;
+            }
+
+            // ============ 移除打字动画气泡 ============
+            function removeTypingBubble() {
+                var row = document.getElementById('typingBubbleRow');
+                if (row) {
+                    row.remove();
+                }
+            }
+
+            // ============ 添加内心OS ============
+            function addInnerOS(osText) {
+                var osDiv = document.createElement('div');
+                osDiv.className = 'inner-os';
+                osDiv.textContent = osText;
+                chatArea.appendChild(osDiv);
+                scrollToBottom();
+            }
+
+            // ============ 渲染选项按钮 ============
+            function renderChoices(choices) {
+                var container = document.createElement('div');
+                container.className = 'choices-container';
+                container.id = 'currentChoices';
+
+                for (var i = 0; i < choices.length; i++) {
+                    var btn = document.createElement('button');
+                    btn.className = 'choice-btn';
+                    btn.textContent = choices[i].text;
+                    btn.setAttribute('data-index', i);
+                    btn.addEventListener('click', function() {
+                        if (isProcessing) return;
+                        var idx = parseInt(this.getAttribute('data-index'));
+                        handleChoiceClick(idx, choices);
+                    });
+                    container.appendChild(btn);
+                }
+
+                chatArea.appendChild(container);
+                scrollToBottom();
+                return container;
+            }
+
+            // ============ 移除选项按钮 ============
+            function removeChoices() {
+                var container = document.getElementById('currentChoices');
+                if (container) {
+                    // 禁用所有按钮
+                    var btns = container.querySelectorAll('.choice-btn');
+                    for (var i = 0; i < btns.length; i++) {
+                        btns[i].disabled = true;
+                    }
+                    // 延迟移除
+                    setTimeout(function() {
+                        if (container.parentNode) {
+                            container.remove();
+                        }
+                    }, 200);
+                }
+            }
+
+            // ============ 处理选项点击 ============
+            function handleChoiceClick(index, choices) {
+                if (isProcessing) return;
+                isProcessing = true;
+
+                var choice = choices[index];
+                var playerText = choice.text;
+
+                // 移除选项按钮
+                removeChoices();
+
+                // 显示玩家气泡
+                addBubble("\uD83D\uDC69 母后大人", playerText, true);
+
+                // 更新孝心值
+                if (typeof choice.heartChange !== 'undefined') {
+                    heart += choice.heartChange;
+                    if (heart < 0) heart = 0;
+                    if (heart > 200) heart = 200;
+                    updateTopbar();
+                }
+
+                var nextId = choice.next;
+
+                // 检查是否是结局
+                if (nextId && nextId.indexOf('ending_') === 0) {
+                    // 直接到结局
+                    setTimeout(function() {
+                        showEnding(nextId);
+                        isProcessing = false;
+                    }, 1500);
+                    return;
+                }
+
+                // 非结局：显示打字动画
+                setTimeout(function() {
+                    var typingRow = addTypingBubble();
+
+                    // 1.5秒后显示妈妈回复
+                    setTimeout(function() {
+                        removeTypingBubble();
+                        processNode(nextId);
+                        isProcessing = false;
+                    }, 1500);
+
+                }, 400);
+            }
+
+            // ============ 处理节点 ============
+            function processNode(nodeId) {
+                currentNodeId = nodeId;
+                round++;
+
+                // 检查r6_transition选项1的特殊处理（根据heart分流）
+                var actualNodeId = nodeId;
+
+                // 获取节点数据
+                var node = storyNodes[nodeId];
+                if (!node) {
+                    // 检查是否是结局
+                    if (nodeId && nodeId.indexOf('ending_') === 0) {
+                        showEnding(nodeId);
+                        return;
+                    }
+                    console.error('节点未找到: ' + nodeId);
+                    return;
+                }
+
+                // 显示妈妈气泡
+                addBubble(node.speaker, node.text, false);
+
+                // 显示内心OS
+                var osText = innerOSMap[nodeId];
+                if (osText) {
+                    setTimeout(function() {
+                        addInnerOS(osText);
+                    }, 300);
+                }
+
+                // 获取选项
+                var choices = getChoices(node);
+
+                // 对于r6_transition，根据heart调整结局
+                if (nodeId === 'r6_transition') {
+                    choices = adjustR6TransitionChoices(choices);
+                }
+                // 对于r8_final，根据heart调整结局
+                if (nodeId === 'r8_final') {
+                    choices = adjustR8FinalChoices(choices);
+                }
+
+                updateTopbar();
+
+                // 渲染选项
+                setTimeout(function() {
+                    renderChoices(choices);
+                }, 500);
+            }
+
+            // ============ 调整r6_transition的选项（根据heart分流） ============
+            function adjustR6TransitionChoices(choices) {
+                var newChoices = [];
+                for (var i = 0; i < choices.length; i++) {
+                    var c = choices[i];
+                    if (c.text === "宽裕宽裕，妈您放心" && c.isEnding) {
+                        var newC = { text: c.text, isEnding: true, heartChange: c.heartChange };
+                        if (heart >= 75) {
+                            // 高孝心：大概率到ending_good，小概率到ending_happy
+                            if (Math.random() < 0.12) {
+                                newC.next = "ending_happy";
+                            } else {
+                                newC.next = "ending_good";
+                            }
+                        } else {
+                            newC.next = "ending_strong";
+                        }
+                        newChoices.push(newC);
+                    } else {
+                        newChoices.push(c);
+                    }
+                }
+                return newChoices;
+            }
+
+            // ============ 调整r8_final的选项（根据heart分流） ============
+            function adjustR8FinalChoices(choices) {
+                var newChoices = [];
+                for (var i = 0; i < choices.length; i++) {
+                    var c = choices[i];
+                    if ((c.text === "算了，不要了，我自己想办法") && c.isEnding) {
+                        var newC = { text: c.text, isEnding: true, heartChange: c.heartChange };
+                        if (heart < 35 && Math.random() < 0.55) {
+                            newC.next = "ending_nomoney";
+                        } else if (heart < 20 && Math.random() < 0.3) {
+                            newC.next = "ending_debt";
+                        } else {
+                            newC.next = c.next; // ending_coward
+                        }
+                        // 极低概率触发隐藏结局
+                        if (Math.random() < 0.03) {
+                            newC.next = "ending_dad";
+                        }
+                        newChoices.push(newC);
+                    } else {
+                        newChoices.push(c);
+                    }
+                }
+                return newChoices;
+            }
+
+            // ============ 显示结局 ============
+            function showEnding(endingId) {
+                var ending = endings[endingId];
+                if (!ending) {
+                    ending = endings['ending_good']; // fallback
+                }
+
+                updateTopbar();
+
+                var html = '';
+                html += '<div class="ending-emoji">' + ending.emoji + '</div>';
+                html += '<div class="ending-name">' + ending.name + '</div>';
+                html += '<div class="ending-desc">' + ending.desc + '</div>';
+                html += '<div class="ending-rank">击败了全国 ' + ending.rank + ' 的大学生</div>';
+                html += '<button class="replay-btn" id="replayBtn">再来一次</button>';
+
+                endingCard.innerHTML = html;
+                endingOverlay.classList.remove('hidden');
+
+                // 绑定重玩按钮
+                setTimeout(function() {
+                    var replayBtn = document.getElementById('replayBtn');
+                    if (replayBtn) {
+                        replayBtn.addEventListener('click', function() {
+                            resetGame();
+                        });
+                    }
+                }, 100);
+
+                scrollToBottom();
+            }
+
+            // ============ 重置游戏 ============
+            function resetGame() {
+                heart = 100;
+                round = 1;
+                currentNodeId = 'r1';
+                isProcessing = false;
+                gender = null;
+                updateTopbar();
+
+                // 清空聊天区域
+                chatArea.innerHTML = '';
+
+                // 隐藏结局覆盖层
+                endingOverlay.classList.add('hidden');
+                endingCard.innerHTML = '';
+
+                // 显示开场覆盖层
+                introOverlay.classList.remove('hidden');
+
+                // 重置性别选择
+                btnMale.classList.remove('selected');
+                btnFemale.classList.remove('selected');
+                startBtn.classList.remove('visible');
+
+                // 滚动到顶部
+                chatArea.scrollTop = 0;
+            }
+
+            // ============ 开始游戏 ============
+            function startGame() {
+                if (!gender) return;
+
+                // 隐藏开场覆盖层
+                introOverlay.classList.add('hidden');
+
+                // 清空聊天区域
+                chatArea.innerHTML = '';
+
+                // 重置状态
+                heart = 100;
+                round = 1;
+                currentNodeId = 'r1';
+                isProcessing = false;
+                updateTopbar();
+
+                // 开始第1轮
+                processNode('r1');
+            }
+
+            // ============ 事件绑定 ============
+
+            // 性别选择按钮
+            btnMale.addEventListener('click', function() {
+                if (isProcessing && gender) return;
+                gender = 'male';
+                btnMale.classList.add('selected');
+                btnFemale.classList.remove('selected');
+                startBtn.classList.add('visible');
+            });
+            btnFemale.addEventListener('click', function() {
+                if (isProcessing && gender) return;
+                gender = 'female';
+                btnFemale.classList.add('selected');
+                btnMale.classList.remove('selected');
+                startBtn.classList.add('visible');
+            });
+
+            // 开始挑战按钮
+            startBtn.addEventListener('click', function() {
+                if (!gender) return;
+                if (startBtn.classList.contains('visible')) {
+                    startGame();
+                }
+            });
+
+            // ============ 初始化 ============
+            function init() {
+                updateTopbar();
+                chatArea.innerHTML = '';
+                introOverlay.classList.remove('hidden');
+                endingOverlay.classList.add('hidden');
+                btnMale.classList.remove('selected');
+                btnFemale.classList.remove('selected');
+                startBtn.classList.remove('visible');
+                gender = null;
+                heart = 100;
+                round = 1;
+                currentNodeId = 'r1';
+                isProcessing = false;
+            }
+
+            init();
+
+            // ============ 触摸设备优化 ============
+            document.addEventListener('touchmove', function(e) {
+                // 允许聊天区域滚动
+            }, { passive: true });
+
+            console.log('深夜母子对话 - 聊天叙事游戏 已就绪');
+            console.log('❤️ 孝心值系统 | 12个结局 | 男女分支 | 8轮对话');
+        })();
+    </script>
 </body>
 </html>
