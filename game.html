@@ -5,597 +5,484 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>晚上 11:47</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: #0a0a0f;
-    color: #e0e0e0;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a0f; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; min-height: 100vh; overflow-x: hidden; }
+::-webkit-scrollbar { display: none; }
+.page { display: none; min-height: 100vh; padding: 20px; }
+.page.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-  /* ===== 开场页 ===== */
-  .start-screen {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: 100vh; padding: 20px; text-align: center;
-    background: linear-gradient(180deg, #0a0a0f 0%, #12121a 50%, #1a1a2e 100%);
-  }
-  .start-screen .time { font-size: 72px; font-weight: 200; color: #fff; letter-spacing: 4px; margin-bottom: 10px; }
-  .start-screen .title { font-size: 20px; color: #aaa; margin-bottom: 8px; }
-  .start-screen .subtitle { font-size: 13px; color: #666; margin-bottom: 50px; }
-  .start-screen .gender-prompt { font-size: 15px; color: #888; margin-bottom: 20px; }
-  .gender-options { display: flex; gap: 20px; margin-bottom: 40px; }
-  .gender-btn {
-    width: 130px; padding: 24px 10px 20px; border-radius: 16px; border: 2px solid #333;
-    background: #1a1a2e; cursor: pointer; transition: all .3s; text-align: center;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-  }
-  .gender-btn:hover, .gender-btn.active { border-color: #ff6b6b; background: #1e1e3a; transform: scale(1.05); }
-  .gender-btn .emoji { font-size: 42px; }
-  .gender-btn .label { font-size: 16px; font-weight: 600; color: #ccc; }
-  .start-btn {
-    padding: 14px 50px; border-radius: 30px; border: none;
-    background: linear-gradient(135deg, #ff6b6b, #ff8e53); color: #fff;
-    font-size: 16px; cursor: pointer; transition: transform .2s, box-shadow .2s;
-    display: none;
-  }
-  .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,107,107,.4); }
-  .start-btn.show { display: inline-block; animation: fadeIn .5s; }
+/* 开场页 */
+#startScreen { background: #0a0a0f; }
+.time-display { font-size: 72px; font-weight: 300; color: #ffffff; letter-spacing: 4px; margin-bottom: 10px; }
+.subtitle { font-size: 18px; color: #888; margin-bottom: 8px; }
+.desc { font-size: 14px; color: #555; margin-bottom: 50px; }
+.gender-select { display: flex; gap: 30px; margin-bottom: 40px; }
+.gender-btn { width: 100px; height: 100px; border-radius: 50%; border: 2px solid #333; background: #1a1a2e; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #ccc; cursor: pointer; transition: all 0.3s; }
+.gender-btn:hover { border-color: #ffd700; color: #ffd700; transform: scale(1.05); }
+.gender-btn.selected { border-color: #ffd700; color: #ffd700; background: #2a2a3e; }
+.start-btn { padding: 14px 50px; font-size: 16px; background: linear-gradient(135deg, #ffd700, #ff8c00); color: #0a0a0f; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; transition: transform 0.2s; display: none; }
+.start-btn:hover { transform: scale(1.05); }
 
-  /* ===== 游戏页 ===== */
-  .game-screen { display: none; flex-direction: column; min-height: 100vh; }
+/* 游戏页 */
+#gameScreen { background: #0a0a0f; padding: 0; position: relative; }
+.top-bar { position: fixed; top: 0; left: 0; right: 0; background: #111118; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid #1a1a2e; }
+.top-bar-left { display: flex; align-items: center; gap: 8px; }
+.top-bar-avatar { width: 32px; height: 32px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.top-bar-name { font-size: 14px; color: #ccc; }
+.top-bar-status { font-size: 11px; color: #4caf50; }
+.top-bar-right { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+.heart-value { color: #ff6b6b; }
+.round-info { color: #888; }
+.chat-container { margin-top: 56px; padding: 16px; padding-bottom: 120px; overflow-y: auto; height: calc(100vh - 56px); }
+.message { margin-bottom: 16px; display: flex; flex-direction: column; }
+.message.mom { align-items: flex-start; }
+.message.me { align-items: flex-end; }
+.bubble { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.5; }
+.message.mom .bubble { background: #1a1a2e; color: #e0e0e0; border-bottom-left-radius: 4px; }
+.message.me .bubble { background: #2d5a27; color: #fff; border-bottom-right-radius: 4px; }
+.typing-indicator { display: none; margin-bottom: 16px; align-items: flex-start; }
+.typing-dots { background: #1a1a2e; padding: 12px 16px; border-radius: 18px; border-bottom-left-radius: 4px; }
+.typing-dots span { display: inline-block; width: 8px; height: 8px; background: #666; border-radius: 50%; margin: 0 2px; animation: typing 1.4s infinite; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
+.choices-container { position: fixed; bottom: 0; left: 0; right: 0; background: #111118; border-top: 1px solid #1a1a2e; padding: 12px 16px; padding-bottom: max(12px, env(safe-area-inset-bottom)); z-index: 100; }
+.choice-btn { display: block; width: 100%; padding: 14px 16px; margin-bottom: 8px; background: #1a1a2e; border: 1px solid #2a2a4e; border-radius: 12px; color: #e0e0e0; font-size: 15px; cursor: pointer; text-align: left; transition: all 0.2s; }
+.choice-btn:last-child { margin-bottom: 0; }
+.choice-btn:hover { border-color: #ffd700; background: #1a1a3e; }
+.choice-btn:active { transform: scale(0.98); }
 
-  /* 顶部栏 */
-  .top-bar {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 16px; background: #12121a; border-bottom: 1px solid #222;
-    position: sticky; top: 0; z-index: 100;
-  }
-  .top-left { display: flex; align-items: center; gap: 10px; }
-  .avatar {
-    width: 36px; height: 36px; border-radius: 50%; background: #333;
-    display: flex; align-items: center; justify-content: center; font-size: 18px;
-  }
-  .top-info .name { font-size: 14px; font-weight: 600; color: #fff; }
-  .top-info .status { font-size: 11px; color: #4ade80; }
-  .top-right { display: flex; align-items: center; gap: 12px; font-size: 12px; }
-  .heart-val { color: #ff6b6b; font-weight: 700; font-size: 14px; }
-  .round-val { color: #ffd93d; font-weight: 700; font-size: 14px; }
-
-  /* 聊天区 */
-  .chat-area {
-    flex:1; padding: 16px; overflow-y: auto; padding-bottom: 180px;
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .chat-area::-webkit-scrollbar { width: 0; }
-
-  /* 打字动画 */
-  .typing-indicator {
-    display: none; align-items: center; gap: 6px; padding: 8px 14px;
-    background: #1e1e2e; border-radius: 18px; width: fit-content; margin-bottom: 8px;
-  }
-  .typing-indicator span {
-    width: 6px; height: 6px; background: #666; border-radius: 50%;
-    animation: typing 1.4s infinite;
-  }
-  .typing-indicator span:nth-child(2) { animation-delay: .2s; }
-  .typing-indicator span:nth-child(3) { animation-delay: .4s; }
-
-  /* 气泡 */
-  .bubble-row { display: flex; align-items: flex-end; gap: 8px; margin-bottom: 6px; }
-  .bubble-row.mom { flex-direction: row; }
-  .bubble-row.me { flex-direction: row-reverse; }
-  .bubble-content { max-width: 75%; }
-  .bubble-label { font-size: 11px; color: #888; margin-bottom: 2px; padding: 0 4px; }
-  .bubble-row.me .bubble-label { text-align: right; }
-  .bubble {
-    padding: 10px 14px; border-radius: 18px; font-size: 14px; line-height: 1.6;
-    animation: fadeInUp .3s ease;
-  }
-  .bubble.mom { background: #1e1e2e; color: #e0e0e0; border-bottom-left-radius: 6px; }
-  .bubble.me { background: #2d4a3e; color: #d4edda; border-bottom-right-radius: 6px; }
-
-  /* 选项区 */
-  .choices-area {
-    display: none; flex-direction: column; gap: 8px; padding: 10px 16px;
-    animation: fadeInUp .4s ease;
-  }
-  .choice-btn {
-    padding: 14px 18px; border-radius: 14px; border: 1.5px solid #333;
-    background: #151520; color: #e0e0e0; font-size: 14px; cursor: pointer;
-    transition: all .25s; text-align: left; line-height: 1.5;
-  }
-  .choice-btn:hover, .choice-btn:active {
-    border-color: #ff6b6b; background: #1e1e30; transform: translateY(-1px);
-  }
-
-  /* 底部面板 */
-  .bottom-panel {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    display: flex; justify-content: space-around; align-items: center;
-    padding: 14px 10px; background: #0d0d18; border-top: 1px solid #222;
-    z-index: 100;
-  }
-  .panel-item { text-align: center; flex:1; }
-  .panel-item .panel-val { font-size: 18px; font-weight: 700; color: #ffd93d; }
-  .panel-item .panel-label { font-size: 10px; color: #666; margin-top: 2px; }
-
-  /* ===== 结局页 ===== */
-  .ending-screen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; text-align: center; }
-  .ending-card {
-    background: linear-gradient(135deg, #1a1a2e, #252540);
-    border: 1px solid #333; border-radius: 24px; padding: 40px 30px;
-    max-width: 380px; width: 100%; animation: fadeInUp .6s ease;
-  }
-  .ending-emoji { font-size: 60px; margin-bottom: 16px; }
-  .ending-name { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 12px; }
-  .ending-desc { font-size: 14px; color: #aaa; line-height: 1.8; margin-bottom: 20px; }
-  .ending-rank { font-size: 13px; color: #ffd93d; margin-bottom: 24px; }
-  .restart-btn {
-    padding: 12px 40px; border-radius: 30px; border: none;
-    background: linear-gradient(135deg, #ff6b6b, #ff8e53); color: #fff;
-    font-size: 15px; cursor: pointer; transition: transform .2s;
-  }
-  .restart-btn:hover { transform: scale(1.05); }
-
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes typing { 0%,60%,100% { opacity: .3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-6px); } }
+/* 结局页 */
+#endingScreen { background: #0a0a0f; }
+.ending-card { background: #111118; border: 1px solid #2a2a4e; border-radius: 20px; padding: 40px 30px; text-align: center; max-width: 360px; width: 90%; }
+.ending-emoji { font-size: 64px; margin-bottom: 16px; }
+.ending-name { font-size: 22px; font-weight: bold; color: #ffd700; margin-bottom: 12px; }
+.ending-desc { font-size: 14px; color: #999; line-height: 1.8; margin-bottom: 20px; }
+.ending-rank { font-size: 14px; color: #666; margin-bottom: 30px; }
+.ending-rank span { color: #ffd700; font-weight: bold; font-size: 18px; }
+.restart-btn { padding: 14px 50px; font-size: 16px; background: linear-gradient(135deg, #ffd700, #ff8c00); color: #0a0a0f; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; transition: transform 0.2s; }
+.restart-btn:hover { transform: scale(1.05); }
 </style>
 </head>
 <body>
 
-<!-- ===== 开场页 ===== -->
-<div class="start-screen" id="startScreen">
-  <div class="time">23:47</div>
-  <div class="title">你妈发来一条消息</div>
-  <div class="subtitle">每一个大学生都经历过的深夜拷问</div>
-  <div class="gender-prompt">选择你的身份</div>
-  <div class="gender-options">
-    <div class="gender-btn" id="maleBtn" onclick="selectGender('male', this)">
-      <div class="emoji">&#x2642;&#xFE0F;</div>
-      <div class="label">男</div>
-    </div>
-    <div class="gender-btn" id="femaleBtn" onclick="selectGender('female', this)">
-      <div class="emoji">&#x2640;&#xFE0F;</div>
-      <div class="label">女</div>
-    </div>
+<!-- 开场页 -->
+<div id="startScreen" class="page active">
+  <div class="time-display">23:47</div>
+  <div class="subtitle">你妈发来一条消息</div>
+  <div class="desc">每一个大学生都经历过的深夜拷问</div>
+  <div class="gender-select">
+    <div class="gender-btn" onclick="selectGender('male')">&#9794; 男</div>
+    <div class="gender-btn" onclick="selectGender('female')">&#9792; 女</div>
   </div>
-  <button class="start-btn" id="startBtn" onclick="startGame()">&#x1F4AC; 开始挑战</button>
+  <button class="start-btn" id="startBtn" onclick="startGame()">开始挑战</button>
 </div>
 
-<!-- ===== 游戏页 ===== -->
-<div class="game-screen" id="gameScreen">
+<!-- 游戏页 -->
+<div id="gameScreen" class="page">
   <div class="top-bar">
-    <div class="top-left">
-      <div class="avatar" id="momAvatar">&#x1F469;</div>
-      <div class="top-info">
-        <div class="name" id="momName">母后大人</div>
-        <div class="status">&#x1F534; 在线</div>
+    <div class="top-bar-left">
+      <div class="top-bar-avatar">&#128104;</div>
+      <div>
+        <div class="top-bar-name">母后大人</div>
+        <div class="top-bar-status">&#9679; 在线</div>
       </div>
     </div>
-    <div class="top-right">
-      <span>&#x2764;&#xFE0F; <span class="heart-val" id="heartVal">100</span></span>
-      <span>&#x1F4D6; 第<span class="round-val" id="roundVal">1</span>幕</span>
+    <div class="top-bar-right">
+      <span class="heart-value" id="heartDisplay">&#10084;&#65039; 孝心值: 100</span>
+      <span class="round-info" id="roundDisplay">第1幕</span>
     </div>
   </div>
-  <div class="chat-area" id="chatArea">
-    <div class="typing-indicator" id="typing">
-      <span></span><span></span><span></span>
+  <div class="chat-container" id="chatContainer">
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
     </div>
   </div>
-  <div class="choices-area" id="choicesArea"></div>
-  <div class="bottom-panel">
-    <div class="panel-item"><div class="panel-val" id="panelChallenges">286,149</div><div class="panel-label">今日挑战</div></div>
-    <div class="panel-item"><div class="panel-val">1.7%</div><div class="panel-label">通关率</div></div>
-    <div class="panel-item"><div class="panel-val">第5关</div><div class="panel-label">平均翻车</div></div>
-  </div>
+  <div class="choices-container" id="choicesContainer"></div>
 </div>
 
-<!-- ===== 结局页 ===== -->
-<div class="ending-screen" id="endingScreen">
+<!-- 结局页 -->
+<div id="endingScreen" class="page">
   <div class="ending-card">
     <div class="ending-emoji" id="endingEmoji"></div>
     <div class="ending-name" id="endingName"></div>
     <div class="ending-desc" id="endingDesc"></div>
     <div class="ending-rank" id="endingRank"></div>
-    <button class="restart-btn" onclick="location.reload()">&#x1F504; 再来一次</button>
+    <button class="restart-btn" onclick="restartGame()">再来一次</button>
   </div>
 </div>
 
 <script>
-// ===== 全局状态 =====
-var gender = 'male';
+var gender = "male";
 var heart = 100;
 var round = 1;
-var currentNode = 'start';
+var currentNode = "";
+var chatContainer = document.getElementById("chatContainer");
+var choicesContainer = document.getElementById("choicesContainer");
+var typingIndicator = document.getElementById("typingIndicator");
 
-// ===== 剧情树 =====
 var story = {
-  // ==================== 第1轮 ====================
-  start: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u8FD8\u6CA1\u7761\uFF1F",
-    choices: [
-      { text: "\u6B63\u51C6\u5907\u7761\u5462\u5988\u{1F60A}", next: "r2_a" },
-      { text: "\u521A\u5FD9\u5B8C\uFF0C\u51C6\u5907\u7761\u4E86", next: "r2_b" },
-      { text: "\u8FD8\u6CA1\u5462\u2026\u2026", next: "r2_c" }
+  "start": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "还没睡？",
+    "choices": [
+      {"text": "正准备睡呢妈\uD83D\uDE0A", "next": "r2_a"},
+      {"text": "刚忙完，准备睡了", "next": "r2_b"},
+      {"text": "还没呢\u2026\u2026", "next": "r2_c"}
     ]
   },
-
-  // ==================== 第2轮 ====================
-  r2_a: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u54E6\u54E6\u90A3\u4F60\u5FEB\u7761\uFF0C\u660E\u5929\u65E9\u516B\u522B\u8FDF\u5230",
-    choices: [
-      { text: "\u77E5\u9053\u4E86\u5988\u{1F60A}", next: "r3_a" },
-      { text: "\u660E\u5929\u7B2C\u4E00\u8282\u5C31\u662F\u4E13\u4E1A\u8BFE\u2026\u2026", next: "r3_b" },
-      { text: "\u660E\u5929\u6CA1\u8BFE\uFF01\u6000\u4E86\u4E00\u4E2A\u6708\u4E86", next: "r3_c" }
+  "r2_a": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "哦哦那你快睡，明天早八别迟到",
+    "choices": [
+      {"text": "知道了妈\uD83D\uDE0A", "next": "r3_a"},
+      {"text": "明天第一节就是专业课\u2026\u2026", "next": "r3_b"},
+      {"text": "明天没课！爽了一个月了\uD83C\uDF89", "next": "r3_c"}
     ]
   },
-  r2_b: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u559C\u5F97\u4F60\u662F\u50CF\u6211\uFF0C\u559C\u6B22\u665A\u4E0A\u5E72\u6D3B\u513F",
-    choices: [
-      { text: "\u90A3\u5FC5\u987B\u662F\u9057\u4F20\u4E86\u5988\u7684\u4F18\u79C0\u57FA\u56E0", next: "r3_a" },
-      { text: "\u4E5F\u4E0D\u662F\u559C\u6B22\uFF0C\u662F\u4F5C\u4E1A\u592A\u591A\u4E86", next: "r3_b" },
-      { text: "\u665A\u4E0A\u6E38\u620F\u4F53\u9A8C\u66F4\u597D\u5462\u{1F60F}", next: "r3_c" }
+  "r2_b": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "行，你喜欢晚上干活儿，随我",
+    "choices": [
+      {"text": "那必须是遗传了妈的优秀基因", "next": "r3_a"},
+      {"text": "也不是喜欢，是作业太多了", "next": "r3_b"},
+      {"text": "晚上游戏体验更好呢\uD83D\uDE0F", "next": "r3_c"}
     ]
   },
-  r2_c: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u6CA1\u7761\u5C31\u6CA1\u7761\u5427\uFF0C\u4F60\u660E\u5929\u6709\u8BFE\u5417\uFF1F",
-    choices: [
-      { text: "\u6709\u554A\uFF0C\u65E9\u516B\u7684\u8BFE\u{1F62D}", next: "r3_a" },
-      { text: "\u6CA1\u8BFE\uFF01\u6000\u4E86\u4E00\u4E2A\u6708\u4E86\u{1F389}", next: "r3_b" },
-      { text: "\u6709\u8BFE\u4F46\u4E0D\u91CD\u8981\u2026\u2026", next: "r3_c" }
+  "r2_c": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "没睡就没睡吧，你明天有课吗？",
+    "choices": [
+      {"text": "有啊，早八的课\uD83D\uDE2D", "next": "r3_a"},
+      {"text": "没课！爽了一个月了\uD83C\uDF89", "next": "r3_b"},
+      {"text": "有课但不重要\u2026\u2026", "next": "r3_c"}
     ]
   },
-
-  // ==================== 第3轮 ====================
-  r3_a: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u6700\u8FD1\u5403\u996D\u600E\u4E48\u6837\uFF1F\u522B\u8001\u5403\u6CE8\u518C\u98DF\u54C1\u3002",
-    choices: [
-      { text: "\u633A\u597D\u7684\uFF0C\u98DF\u5802\u968F\u4FBF\u5403\u5403", next: "r4_a" },
-      { text: "\u5076\u5C14\u8DDF\u5BA4\u53CB\u51FA\u53BB\u6478\u4E00\u987F", next: "r4_b" },
-      { text: "\u51D1\u5408\u8FC7\u5427\u2026\u2026\u6708\u5E95\u4E86\u561B", next: "r4_c" }
+  "r3_a": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "那你吃饭了没？别老吃注册食品",
+    "choices": [
+      {"text": "挺好的，食堂随便吃吃", "next": "r4_a"},
+      {"text": "偶尔跟室友出去搓一顿", "next": "r4_b"},
+      {"text": "凑合过吧\u2026\u2026月底了嘛", "next": "r4_c", "effect": "heart-=5"}
     ]
   },
-  r3_b: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u4F5C\u4E1A\u591A\u5C31\u522B\u5F97\u665A\u4E86\uFF0C\u996D\u8981\u6309\u65F6\u5403",
-    choices: [
-      { text: "\u5403\u4E86\u5403\u4E86\uFF0C\u5BA4\u53CB\u716E\u7684\u9762\u6761", next: "r4_a" },
-      { text: "\u559D\u4E86\u676F\u5976\u8336\u5C31\u5F53\u4E00\u987F\u4E86", next: "r4_b" },
-      { text: "\u51D1\u5408\u8FC7\u5427\u2026\u2026\u6708\u5E95\u4E86\u561B", next: "r4_c" }
+  "r3_b": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "作业多就别熬太晚，饭要按时吃",
+    "choices": [
+      {"text": "吃了吃了，室友煮的面条", "next": "r4_a"},
+      {"text": "喝了杯奶茶就当一顿了", "next": "r4_b"},
+      {"text": "凑合过吧\u2026\u2026月底了嘛", "next": "r4_c", "effect": "heart-=5"}
     ]
   },
-  r3_c: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u6CA1\u8BFE\u4E5F\u522B\u663C\u591C\u5012\u7F6E\uFF0C\u5403\u996D\u4E86\u5417\uFF1F",
-    choices: [
-      { text: "\u5403\u4E86\u5403\u4E86\uFF0C\u98DF\u5802\u4ECA\u5929\u8FD8\u4E0D\u9519", next: "r4_a" },
-      { text: "\u70B9\u4E86\u5916\u5356\uFF0C\u53C8\u5403\u4E86\u4E00\u987F\u6CE8\u518C\u98DF\u54C1", next: "r4_b" },
-      { text: "\u51D1\u5408\u8FC7\u5427\u2026\u2026\u6708\u5E95\u4E86\u561B", next: "r4_c" }
+  "r3_c": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "没课也别昼夜颠倒，吃饭了吗？",
+    "choices": [
+      {"text": "吃了吃了，食堂今天还不错", "next": "r4_a"},
+      {"text": "点了外卖，又吃了一顿注册食品", "next": "r4_b"},
+      {"text": "凑合过吧\u2026\u2026月底了嘛", "next": "r4_c", "effect": "heart-=5"}
     ]
   },
-
-  // ==================== 第4轮：妈妈开始起疑 ====================
-  r4_a: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u4F60\u6700\u8FD1\u662F\u4E0D\u662F\u6709\u4EC0\u4E48\u4E8B\u7792\u7740\u6211\uFF1F",
-    choices: [
-      { text: "\u6CA1\u6709\u554A\u5988\uFF0C\u80FD\u6709\u4EC0\u4E48\u4E8B", next: "r5_deny" },
-      { text: "\u55EF\u2026\u2026\u6709\u70B9\u5C0F\u4E8B", next: "r5_half" },
-      { text: "\u60A8\u600E\u4E48\u77E5\u9053\u7684\uFF1F", next: "r5_exposed" }
+  "r4_a": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "你最近是不是有什么事瞒着我？",
+    "choices": [
+      {"text": "没有啊妈，能有什么事", "next": "r5_deny"},
+      {"text": "嗯\u2026\u2026有点小事", "next": "r5_half"},
+      {"text": "您怎么知道的？", "next": "r5_exposed"}
     ]
   },
-  r4_b: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u53C8\u5403\u6CE8\u518C\u98DF\u54C1\uFF1F\u4F60\u6700\u8FD1\u82B1\u9500\u5F88\u5927\u5427\uFF1F",
-    choices: [
-      { text: "\u4E0D\u662F\u554A\u5988\uFF0C\u6211\u7701\u7740\u5462", next: "r5_deny" },
-      { text: "\u55EF\u2026\u2026\u6709\u70B9\u5927", next: "r5_half" },
-      { text: "\u60A8\u600E\u4E48\u77E5\u9053\u6211\u5403\u4EC0\u4E48\u4E86\uFF1F", next: "r5_exposed" }
+  "r4_b": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "又吃注册食品？你最近花销很大吧？",
+    "choices": [
+      {"text": "不是啊妈，我省着呢", "next": "r5_deny"},
+      {"text": "嗯\u2026\u2026有点大", "next": "r5_half"},
+      {"text": "您怎么知道我吃什么了？", "next": "r5_exposed"}
     ]
   },
-  r4_c: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u6708\u5E95\u4E86\u5C31\u77E5\u9053\u7701\u4E86\u3002\u4F60\u94B1\u5305\u91CC\u8FD8\u6709\u591A\u5C11\uFF1F",
-    choices: [
-      { text: "\u591A\u7740\u5462\u5988\uFF0C\u4E0D\u7528\u64CD\u5FC3", next: "r5_deny" },
-      { text: "\u80DC\u5269\u4E0D\u591A\u4E86\u2026\u2026", next: "r5_half" },
-      { text: "\u60A8\u600E\u4E48\u4EC0\u4E48\u90FD\u77E5\u9053\uFF1F", next: "r5_exposed" }
+  "r4_c": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "月底了就知道省了。你钱包里还有多少？",
+    "choices": [
+      {"text": "多着呢妈，不用操心", "next": "r5_deny"},
+      {"text": "剩\u2026\u2026剩不多了", "next": "r5_half"},
+      {"text": "您怎么什么都知道了？", "next": "r5_exposed"}
     ]
   },
-
-  // ==================== 第5轮：斡旋博弈 ====================
-  r5_deny: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u771F\u7684\u6CA1\u4E8B\uFF1F\u90A3\u6211\u95EE\u4F60\uFF0C\u94B1\u8FD8\u591F\u82B1\u5417\uFF1F",
-    choices: [
-      { text: "\u591F\u7684\u591F\u7684\uFF0C\u5988\u60A8\u653E\u5FC3", next: "r6_safe" },
-      { text: "\u8FD8\u884C\u5427\u2026\u2026\u5C31\u662F\u6700\u8FD1\u82B1\u9500\u6709\u70B9\u5927", next: "r6_hint" },
-      { text: "\u5988\u6211\u60F3\u8DDF\u60A8\u5546\u91CF\u4E2A\u4E8B\u513F", next: "r6_ask" }
+  "r5_deny": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "真的没事？那我问你，钱还够花吗？",
+    "choices": [
+      {"text": "够的够的，妈您放心", "next": "r6_safe", "effect": "heart+=5"},
+      {"text": "还行吧\u2026\u2026就是最近花销有点大", "next": "r6_hint"},
+      {"text": "妈我想跟您商量个事儿", "next": "r6_ask"}
     ]
   },
-  r5_half: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u4EC0\u4E48\u4E8B\uFF1F\u4F60\u8BF4\u3002\u94B1\u4E0D\u591F\u4E86\uFF1F",
-    choices: [
-      { text: "\u4E5F\u4E0D\u662F\u4E0D\u591F\u2026\u2026\u5C31\u662F\u6709\u70B9\u7D27\u5F20", next: "r6_hint" },
-      { text: "\u5176\u5B9E\u6211\u60F3\u4E70\u4E2A\u4E1C\u897F", next: "r6_ask" },
-      { text: "\u7B97\u4E86\uFF0C\u4E0D\u8BF4\u4E86", next: "r6_giveup" }
+  "r5_half": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "什么事？你说。钱不够了？",
+    "choices": [
+      {"text": "也不是不够\u2026\u2026就是有点紧张", "next": "r6_hint"},
+      {"text": "其实我想买个东西", "next": "r6_ask"},
+      {"text": "算了，不说了", "next": "r6_giveup"}
     ]
   },
-  r5_exposed: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u6211\u521A\u770B\u4E86\u4F60\u670B\u53CB\u5708\uFF0C\u4F60\u4E0A\u5468\u8DDF\u540C\u5B66\u53BB\u5403\u706B\u9505\u4E86\u3002",
-    choices: [
-      { text: "\u5988\u60A8\u8FD8\u7FFB\u6211\u670B\u53CB\u5708\uFF01\uFF01", next: "r6_deflect" },
-      { text: "\u5BF9\u4E0D\u8D77\u5988\u2026\u2026\u6211\u786E\u5B9E\u82B1\u591A\u4E86", next: "r6_hint" },
-      { text: "\u90A3\u53C8\u600E\u6837\uFF0C\u6211\u81EA\u5DF1\u7684\u94B1", next: "ending_rebel" }
+  "r5_exposed": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "我刚看了你朋友圈，你上周跟同学去吃火锅了。跟我说食堂吃腻了？",
+    "choices": [
+      {"text": "妈您还翻我朋友圈！！", "next": "r6_deflect"},
+      {"text": "对不起妈\u2026\u2026我确实花多了", "next": "r6_hint"},
+      {"text": "那又怎样，我自己的钱", "next": "ending_rebel", "effect": "heart-=50"}
     ]
   },
-
-  // ==================== 第6轮：最终摊牌 ====================
-  r6_safe: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u591F\u5C31\u597D\uFF0C\u4E0D\u591F\u8DDF\u5988\u8BF4\u3002\u4F60\u5148\u7761\u5427\uFF0C\u660E\u5929\u518D\u804A\u3002",
-    choices: [
-      { text: "\u597D\u7684\u5988\uFF0C\u665A\u5B89\u{1F618}", next: "ending_good" }
+  "r6_safe": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "够就好，不够跟妈说。你先睡吧，明天再聊。",
+    "choices": [
+      {"text": "好的妈，晚安\uD83D\uDC98", "next": "ending_good"}
     ]
   },
-  r6_hint: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u82B1\u9500\u5927\u5728\u54EA\u4E86\uFF1F\u8BF4\u6765\u542C\u542C\u3002",
-    choices: [
-      { text: "\u5C31\u2026\u2026\u5403\u996D\u4EA4\u901A\u4EC0\u4E48\u7684", next: "ending_vague" },
-      { text: "\u5176\u5B9E\u6211\u770B\u4E2A\u4E1C\u897F\uFF0C\u6298\u6263\u5462", next: "r7_money" },
-      { text: "\u6CA1\u4EC0\u4E48\uFF0C\u5C31\u968F\u53E3\u4E00\u8BF4", next: "ending_coward" }
+  "r6_hint": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "花销大在哪了？说来听听。",
+    "choices": [
+      {"text": "就\u2026\u2026吃饭交通什么的", "next": "ending_vague"},
+      {"text": "其实我看上个东西，打折呢", "next": "r7_money"},
+      {"text": "没什么，就随口一说", "next": "ending_coward"}
     ]
   },
-  r6_ask: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u4EC0\u4E48\u4E8B\uFF1F\u4F60\u8BF4\u3002\u8981\u94B1\uFF1F",
-    choices: [
-      { text: "\u4E0D\u662F\u8981\u94B1\u2026\u2026\u5C31\u662F\u60F3\u4E70\u4E2A\u8033\u673A/\u62A4\u80A4\u54C1", next: "r7_money" },
-      { text: "\u8981\u4E0D\u7136\u6211\u89C9\u5F97\u751F\u6D3B\u8D39\u6709\u70B9\u7D27", next: "r7_money" },
-      { text: "\u7B97\u4E86\u4E0D\u8BF4\u4E86\uFF0C\u60A8\u65E9\u70B9\u7761\u5427", next: "ending_coward" }
+  "r6_ask": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "什么事？你说。要钱？",
+    "choices": [
+      {"text": "不是要钱\u2026\u2026就是想买个耳机/护肤品", "next": "r7_money"},
+      {"text": "要不然我觉得生活费有点紧", "next": "r7_money"},
+      {"text": "算了不说了，您早点睡吧", "next": "ending_coward"}
     ]
   },
-  r6_giveup: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u8BF4\u53D8\u5C31\u53D8\u4E86\uFF0C\u4F60\u8981\u662F\u6CA1\u94B1\u4E86\u8DDF\u6211\u8BF4\u3002",
-    choices: [
-      { text: "\u771F\u7684\u4E0D\u7528\u5988\uFF0C\u6211\u80FD\u641E\u5B9A", next: "ending_strong" }
+  "r6_giveup": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "说变就变了，你要是没钱了跟我说。",
+    "choices": [
+      {"text": "真的不用妈，我能搞定", "next": "ending_strong"}
     ]
   },
-  r6_deflect: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u4F60\u90FD\u5FEB\u6BD4\u6211\u6574\u5F97\u660E\u767D\u4E86\u3002\u8BF4\u5427\uFF0C\u8981\u591A\u5C11\uFF1F",
-    choices: [
-      { text: "\u4E0D\u591A\uFF0C\u5C31\u4E24\u4E09\u767E", next: "r7_video" },
-      { text: "\u4E94\u767E\u2026\u2026", next: "r7_video" },
-      { text: "\u5176\u5B9E\u6211\u6B20\u4E86\u5BA4\u53CB\u4E00\u70B9\u94B1", next: "ending_debt" }
+  "r6_deflect": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "你都快比我校长得明白了。说吧，要多少？",
+    "choices": [
+      {"text": "不多，就两三百", "next": "r7_video"},
+      {"text": "五百\u2026\u2026", "next": "r7_video"},
+      {"text": "其实我欠了室友一点钱", "next": "ending_debt"}
     ]
   },
-
-  // ==================== 第7轮：视频通话 / 条件 ====================
-  r7_money: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u884C\uFF0C\u660E\u5929\u7ED9\u4F60\u8F6C\u3002\u4F46\u662F\u2014\u2014\u73B0\u5728\u5F00\u4E2A\u89C6\u9891\uFF0C\u6211\u770B\u770B\u4F60\u5BBF\u820D\u6536\u62FE\u5F97\u600E\u4E48\u6837\u3002",
-    choices: [
-      { text: "\u5988\u6211\u5934\u53D1\u4E71\u7CDF\u7CDF\u7684\u2026\u2026", next: "r8_video" },
-      { text: "\u884C\u5427\u2014\u2014", next: "r8_video" },
-      { text: "\u4E0D\u7528\u4E86\u5988\uFF0C\u6211\u4E0D\u8981\u4E86", next: "ending_no_money" }
+  "r7_money": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "行，明天给你转。但是\u2014\u2014现在开个视频，我看看你宿舍收拾得怎么样。",
+    "choices": [
+      {"text": "妈我头发乱糟糟的\u2026\u2026", "next": "r8_video"},
+      {"text": "行吧\u2014\u2014", "next": "r8_video"},
+      {"text": "不用了妈，我不要了", "next": "ending_no_money"}
     ]
   },
-  r7_video: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u660E\u5929\u7ED9\u4F60\u8F6C\u3002\u73B0\u5728\u5F00\u4E2A\u89C6\u9891\uFF0C\u6211\u770B\u770B\u4F60\u5BBF\u820D\u600E\u6837\u3002",
-    choices: [
-      { text: "\u5988\u6211\u5934\u53D1\u4E71\u7CDF\u7CDF\u7684\u2026\u2026", next: "r8_video" },
-      { text: "\u884C\u5427\u2014\u2014", next: "r8_video" },
-      { text: "\u4E0D\u7528\u4E86\u5988\uFF0C\u6211\u4E0D\u8981\u4E86", next: "ending_no_money" }
+  "r7_video": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "明天给你转。现在开个视频，我看看你宿舍怎样。",
+    "choices": [
+      {"text": "妈我头发乱糟糟的\u2026\u2026", "next": "r8_video"},
+      {"text": "行吧\u2014\u2014", "next": "r8_video"},
+      {"text": "不用了妈，我不要了", "next": "ending_no_money"}
     ]
   },
-
-  // ==================== 第8轮：视频通话结果 ====================
-  r8_video: {
-    speaker: "\u{1F469} \u6BCD\u540E\u5927\u4EBA",
-    text: "\u5BBF\u820D\u8FD9\u4E48\u4E71\uFF1F\u5730\u4E0A\u90A3\u4E48\u591A\u4E1C\u897F\uFF0C\u5E8A\u4E0A\u90A3\u662F\u4EC0\u4E48\uFF1F\u4F60\u4E70\u4E86\u4EC0\u4E48\uFF1F",
-    choices: [
-      { text: "\u5C31\u2026\u2026\u5C31\u662F\u4E00\u4E2A\u8033\u673A/\u62A4\u80A4\u54C1\uFF0C\u6BCF\u5929\u7528\u5F97\u7740", next: "ending_earphone" },
-      { text: "\u662F\u89C9\u5F97\u751F\u6D3B\u8D28\u91CF\u63D0\u9AD8\u4E86\u4E9B\u2026\u2026", next: "ending_keyboard" },
-      { text: "\u5988\u60A8\u8FD8\u662F\u5148\u7761\u5427\uFF0C\u5929\u5FEB\u4EAE\u4E86", next: "ending_stay_up" }
+  "r8_video": {
+    "speaker": "\uD83D\uDC69 母后大人",
+    "text": "宿舍这么乱？地上那么多东西，床上那是什么？你买了什么？",
+    "choices": [
+      {"text": "就\u2026\u2026就是一个耳机/护肤品，每天用得着", "next": "ending_earphone"},
+      {"text": "是觉得生活质量提高了些\u2026\u2026", "next": "ending_keyboard"},
+      {"text": "妈您还是先睡吧，天快亮了", "next": "ending_stay_up"}
     ]
   }
 };
 
-// ===== 结局定义 =====
 var endings = {
-  ending_good: {
-    emoji: "\u{1F3C6}", name: "\u{1F451} \u5988\u7684\u597D\u5927\u513F/\u8D34\u5FC3\u68C9\u8896",
-    desc: "\u4F60\u5C5E\u4E8E\u90A3\u79CD\u201C\u5988\u6211\u4E00\u5207\u90FD\u597D\u201D\u7684\u9876\u7EA7\u4E56\u5B69\u5B50\u3002\u5373\u4F7F\u94F6\u884C\u5361\u4F59\u989D\u53EA\u5269\u4E24\u4F4D\u6570\uFF0C\u4F60\u4E5F\u4F1A\u8BF4\u201C\u591F\u82B1\u201D\u3002",
-    rank: "92%"
+  "ending_good": {
+    "emoji": "\uD83C\uDFC6", "name": "\uD83C\uDFC6 妈的好大儿/贴心棉袄",
+    "desc": "你属于那种\u201C妈我一切都好\u201D的顶级乖孩子。即使银行卡余额只剩两位数，你也会说\u201C够花\u201D。",
+    "rank": "92%"
   },
-  ending_vague: {
-    emoji: "\u{1F605}", name: "\u{1F605} \u7A77\u9B3C\u7684\u6DA6",
-    desc: "\u4F60\u5634\u4E0A\u8BF4\u591F\uFF0C\u4F46\u773C\u795E\u5DF2\u7ECF\u5728\u8981\u94B1\u4E86\u3002\u5988\u5988\u79D2\u61C2\uFF0C\u7B2C\u4E8C\u5929\u8F6C\u8D26\u8BB0\u5F55\u591A\u4E86500\u5757\u3002",
-    rank: "78%"
+  "ending_vague": {
+    "emoji": "\uD83D\uDE05", "name": "\uD83D\uDE05 穷鬼的润",
+    "desc": "你嘴上说够，但眼神已经在要钱了。妈妈秒懂，第二天转账记录多了500块。",
+    "rank": "78%"
   },
-  ending_coward: {
-    emoji: "\u{1F625}", name: "\u{1F625} \u8BDD\u5230\u5634\u8FB9\u53C8\u541E\u4E0B",
-    desc: "\u5230\u5634\u8FB9\u7684\u201C\u6211\u60F3\u4E70\u201D\u53C8\u541E\u4E86\u56DE\u53BB\u3002\u5988\u5988\u4EC5\u53D1\u6765\u4E00\u4E2A\u201C\u597D\u5427\u201D\uFF0C\u4F60\u77E5\u9053\u81EA\u5DF1\u9519\u5931\u4E86\u4EC0\u4E48\u3002",
-    rank: "72%"
+  "ending_coward": {
+    "emoji": "\uD83D\uDE47", "name": "\uD83D\uDE47 话到嘴边又咽下",
+    "desc": "到嘴边的\u201C我想买\u201D又咽了回去。妈妈回了一个\u201C好吧\u201D，你知道自己错过了什么。",
+    "rank": "72%"
   },
-  ending_strong: {
-    emoji: "\u{1F4AA}", name: "\u{1F4AA} \u786C\u6491\u4E4B\u738B",
-    desc: "\u201C\u6211\u80FD\u641E\u5B9A\u201D\u2014\u2014\u4F60\u8BF4\u5F97\u53CD\u5149\u5F3A\u70C8\uFF0C\u80CC\u540E\u5374\u662F\u996D\u5361\u4F59\u989D\u4E09\u4F4D\u6570\u7684\u73B0\u5B9E\u3002\u5988\u5988\u53D1\u6765\u4E00\u4E2A\u201C\u597D\u5427\u201D\uFF0C\u4F60\u77E5\u9053\u5979\u4E0D\u4FE1\u4F60\u3002",
-    rank: "68%"
+  "ending_strong": {
+    "emoji": "\uD83D\uDCAA", "name": "\uD83D\uDCAA 硬撑之王",
+    "desc": "\u201C我能搞定\u201D\u2014\u2014你说得理直气壮，背后却是饭卡余额三位数的现实。妈妈回了一个\u201C好吧\u201D，她不信你。",
+    "rank": "68%"
   },
-  ending_earphone: {
-    emoji: "\u{1F3A7}", name: "\u{1F3A7} \u8033\u673A\u6218\u58EB/\u62A4\u80A4\u54C1\u5B88\u62A4\u8005",
-    desc: "\u8981\u4E86\u4E24\u4E09\u767E\u4E70\u8033\u673A/\u62A4\u80A4\u54C1\uFF0C\u5988\u5988\u7B7E\u4E86\u5B57\u201C\u884C\u201D\u3002\u4F46\u9644\u52A0\u4E86\u4E00\u6761\u4EF6\uFF1A\u6BCF\u5929\u665A\u4E0A\u89C6\u9891\u901A\u8BDD\u4E00\u6B21\uFF0C\u76F4\u5230\u4E0B\u4E2A\u6708\u3002",
-    rank: "65%"
+  "ending_earphone": {
+    "emoji": "\uD83C\uDFA7", "name": "\uD83C\uDFA7 耳机战士/护肤品守护者",
+    "desc": "要了两三百买耳机/护肤品，妈妈签了字\u201C行\u201D。但附加了一条：每天晚上视频通话一次，直到下个月。",
+    "rank": "65%"
   },
-  ending_keyboard: {
-    emoji: "\u2328\uFE0F", name: "\u2328\uFE0F \u952E\u76D8\u8D25\u5BB6\u5B50/\u8863\u67DC\u6C38\u8FDC\u7F3A\u4E00\u4EF6",
-    desc: "\u8981\u4E86\u4E94\u767E\u4E70\u952E\u76D8/\u4E00\u4EF6\u5927\u8863\uFF0C\u5988\u5988\u7684\u8868\u60C5\u5F88\u590D\u6742\u3002\u94B1\u8F6C\u5230\u4E86\uFF0C\u4F46\u9644\u8A00\u662F\u201C\u4E0B\u4E2A\u6708\u7684\u751F\u6D3B\u8D39\u51CF\u4E24\u767E\u201D\u3002",
-    rank: "50%"
+  "ending_keyboard": {
+    "emoji": "\u2328\uFE0F", "name": "\u2328\uFE0F 键盘败家子/衣柜永远缺一件",
+    "desc": "要了五百买键盘/一件大衣，妈妈的表情很复杂。钱转到了，但附言是\u201C下个月的生活费减两百\u201D。",
+    "rank": "50%"
   },
-  ending_no_money: {
-    emoji: "\u{1F64F}", name: "\u{1F64F} \u5634\u786C\u5230\u5E95",
-    desc: "\u94B1\u5230\u4E86\u5634\u8FB9\u5374\u8BF4\u201C\u4E0D\u8981\u4E86\u201D\u3002\u5988\u5988\u56DE\u4E86\u4E00\u4E2A\u201C\u5462\u201D\uFF0C\u7136\u540E\u518D\u4E5F\u6CA1\u6709\u7136\u540E\u4E86\u3002\u4F60\u7A81\u7136\u89C9\u5F97\u6709\u70B9\u50F5\u4F4F\u4E86\u3002",
-    rank: "45%"
+  "ending_no_money": {
+    "emoji": "\uD83D\uDE4F", "name": "\uD83D\uDE4F 嘴硬到底",
+    "desc": "钱到了嘴边却说\u201C不要了\u201D。妈妈回了一个\u201C嗯\u201D，然后再也没然后了。你突然觉得有点僵了。",
+    "rank": "45%"
   },
-  ending_stay_up: {
-    emoji: "\u{1F319}", name: "\u{1F319} \u6DF1\u591C\u86CB\u6B4C",
-    desc: "\u5BBF\u820D\u4E71\u4E03\u516B\u7CDF\uFF0C\u5988\u5988\u770B\u5F97\u76F4\u6296\u7709\u3002\u4F60\u88AB\u8BAD\u4E86\u534A\u5C0F\u65F6\uFF0C\u6700\u7EC8\u8981\u6C42\u201C\u660E\u5929\u4E00\u5929\u4E0D\u5F97\u7ED8\u753B\u4E86\u201D\u3002\u94B1\uFF1F\u4E0D\u53EF\u80FD\u3002",
-    rank: "38%"
+  "ending_stay_up": {
+    "emoji": "\uD83C\uDF19", "name": "\uD83C\uDF19 深夜蛋壳",
+    "desc": "宿舍乱七八糟，妈妈看得直摇头。你被训了半小时，最终要求\u201C明天一天不许玩游戏了\u201D。钱？不可能。",
+    "rank": "38%"
   },
-  ending_rebel: {
-    emoji: "\u{1F525}", name: "\u{1F525} \u53DB\u9006\u306E\u4EE3\u4EF7",
-    desc: "\u201C\u90A3\u53C8\u600E\u6837\uFF0C\u6211\u81EA\u5DF1\u7684\u94B1\u201D\u2014\u2014\u4F60\u542C\u5230\u7535\u8BDD\u90A3\u5934\u6C89\u9ED8\u4E86\u4E09\u79D2\u3002\u7B2C\u4E8C\u5929\uFF0C\u7238\u7238\u7684\u7535\u8BDD\u6253\u6765\u4E86\u3002",
-    rank: "20%"
+  "ending_rebel": {
+    "emoji": "\uD83D\uDD25", "name": "\uD83D\uDD25 叛逆的代价",
+    "desc": "\u201C那又怎样，我自己的钱\u201D\u2014\u2014你听到电话那头沉默了三秒。第二天，爸爸的电话打来了。",
+    "rank": "20%"
   },
-  ending_debt: {
-    emoji: "\u{1F31F}", name: "\u{1F31F} \u8D1F\u503A\u7684\u79D8\u5BC6\uFF08\u9690\u85CF\u7ED3\u5C40\uFF09",
-    desc: "\u201C\u6211\u6B20\u4E86\u5BA4\u53CB\u4E00\u70B9\u94B1\u201D\u2014\u2014\u5988\u5988\u7684\u8868\u60C5\u5B8C\u5168\u51BB\u7ED3\u4E86\u3002\u4F60\u77E5\u9053\uFF0C\u8FD9\u4E2A\u6708\u7684\u751F\u6D3B\u8D39\u4E0D\u4F1A\u63D0\u524D\u5230\u8D26\u4E86\u3002",
-    rank: "25%"
+  "ending_debt": {
+    "emoji": "\uD83C\uDF1F", "name": "\uD83C\uDF1F 负债的秘密\uFF08隐藏结局\uFF09",
+    "desc": "\u201C我欠了室友一点钱\u201D\u2014\u2014妈妈的表情完全冻结了。你知道，这个月的生活费不会提前到账了。",
+    "rank": "25%"
   }
 };
 
-// ===== 核心逻辑 =====
-function selectGender(g, btn) {
+function selectGender(g) {
   gender = g;
-  document.querySelectorAll('.gender-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  document.getElementById('startBtn').classList.add('show');
+  var btns = document.querySelectorAll(".gender-btn");
+  for (var i = 0; i < btns.length; i++) { btns[i].classList.remove("selected"); }
+  if (g === "male") { btns[0].classList.add("selected"); }
+  else { btns[1].classList.add("selected"); }
+  document.getElementById("startBtn").style.display = "block";
 }
 
 function startGame() {
-  document.getElementById('startScreen').style.display = 'none';
-  document.getElementById('gameScreen').style.display = 'flex';
-  currentNode = 'start';
   heart = 100;
   round = 1;
-  document.getElementById('heartVal').textContent = heart;
-  document.getElementById('roundVal').textContent = round;
-  document.getElementById('chatArea').innerHTML = '<div class="typing-indicator" id="typing"><span></span><span></span><span></span></div>';
-  document.getElementById('choicesArea').innerHTML = '';
-  showTyping();
+  currentNode = "start";
+  chatContainer.innerHTML = "";
+  typingIndicator = document.getElementById("typingIndicator");
+  document.getElementById("startScreen").classList.remove("active");
+  document.getElementById("gameScreen").classList.add("active");
+  document.getElementById("endingScreen").classList.remove("active");
+  showNode(currentNode);
 }
 
-function showTyping() {
-  var typing = document.getElementById('typing');
-  typing.style.display = 'flex';
+function showNode(nodeId) {
+  var node = story[nodeId];
+  if (!node) { return; }
+  currentNode = nodeId;
+  document.getElementById("roundDisplay").textContent = "第" + round + "幕";
+  document.getElementById("heartDisplay").textContent = "\u2764\uFE0F 孝心值: " + heart;
+
+  var messageDiv = document.createElement("div");
+  messageDiv.className = "message mom";
+  var bubbleDiv = document.createElement("div");
+  bubbleDiv.className = "bubble";
+  bubbleDiv.innerHTML = "<b>" + node.speaker + "</b><br>" + node.text;
+  messageDiv.appendChild(bubbleDiv);
+  chatContainer.appendChild(messageDiv);
+
+  scrollToBottom();
+
+  if (node.choices && node.choices.length > 0) {
+    setTimeout(function() { showChoices(node.choices); }, 500);
+  }
+}
+
+function showChoices(choices) {
+  choicesContainer.innerHTML = "";
+  for (var i = 0; i < choices.length; i++) {
+    var btn = document.createElement("button");
+    btn.className = "choice-btn";
+    btn.textContent = choices[i].text;
+    btn.onclick = (function(choice) {
+      return function() { selectChoice(choice); };
+    })(choices[i]);
+    choicesContainer.appendChild(btn);
+  }
+}
+
+function selectChoice(choice) {
+  var effect = choice.effect || "";
+  if (effect.indexOf("heart+=") >= 0) {
+    heart += parseInt(effect.split("heart+=")[1]);
+  } else if (effect.indexOf("heart-=") >= 0) {
+    heart += parseInt(effect.split("heart-=")[1]);
+  }
+
+  var messageDiv = document.createElement("div");
+  messageDiv.className = "message me";
+  var bubbleDiv = document.createElement("div");
+  bubbleDiv.className = "bubble";
+  bubbleDiv.textContent = choice.text;
+  messageDiv.appendChild(bubbleDiv);
+  chatContainer.appendChild(messageDiv);
+
+  choicesContainer.innerHTML = "";
+  round++;
+  document.getElementById("roundDisplay").textContent = "第" + round + "幕";
+  document.getElementById("heartDisplay").textContent = "\u2764\uFE0F 孝心值: " + heart;
+
+  scrollToBottom();
+
+  if (story[choice.next]) {
+    showTyping(function() { showNode(choice.next); });
+  } else if (endings[choice.next]) {
+    showTyping(function() { showEnding(choice.next); });
+  }
+}
+
+function showTyping(callback) {
+  var typing = document.createElement("div");
+  typing.className = "typing-indicator";
+  typing.style.display = "flex";
+  typing.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+  chatContainer.appendChild(typing);
+  scrollToBottom();
   setTimeout(function() {
-    typing.style.display = 'none';
-    renderNode(currentNode);
+    typing.remove();
+    callback();
   }, 1500);
 }
 
-function renderNode(nodeId) {
-  var node = story[nodeId];
-  if (!node) return;
-
-  var chatArea = document.getElementById('chatArea');
-  var choicesArea = document.getElementById('choicesArea');
-
-  // 添加妈妈的气泡
-  var row = document.createElement('div');
-  row.className = 'bubble-row mom';
-  row.innerHTML =
-    '<div class="avatar" style="font-size:16px;width:32px;height:32px;">&#x1F469;</div>' +
-    '<div class="bubble-content">' +
-      '<div class="bubble-label">' + node.speaker + '</div>' +
-      '<div class="bubble mom">' + node.text + '</div>' +
-    '</div>';
-  chatArea.appendChild(row);
-
-  // 更新回合
-  document.getElementById('roundVal').textContent = round;
-  round++;
-
-  // 显示选项
-  choicesArea.innerHTML = '';
-  choicesArea.style.display = 'flex';
-  for (var i = 0; i < node.choices.length; i++) {
-    (function(choice) {
-      var btn = document.createElement('button');
-      btn.className = 'choice-btn';
-      btn.textContent = choice.text;
-      btn.onclick = function() { chooseOption(choice, nodeId); };
-      choicesArea.appendChild(btn);
-    })(node.choices[i]);
-  }
-
-  // 滚动到底部
+function scrollToBottom() {
   setTimeout(function() {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   }, 100);
 }
 
-function chooseOption(choice, fromNode) {
-  var chatArea = document.getElementById('chatArea');
-  var choicesArea = document.getElementById('choicesArea');
-
-  // 隐藏选项
-  choicesArea.style.display = 'none';
-
-  // 添加玩家的气泡
-  var row = document.createElement('div');
-  row.className = 'bubble-row me';
-  row.innerHTML =
-    '<div class="bubble-content">' +
-      '<div class="bubble-label" style="color:#888;">我</div>' +
-      '<div class="bubble me">' + choice.text + '</div>' +
-    '</div>' +
-    '<div class="avatar" style="font-size:16px;width:32px;height:32px;background:#2d4a3e;">&#x1F466;</div>';
-  chatArea.appendChild(row);
-
-  // 更新孝心值
-  if (fromNode === 'r5_exposed' && choice.next === 'ending_rebel') {
-    heart -= 50;
-  } else if (fromNode === 'r4_c' || fromNode === 'r5_half') {
-    heart -= 5;
-  } else if (fromNode === 'r5_deny') {
-    heart += 5;
-  }
-  document.getElementById('heartVal').textContent = Math.max(0, heart);
-
-  // 滚动
-  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-
-  // 判断是结局还是下一轮
-  if (choice.next.indexOf('ending_') === 0) {
-    setTimeout(function() { showEnding(choice.next); }, 800);
-  } else {
-    currentNode = choice.next;
-    setTimeout(function() {
-      var typing = document.getElementById('typing');
-      typing.style.display = 'flex';
-      setTimeout(function() {
-        typing.style.display = 'none';
-        renderNode(currentNode);
-      }, 1500);
-    }, 500);
-  }
+function showEnding(endingId) {
+  var ending = endings[endingId];
+  document.getElementById("gameScreen").classList.remove("active");
+  document.getElementById("endingScreen").classList.add("active");
+  document.getElementById("endingEmoji").textContent = ending.emoji;
+  document.getElementById("endingName").textContent = ending.name;
+  document.getElementById("endingDesc").textContent = ending.desc;
+  document.getElementById("endingRank").innerHTML = "击败了全国 <span>" + ending.rank + "</span> 的大学生";
 }
 
-function showEnding(endingId) {
-  document.getElementById('gameScreen').style.display = 'none';
-  var endingScreen = document.getElementById('endingScreen');
-  endingScreen.style.display = 'flex';
-
-  var e = endings[endingId];
-  document.getElementById('endingEmoji').textContent = e.emoji;
-  document.getElementById('endingName').textContent = e.name;
-  document.getElementById('endingDesc').textContent = e.desc;
-  document.getElementById('endingRank').textContent = '\u51FB\u8D25\u4E86\u5168\u56FD ' + e.rank + ' \u7684\u5927\u5B66\u751F';
+function restartGame() {
+  document.getElementById("endingScreen").classList.remove("active");
+  document.getElementById("startScreen").classList.add("active");
+  document.getElementById("startBtn").style.display = "none";
+  var btns = document.querySelectorAll(".gender-btn");
+  for (var i = 0; i < btns.length; i++) { btns[i].classList.remove("selected"); }
 }
 </script>
 </body>
