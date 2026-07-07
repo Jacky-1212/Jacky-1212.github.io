@@ -543,10 +543,10 @@
     <div class="app-container" id="appContainer">
         <div class="topbar" id="topbar">
             <div class="contact-info">
-                <span class="status-dot"></span> \uD83D\uDC69 母后大人 · 在线
+                <span class="status-dot"></span> 👩 母后大人 · 在线
             </div>
             <div class="stats">
-                <span>\u2764\uFE0F 孝心值: <span class="heart-val" id="heartDisplay">100</span></span>
+                <span>❤️ 孝心值: <span class="heart-val" id="heartDisplay">100</span></span>
                 <span>第<span id="roundDisplay">1</span>幕</span>
             </div>
         </div>
@@ -555,13 +555,13 @@
 
         <div class="overlay" id="introOverlay">
             <div class="time-display">23:47</div>
-            <div class="subtitle">\u4F60\u5988\u53D1\u6765\u4E00\u6761\u6D88\u606F</div>
-            <div class="subtitle2">\u6BCF\u4E00\u4E2A\u5927\u5B66\u751F\u90FD\u7ECF\u5386\u8FC7\u7684\u6DF1\u591C\u62F7\u95EE</div>
+            <div class="subtitle">你妈发来一条消息</div>
+            <div class="subtitle2">每一个大学生都经历过的深夜拷问</div>
             <div class="gender-btns" id="genderBtns">
-                <button class="gender-btn" data-gender="male" id="btnMale">\u2642 \u7537</button>
-                <button class="gender-btn" data-gender="female" id="btnFemale">\u2640 \u5973</button>
+                <button class="gender-btn" data-gender="male" id="btnMale">♂ 男</button>
+                <button class="gender-btn" data-gender="female" id="btnFemale">♀ 女</button>
             </div>
-            <button class="start-btn" id="startBtn">\u5F00\u59CB\u6311\u6218</button>
+            <button class="start-btn" id="startBtn">开始挑战</button>
         </div>
 
         <div class="ending-overlay hidden" id="endingOverlay">
@@ -596,75 +596,75 @@
             // ============ 结局定义 ============
             var endings = {
                 "ending_good": {
-                    emoji: "\uD83C\uDFC6",
-                    name: "\uD83C\uDFC6 \u5988\u7684\u597D\u5927\u513F/\u8D34\u5FC3\u68C9\u8884",
-                    desc: "\u4F60\u4E00\u76F4\u8868\u73B0\u5B8C\u7F8E\uFF0C\u5988\u5988\u5B89\u5FC3\u5730\u8F6C\u4E86\u94B1\u6CA1\u591A\u95EE\u3002\u4F46\u8FD9\u79CD\u4E8B\u53EA\u53D1\u751F\u5728\u522B\u4EBA\u5BB6\u3002",
+                    emoji: "🏆",
+                    name: "🏆 妈的好大儿/贴心棉袄",
+                    desc: "你一直表现完美，妈妈安心地转了钱没多问。但这种事只发生在别人家。",
                     rank: "92%"
                 },
                 "ending_rebel": {
-                    emoji: "\uD83D\uDD25",
-                    name: "\uD83D\uDD25 \u53DB\u9006\u7684\u4EE3\u4EF7",
-                    desc: "\u201C\u90A3\u53C8\u600E\u6837\uFF0C\u6211\u81EA\u5DF1\u7684\u4E8B\u201D\u2014\u2014\u5988\u5988\u6C89\u9ED8\u4E86\u4E09\u79D2\u3002\u7B2C\u4E8C\u5929\u7238\u7238\u7535\u8BDD\u6253\u6765\u4E86\u3002",
+                    emoji: "🔥",
+                    name: "🔥 叛逆的代价",
+                    desc: "\u201C那又怎样，我自己的事\u201D——妈妈沉默了三秒。第二天爸爸电话打来了。",
                     rank: "20%"
                 },
                 "ending_earphone": {
-                    emoji: "\uD83C\uDFA7",
-                    name: "\uD83C\uDFA7 \u8033\u673A\u6218\u58EB",
-                    desc: "\u8981\u4E86\u4E24\u4E09\u767E\u4E70\u8033\u673A\uFF0C\u5988\u5988\u8F6C\u4E86\u3002\u4F46\u9644\u52A0\u6761\u4EF6\uFF1A\u6BCF\u665A\u89C6\u9891\u67E5\u5BBF\u820D\u536B\u751F\uFF0C\u76F4\u5230\u4E0B\u4E2A\u6708\u3002",
+                    emoji: "🎧",
+                    name: "🎧 耳机战士",
+                    desc: "要了两三百买耳机，妈妈转了。但附加条件：每晚视频查宿舍卫生，直到下个月。",
                     rank: "60%"
                 },
                 "ending_keyboard": {
-                    emoji: "\u2328\uFE0F",
-                    name: "\u2328\uFE0F \u952E\u76D8\u8D25\u5BB6\u5B50",
-                    desc: "\u8981\u4E86\u4E94\u767E\u4E70\u952E\u76D8\uFF0C\u5988\u5988\u8F6C\u4E86\u3002\u4E0B\u4E2A\u6708\u751F\u6D3B\u8D39\u51CF\u4E24\u767E\uFF0C\u4F60\u81EA\u5DF1\u9009\u7684\u3002",
+                    emoji: "⌨️",
+                    name: "⌨️ 键盘败家子",
+                    desc: "要了五百买键盘，妈妈转了。下个月生活费减两百，你自己选的。",
                     rank: "45%"
                 },
                 "ending_skincare": {
-                    emoji: "\uD83D\uDC84",
-                    name: "\uD83D\uDC84 \u62A4\u80A4\u54C1\u5B88\u62A4\u8005",
-                    desc: "\u8981\u4E86\u4E24\u4E09\u767E\u4E70\u62A4\u80A4\u54C1\uFF0C\u5988\u5988\u8F6C\u4E86\uFF0C\u6761\u4EF6\u540C\u4E0A\uFF1A\u89C6\u9891\u67E5\u536B\u751F\u3002",
+                    emoji: "💄",
+                    name: "💄 护肤品守护者",
+                    desc: "要了两三百买护肤品，妈妈转了，条件同上：视频查卫生。",
                     rank: "60%"
                 },
                 "ending_coat": {
-                    emoji: "\uD83D\uDC57",
-                    name: "\uD83D\uDC57 \u5927\u8863\u68A6\u60F3\u5BB6",
-                    desc: "\u8981\u4E86\u4E94\u767E\u4E70\u5927\u8863\uFF0C\u5988\u5988\u8F6C\u4E86\uFF0C\u4F46\u4E0B\u4E2A\u6708\u751F\u6D3B\u8D39\u51CF\u4E24\u767E\u3002",
+                    emoji: "👗",
+                    name: "👗 大衣梦想家",
+                    desc: "要了五百买大衣，妈妈转了，但下个月生活费减两百。",
                     rank: "45%"
                 },
                 "ending_coward": {
-                    emoji: "\uD83D\uDE47",
-                    name: "\uD83D\uDE47 \u8BDD\u5230\u5634\u8FB9\u53C8\u54BD\u4E0B",
-                    desc: "\u5230\u5634\u8FB9\u7684\u201C\u6211\u60F3\u4E70\u201D\u53C8\u54BD\u4E86\u56DE\u53BB\u3002\u5988\u5988\u56DE\u4E86\u4E00\u4E2A\u201C\u597D\u5427\u201D\uFF0C\u4F60\u77E5\u9053\u81EA\u5DF1\u9519\u8FC7\u4E86\u3002",
+                    emoji: "🙇",
+                    name: "🙇 话到嘴边又咽下",
+                    desc: "到嘴边的\u201C我想买\u201D又咽了回去。妈妈回了一个\u201C好吧\u201D，你知道自己错过了。",
                     rank: "70%"
                 },
                 "ending_nomoney": {
-                    emoji: "\uD83D\uDE4F",
-                    name: "\uD83D\uDE4F \u57FA\u672C\u4FDD\u969C",
-                    desc: "\u5988\u5988\u53EA\u8F6C\u4E86\u57FA\u672C\u4F19\u98DF\u8D39\uFF0C\u8FD8\u9644\u5E26\u4E00\u53E5\u201C\u4F60\u8BE5\u5B66\u4F1A\u7BA1\u94B1\u4E86\u201D\u3002",
+                    emoji: "🙏",
+                    name: "🙏 基本保障",
+                    desc: "妈妈只转了基本伙食费，还附带一句\u201C你该学会管钱了\u201D。",
                     rank: "40%"
                 },
                 "ending_strong": {
-                    emoji: "\uD83D\uDCAA",
-                    name: "\uD83D\uDCAA \u786C\u6491\u4E4B\u738B",
-                    desc: "\u201C\u5BBD\u88D5\u5BBD\u88D5\u201D\u2014\u2014\u4F60\u8BF4\u5F97\u7406\u76F4\u6C14\u58EE\u3002\u5988\u5988\u4E0D\u518D\u8FFD\u95EE\uFF0C\u4F46\u4F60\u996D\u5361\u4F59\u989D\u53EA\u5269\u4E09\u4F4D\u6570\u3002",
+                    emoji: "💪",
+                    name: "💪 硬撑之王",
+                    desc: "\u201C宽裕宽裕\u201D——你说得理直气壮。妈妈不再追问，但你饭卡余额只剩三位数。",
                     rank: "65%"
                 },
                 "ending_debt": {
-                    emoji: "\uD83C\uDF1F",
-                    name: "\uD83C\uDF1F \u8D1F\u503A\u7684\u79D8\u5BC6\uFF08\u9690\u85CF\uFF09",
-                    desc: "\u4F60\u5766\u767D\u6B20\u5BA4\u53CB\u94B1\u3002\u5988\u5988\u51BB\u7ED3\u751F\u6D3B\u8D39\uFF0C\u8BA9\u4F60\u81EA\u5DF1\u8FD8\u3002",
+                    emoji: "🌟",
+                    name: "🌟 负债的秘密（隐藏）",
+                    desc: "你坦白欠室友钱。妈妈冻结生活费，让你自己还。",
                     rank: "25%"
                 },
                 "ending_dad": {
-                    emoji: "\uD83D\uDC80",
-                    name: "\uD83D\uDC80 \u7238\u7684\u5BA1\u5224\uFF08\u7EC8\u6781\u9690\u85CF\uFF09",
-                    desc: "\u5988\u5988\u6302\u4E86\u7535\u8BDD\u540E\uFF0C\u5C4F\u5E55\u663E\u793A\u201C\u8001\u7238\u201D\u6765\u7535\u2026\u2026",
+                    emoji: "💀",
+                    name: "💀 爸的审判（终极隐藏）",
+                    desc: "妈妈挂了电话后，屏幕显示\u201C老爸\u201D来电……",
                     rank: "10%"
                 },
                 "ending_happy": {
-                    emoji: "\uD83C\uDF89",
-                    name: "\uD83C\uDF89 \u7686\u5927\u6B22\u559C",
-                    desc: "\u4F60\u6210\u529F\u8BF4\u670D\u5988\u5988\uFF0C\u94B1\u5230\u8D26\u65E0\u9644\u52A0\u6761\u4EF6\u3002\u4F46\u4E00\u8F88\u5B50\u53EF\u80FD\u53EA\u6709\u4E00\u6B21\u3002",
+                    emoji: "🎉",
+                    name: "🎉 皆大欢喜",
+                    desc: "你成功说服妈妈，钱到账无附加条件。但一辈子可能只有一次。",
                     rank: "80%"
                 }
             };
@@ -696,34 +696,34 @@
             // ============ 动态OS函数 ============
             function getInnerOS(nodeId, playerChoiceText) {
                 if (nodeId === 'r2_a' || nodeId === 'r2_b' || nodeId === 'r2_c') {
-                    return "\u547C\uFF0C\u8FD8\u597D\u6CA1\u88AB\u53D1\u73B0\u6211\u5728\u71AC\u591C\u2026\u2026";
+                    return "呼，还好没被发现我在熬夜……";
                 }
                 if (nodeId === 'r3_a' || nodeId === 'r3_b' || nodeId === 'r3_c') {
-                    if (playerChoiceText.indexOf('\u5916\u5356') !== -1 ||
-                        playerChoiceText.indexOf('\u70E7\u70E4') !== -1 ||
-                        playerChoiceText.indexOf('\u5976\u8336') !== -1 ||
-                        playerChoiceText.indexOf('\u6413\u4E86\u4E00\u987F') !== -1) {
-                        return "\u7CDF\u7CD5\uFF0C\u5979\u600E\u4E48\u77E5\u9053\u6211\u6628\u665A\u70B9\u5916\u5356\u4E86\u2026\u2026";
+                    if (playerChoiceText.indexOf('外卖') !== -1 ||
+                        playerChoiceText.indexOf('烧烤') !== -1 ||
+                        playerChoiceText.indexOf('奶茶') !== -1 ||
+                        playerChoiceText.indexOf('搓了一顿') !== -1) {
+                        return "糟糕，她怎么知道我昨晚点外卖了……";
                     }
-                    return "\u5979\u5E94\u8BE5\u6CA1\u53D1\u73B0\u6211\u5076\u5C14\u4E5F\u5403\u5916\u5356\u5427\u2026\u2026";
+                    return "她应该没发现我偶尔也吃外卖吧……";
                 }
                 if (nodeId === 'r4_a' || nodeId === 'r4_b' || nodeId === 'r4_c') {
-                    return "\u5B8C\u4E86\u5B8C\u4E86\uFF0C\u5979\u597D\u50CF\u770B\u51FA\u4EC0\u4E48\u4E86";
+                    return "完了完了，她好像看出什么了";
                 }
                 if (nodeId === 'r5_deny' || nodeId === 'r5_half' || nodeId === 'r5_exposed') {
-                    return "\u5979\u600E\u4E48\u4E00\u526F\u65E9\u5C31\u6599\u5230\u7684\u8868\u60C5\u2026\u2026";
+                    return "她怎么一副早就料到的表情……";
                 }
                 if (nodeId === 'r6_transition') {
-                    return "\u7B49\u7B49\uFF0C\u5979\u600E\u4E48\u7A81\u7136\u8F6C\u5230\u94B1\u4E0A\u4E86\uFF1F";
+                    return "等等，她怎么突然转到钱上了？";
                 }
                 if (nodeId === 'r7_demand') {
-                    return "\u5979\u8BB0\u6027\u4E5F\u592A\u597D\u4E86\u2026\u2026\u8FD9\u4E0B\u4E0D\u597D\u7CCA\u5F04\u4E86";
+                    return "她记性也太好了……这下不好糊弄了";
                 }
                 if (nodeId === 'r8_mom_reply') {
-                    return "\u7EC8\u4E8E\u5230\u8FD9\u4E00\u6B65\u4E86\uFF0C\u5E0C\u671B\u5979\u522B\u52A0\u592A\u591A\u6761\u4EF6\u2026\u2026";
+                    return "终于到这一步了，希望她别加太多条件……";
                 }
                 if (nodeId === 'r9_final') {
-                    return "\u7EC8\u4E8E\u7ED3\u675F\u4E86\u2026\u2026\u8FD9\u4E0B\u7B97\u662F\u8FC7\u5173\u4E86\u5427";
+                    return "总算结束了……这下算是过关了吧";
                 }
                 return '';
             }
@@ -733,86 +733,86 @@
 
             // 第1轮
             storyNodes['r1'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u8FD8\u6CA1\u7761\uFF1F",
+                speaker: "👩 母后大人",
+                text: "还没睡？",
                 choices: [
-                    { text: "\u6B63\u51C6\u5907\u7761\u5462\u5988\uD83D\uDE0A", next: "r2_a" },
-                    { text: "\u521A\u5FD9\u5B8C\uFF0C\u51C6\u5907\u7761\u4E86", next: "r2_b" },
-                    { text: "\u8FD8\u6CA1\u5462\u2026\u2026", next: "r2_c" }
+                    { text: "正准备睡呢妈😊", next: "r2_a" },
+                    { text: "刚忙完，准备睡了", next: "r2_b" },
+                    { text: "还没呢……", next: "r2_c" }
                 ]
             };
 
-            // 第2轮
+            // 第2轮 - r2_a中铺垫实习/考研话题
             storyNodes['r2_a'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u54E6\u54E6\u90A3\u4F60\u5FEB\u7761\uFF0C\u660E\u5929\u65E9\u516B\u522B\u8FDF\u5230\u3002\u5BF9\u4E86\uFF0C\u4F60\u4E0A\u6B21\u8BF4\u90A3\u4E2A\u5B9E\u4E60/\u8003\u7814/\u8003\u516C\uFF0C\u6700\u8FD1\u6709\u6D88\u606F\u5417\uFF1F",
+                speaker: "👩 母后大人",
+                text: "哦哦那你快睡，明天早八别迟到。对了，你上次说那个实习/考研/考公，最近有消息吗？",
                 choices: [
-                    { text: "\u77E5\u9053\u4E86\u5988\uD83D\uDE0A\uFF0C\u90A3\u4E2A\u8FD8\u5728\u7B49\u901A\u77E5", next: "r3_a" },
-                    { text: "\u660E\u5929\u7B2C\u4E00\u8282\u5C31\u662F\u4E13\u4E1A\u8BFE\u2026\u2026\u5B9E\u4E60\u6211\u6295\u4E86\u51E0\u5BB6", next: "r3_b" },
-                    { text: "\u660E\u5929\u6CA1\u8BFE\uFF01\u723D\u4E86\u4E00\u4E2A\u6708\u4E86\uD83C\uDF89 \u5B9E\u4E60\u2026\u2026\u545C\uFF0C\u8FD8\u6CA1\u5F00\u59CB", next: "r3_c" }
+                    { text: "知道了妈😊，那个还在等通知", next: "r3_a" },
+                    { text: "明天第一节就是专业课……实习我投了几家", next: "r3_b" },
+                    { text: "明天没课！爽了一个月了🎉 实习……呃，还没开始", next: "r3_c" }
                 ]
             };
             storyNodes['r2_b'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u559C\u5F97\u4F60\u50CF\u6211\uFF0C\u559C\u6B22\u665A\u4E0A\u5E72\u6D3B\u513F",
+                speaker: "👩 母后大人",
+                text: "喜得你像我，喜欢晚上干活儿",
                 choices: [
-                    { text: "\u90A3\u5FC5\u987B\u662F\u9057\u4F20\u4E86\u5988\u7684\u4F18\u79C0\u57FA\u56E0", next: "r3_a" },
-                    { text: "\u4E5F\u4E0D\u662F\u559C\u6B22\uFF0C\u662F\u4F5C\u4E1A\u592A\u591A\u4E86", next: "r3_b" },
-                    { text: "\u665A\u4E0A\u6E38\u620F\u4F53\u9A8C\u66F4\u597D\u5462\uD83D\uDE0F", next: "r3_c" }
+                    { text: "那必须是遗传了妈的优秀基因", next: "r3_a" },
+                    { text: "也不是喜欢，是作业太多了", next: "r3_b" },
+                    { text: "晚上游戏体验更好呢😏", next: "r3_c" }
                 ]
             };
             storyNodes['r2_c'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u6CA1\u7761\u5C31\u6CA1\u7761\u5427\uFF0C\u4F60\u660E\u5929\u6709\u8BFE\u5417\uFF1F",
+                speaker: "👩 母后大人",
+                text: "没睡就没睡吧，你明天有课吗？",
                 choices: [
-                    { text: "\u6709\u554A\uFF0C\u65E9\u516B\u7684\u8BFE\uD83D\uDE2D", next: "r3_a" },
-                    { text: "\u6CA1\u8BFE\uFF01\u723D\u4E86\u4E00\u4E2A\u6708\u4E86\uD83C\uDF89", next: "r3_b" },
-                    { text: "\u6709\u8BFE\u4F46\u4E0D\u91CD\u8981\u2026\u2026", next: "r3_c" }
+                    { text: "有啊，早八的课😭", next: "r3_a" },
+                    { text: "没课！爽了一个月了🎉", next: "r3_b" },
+                    { text: "有课但不重要……", next: "r3_c" }
                 ]
             };
 
             // 第3轮（gender分化）
             function buildR3Node(suffix) {
                 var node = {
-                    speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
+                    speaker: "👩 母后大人",
                     choicesMale: [],
                     choicesFemale: []
                 };
                 if (suffix === 'a') {
-                    node.text = "\u6700\u8FD1\u5403\u996D\u600E\u4E48\u6837\uFF1F\u522B\u8001\u5403\u5916\u5356\u3002";
+                    node.text = "最近吃饭怎么样？别老吃外卖。";
                     node.choicesMale = [
-                        { text: "\u633A\u597D\u7684\uFF0C\u98DF\u5802\u968F\u4FBF\u5403\u5403", next: "r4_a" },
-                        { text: "\u5076\u5C14\u8DDF\u5BA4\u53CB\u51FA\u53BB\u64B8\u4E32", next: "r4_b" },
-                        { text: "\u51D1\u5408\u8FC7\u5427\u2026\u2026\u6708\u5E95\u4E86\u561B", next: "r4_c" }
+                        { text: "挺好的，食堂随便吃吃", next: "r4_a" },
+                        { text: "偶尔跟室友出去撸串", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
                     ];
                     node.choicesFemale = [
-                        { text: "\u633A\u597D\u7684\uFF0C\u8DDF\u5BA4\u53CB\u642D\u4F19\u505A\u996D", next: "r4_a" },
-                        { text: "\u5076\u5C14\u559D\u676F\u5976\u8336\u5C31\u5F53\u4E00\u987F\u4E86", next: "r4_b" },
-                        { text: "\u51D1\u5408\u8FC7\u5427\u2026\u2026\u6708\u5E95\u4E86\u561B", next: "r4_c" }
+                        { text: "挺好的，跟室友搭伙做饭", next: "r4_a" },
+                        { text: "偶尔喝杯奶茶就当一顿了", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
                     ];
                 } else if (suffix === 'b') {
-                    node.text = "\u4F5C\u4E1A\u591A\u5C31\u522B\u71AC\u592A\u665A\uFF0C\u996D\u8981\u6309\u65F6\u5403";
+                    node.text = "作业多就别熬太晚，饭要按时吃";
                     node.choicesMale = [
-                        { text: "\u5403\u4E86\u5403\u4E86\uFF0C\u5BA4\u53CB\u716E\u7684\u9762\u6761", next: "r4_a" },
-                        { text: "\u70B9\u4E86\u5916\u5356\uFF0C\u53C8\u5403\u4E86\u4E00\u987F\u70E7\u70E4", next: "r4_b" },
-                        { text: "\u51D1\u5408\u8FC7\u5427\u2026\u2026\u6708\u5E95\u4E86\u561B", next: "r4_c" }
+                        { text: "吃了吃了，室友煮的面条", next: "r4_a" },
+                        { text: "点了外卖，又吃了一顿烧烤", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
                     ];
                     node.choicesFemale = [
-                        { text: "\u5403\u4E86\u5403\u4E86\uFF0C\u5BA4\u53CB\u716E\u4E86\u7CA5", next: "r4_a" },
-                        { text: "\u559D\u4E86\u676F\u5976\u8336\u5C31\u5F53\u4E00\u987F\u4E86", next: "r4_b" },
-                        { text: "\u51D1\u5408\u8FC7\u5427\u2026\u2026\u6708\u5E95\u4E86\u561B", next: "r4_c" }
+                        { text: "吃了吃了，室友煮了粥", next: "r4_a" },
+                        { text: "喝了杯奶茶就当一顿了", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
                     ];
                 } else if (suffix === 'c') {
-                    node.text = "\u6CA1\u8BFE\u4E5F\u522B\u663C\u591C\u98A0\u5012\uFF0C\u5403\u996D\u4E86\u5417\uFF1F";
+                    node.text = "没课也别昼夜颠倒，吃饭了吗？";
                     node.choicesMale = [
-                        { text: "\u5403\u4E86\u5403\u4E86\uFF0C\u98DF\u5802\u4ECA\u5929\u8FD8\u4E0D\u9519", next: "r4_a" },
-                        { text: "\u8DDF\u5BA4\u53CB\u51FA\u53BB\u6413\u4E86\u4E00\u987F", next: "r4_b" },
-                        { text: "\u51D1\u5408\u8FC7\u5427\u2026\u2026\u6708\u5E95\u4E86\u561B", next: "r4_c" }
+                        { text: "吃了吃了，食堂今天还不错", next: "r4_a" },
+                        { text: "跟室友出去搓了一顿", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
                     ];
                     node.choicesFemale = [
-                        { text: "\u5403\u4E86\u5403\u4E86\uFF0C\u98DF\u5802\u4ECA\u5929\u8FD8\u4E0D\u9519", next: "r4_a" },
-                        { text: "\u8DDF\u5BA4\u53CB\u53BB\u559D\u4E86\u676F\u5976\u8336", next: "r4_b" },
-                        { text: "\u51D1\u5408\u8FC7\u5427\u2026\u2026\u6708\u5E95\u4E86\u561B", next: "r4_c" }
+                        { text: "吃了吃了，食堂今天还不错", next: "r4_a" },
+                        { text: "跟室友去喝了杯奶茶", next: "r4_b" },
+                        { text: "凑合过吧……月底了嘛", next: "r4_c" }
                     ];
                 }
                 return node;
@@ -824,127 +824,122 @@
 
             // 第4轮
             storyNodes['r4_a'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u4F60\u662F\u4E0D\u662F\u6709\u4EC0\u4E48\u4E8B\u7792\u7740\u6211\uFF1F",
+                speaker: "👩 母后大人",
+                text: "你是不是有什么事瞒着我？",
                 choices: [
-                    { text: "\u6CA1\u6709\u554A\u5988\uFF0C\u80FD\u6709\u4EC0\u4E48\u4E8B", next: "r5_deny" },
-                    { text: "\u5550\u2026\u2026\u6709\u70B9\u5C0F\u4E8B", next: "r5_half" },
-                    { text: "\u60A8\u600E\u4E48\u77E5\u9053\u7684\uFF1F", next: "r5_exposed", heartChange: -5,
-                        setFlagDisrespect: true }
+                    { text: "没有啊妈，能有什么事", next: "r5_deny" },
+                    { text: "嗯……有点小事", next: "r5_half" },
+                    { text: "您怎么知道的？", next: "r5_exposed", heartChange: -5,
+                    setFlagDisrespect: true }
                 ]
             };
             storyNodes['r4_b'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u53C8\u51FA\u53BB\u6F47\u6D12\uFF1F\u4F60\u6700\u8FD1\u82B1\u9500\u5F88\u5927\u5427\uFF1F",
+                speaker: "👩 母后大人",
+                text: "又出去潇洒？你最近花销很大吧？",
                 choices: [
-                    { text: "\u4E0D\u662F\u554A\u5988\uFF0C\u6211\u7701\u7740\u5462", next: "r5_deny" },
-                    { text: "\u5550\u2026\u2026\u6709\u70B9\u5927", next: "r5_half" },
-                    { text: "\u60A8\u600E\u4E48\u77E5\u9053\u6211\u5403\u4EC0\u4E48\u4E86\uFF1F", next: "r5_exposed", heartChange: -5,
-                        setFlagDisrespect: true }
+                    { text: "不是啊妈，我省着呢", next: "r5_deny" },
+                    { text: "嗯……有点大", next: "r5_half" },
+                    { text: "您怎么知道我吃什么了？", next: "r5_exposed", heartChange: -5,
+                    setFlagDisrespect: true }
                 ]
             };
             storyNodes['r4_c'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u6708\u5E95\u4E86\u5C31\u77E5\u9053\u7701\u4E86\u3002\u4F60\u94B1\u5305\u91CC\u8FD8\u6709\u591A\u5C11\uFF1F",
+                speaker: "👩 母后大人",
+                text: "月底了就知道省了。你钱包里还有多少？",
                 choices: [
-                    { text: "\u591A\u7740\u5462\u5988\uFF0C\u4E0D\u7528\u64CD\u5FC3", next: "r5_deny" },
-                    { text: "\u5269\u4F59\u4E0D\u591A\u4E86\u2026\u2026", next: "r5_half" },
-                    { text: "\u60A8\u600E\u4E48\u4EC0\u4E48\u90FD\u77E5\u9053\u4E86\uFF1F", next: "r5_exposed", heartChange: -5,
-                        setFlagDisrespect: true }
+                    { text: "多着呢妈，不用操心", next: "r5_deny" },
+                    { text: "剩余不多了……", next: "r5_half" },
+                    { text: "您怎么什么都知道了？", next: "r5_exposed", heartChange: -5,
+                    setFlagDisrespect: true }
                 ]
             };
 
-            // 第5轮
+            // 第5轮 - 改为追问进展，而非重复提问
             storyNodes['r5_deny'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u771F\u7684\u6CA1\u4E8B\uFF1F\u90A3\u6211\u95EE\u4F60\uFF0C\u4F60\u4E0A\u6B21\u8BF4\u90A3\u4E2A\u5B9E\u4E60/\u8003\u7814/\u8003\u516C\uFF0C\u5230\u5E95\u600E\u4E48\u6837\u4E86\uFF1F\u4F60\u53EF\u522B\u53C8\u6577\u884D\u6211\u3002",
+                speaker: "👩 母后大人",
+                text: "真的没事？那我问你，上次说的实习/考研，你还没给我个准话。你可别又敷衍我。",
                 choices: [
-                    { text: "\u6295\u4E86\u51E0\u5BB6\u4E86\uFF0C\u7B49\u6D88\u606F\u5462", next: "r6_transition" },
-                    { text: "\u8FD8\u6CA1\u5F00\u59CB\u51C6\u5907\u2026\u2026\u6700\u8FD1\u6709\u70B9\u5FD9", next: "r6_transition" },
-                    { text: "\u5988\u60A8\u522B\u6025\uFF0C\u6211\u5FC3\u91CC\u6709\u6570", next: "r6_transition",
-                    heartChange: 5 }
+                    { text: "投了几家了，等消息呢", next: "r6_transition" },
+                    { text: "还没开始准备……最近有点忙", next: "r6_transition" },
+                    { text: "妈您别急，我心里有数", next: "r6_transition", heartChange: 5 }
                 ]
             };
             storyNodes['r5_half'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u4EC0\u4E48\u4E8B\uFF1F\u4F60\u8BF4\u3002\u8FD8\u6709\u4E0A\u6B21\u90A3\u4E2A\u5B9E\u4E60/\u8003\u7814\uFF0C\u8FDB\u5C55\u5982\u4F55\uFF1F",
+                speaker: "👩 母后大人",
+                text: "什么事？你说。上次说的实习/考研，也该有个结果了吧？",
                 choices: [
-                    { text: "\u6295\u4E86\u51E0\u5BB6\u4E86\uFF0C\u7B49\u6D88\u606F\u5462", next: "r6_transition" },
-                    { text: "\u8FD8\u6CA1\u5F00\u59CB\u51C6\u5907\u2026\u2026\u6700\u8FD1\u6709\u70B9\u5FD9", next: "r6_transition" },
-                    { text: "\u7B97\u4E86\uFF0C\u4E0D\u8BF4\u4E86", next: "r6_transition" }
+                    { text: "投了几家了，等消息呢", next: "r6_transition" },
+                    { text: "还没开始准备……最近有点忙", next: "r6_transition" },
+                    { text: "算了，不说了", next: "r6_transition" }
                 ]
             };
             storyNodes['r5_exposed'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u6211\u521A\u770B\u4E86\u4F60\u670B\u53CB\u5708\uFF0C\u4F60\u6628\u5929\u53C8\u8DDF\u540C\u5B66\u51FA\u53BB\u5403\u996D\u4E86\u3002\u4F60\u4E0A\u6B21\u8BF4\u90A3\u4E2A\u5B9E\u4E60/\u8003\u7814/\u8003\u516C\uFF0C\u5230\u5E95\u600E\u4E48\u6837\u4E86\uFF1F",
+                speaker: "👩 母后大人",
+                text: "我刚看了你朋友圈，昨天又跟同学吃饭。实习/考研的事没见你上心，吃饭倒挺积极。到底准备得怎么样了？",
                 choices: [
-                    { text: "\u5988\u60A8\u8FD8\u7FFB\u6211\u670B\u53CB\u5708\uFF01\uFF01", next: "r6_transition" },
-                    { text: "\u5BF9\u4E0D\u8D77\u5988\u2026\u2026\u6211\u786E\u5B9E\u6CA1\u51C6\u5907\u597D", next: "r6_transition" },
-                    { text: "\u90A3\u53C8\u600E\u6837\uFF0C\u6211\u81EA\u5DF1\u7684\u4E8B", next: "ending_rebel", heartChange: -50,
-                        setFlagDisrespect: true, isEnding: true }
+                    { text: "妈您还翻我朋友圈！！", next: "r6_transition" },
+                    { text: "对不起妈……我确实没准备好", next: "r6_transition" },
+                    { text: "那又怎样，我自己的事", next: "ending_rebel", heartChange: -50,
+                    setFlagDisrespect: true, isEnding: true }
                 ]
             };
 
             // 第6轮过渡
             storyNodes['r6_transition'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u884C\u5427\uFF0C\u4F60\u81EA\u5DF1\u5FC3\u91CC\u6709\u6570\u5C31\u884C\u3002\u6211\u4E5F\u4E0D\u60F3\u5929\u5929\u5FF5\u53E8\u4F60\uFF0C\u514D\u5F97\u4F60\u53C8\u5ACC\u6211\u70E6\u3002\u2026\u2026\u4E0D\u8FC7\u8BF4\u5230\u8FD9\u4E2A\uFF0C\u4F60\u6700\u8FD1\u624B\u5934\u8FD8\u5BBD\u88D5\u5417\uFF1F",
+                speaker: "👩 母后大人",
+                text: "行吧，你自己心里有数就行。我也不想天天念叨你，免得你又嫌我烦。……不过说到这个，你最近手头还宽裕吗？",
                 choices: [
-                    { text: "\u5BBD\u88D5\u5BBD\u88D5\uFF0C\u5988\u60A8\u653E\u5FC3", next: "ending_check_r6", isEnding: true },
-                    { text: "\u8FD8\u884C\u5427\u2026\u2026\u5C31\u662F\u6700\u8FD1\u82B1\u9500\u6709\u70B9\u5927", next: "r7_demand" },
-                    { text: "\u5443\u2026\u2026\u5176\u5B9E\u6211\u60F3\u8DDF\u60A8\u5546\u91CF\u4E2A\u4E8B\u513F", next: "r7_demand" }
+                    { text: "宽裕宽裕，妈您放心", next: "ending_check_r6", isEnding: true },
+                    { text: "还行吧……就是最近花销有点大", next: "r7_demand" },
+                    { text: "呃……其实我想跟您商量个事儿", next: "r7_demand" }
                 ]
             };
 
             // 第7轮：玩家坦露需求
             storyNodes['r7_demand'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
-                text: "\u82B1\u9500\u5927\uFF1F\u8BF4\u5427\uFF0C\u8FD9\u6B21\u53C8\u770B\u4E0A\u4EC0\u4E48\u4E86\uFF1F",
+                speaker: "👩 母后大人",
+                text: "花销大？说吧，这次又看上什么了？",
                 choicesMale: [
-                    { text: "\u60F3\u4E70\u4E2A\u8033\u673A\uFF0C\u5BBF\u820D\u5B66\u4E60\u7528", next: "r8_mom_reply", setDemand: "earphone" },
-                    { text: "\u952E\u76D8\u574F\u4E86\uFF0C\u60F3\u6362\u4E2A\u65B0\u7684", next: "r8_mom_reply",
-                    setDemand: "keyboard" },
-                    { text: "\u5C31\u662F\u751F\u6D3B\u8D39\u4E0D\u592A\u591F\u4E86\u2026\u2026", next: "r8_mom_reply",
-                    setDemand: "general" }
+                    { text: "想买个耳机，宿舍学习用", next: "r8_mom_reply", setDemand: "earphone" },
+                    { text: "键盘坏了，想换个新的", next: "r8_mom_reply", setDemand: "keyboard" },
+                    { text: "就是生活费不太够了……", next: "r8_mom_reply", setDemand: "general" }
                 ],
                 choicesFemale: [
-                    { text: "\u62A4\u80A4\u54C1\u5FEB\u7528\u5B8C\u4E86\uFF0C\u8BE5\u8865\u4E86", next: "r8_mom_reply",
-                        setDemand: "skincare" },
-                    { text: "\u5929\u51B7\u4E86\uFF0C\u60F3\u4E70\u4EF6\u5927\u8863", next: "r8_mom_reply", setDemand: "coat" },
-                    { text: "\u5C31\u662F\u751F\u6D3B\u8D39\u4E0D\u592A\u591F\u4E86\u2026\u2026", next: "r8_mom_reply",
-                    setDemand: "general" }
+                    { text: "护肤品快用完了，该补了", next: "r8_mom_reply", setDemand: "skincare" },
+                    { text: "天冷了，想买件大衣", next: "r8_mom_reply", setDemand: "coat" },
+                    { text: "就是生活费不太够了……", next: "r8_mom_reply", setDemand: "general" }
                 ]
             };
 
             // 第8轮：妈妈反击
             storyNodes['r8_mom_reply'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
+                speaker: "👩 母后大人",
                 textDynamic: true,
                 textByDemand: {
-                    "earphone": "\u4E70\u8033\u673A\uFF1F\u4E0A\u6B21\u8BF4\u8981\u4E70\u952E\u76D8\uFF0C\u8FD9\u6B21\u53C8\u6362\u82B1\u6837\u3002\u884C\uFF0C\u6211\u53EF\u4EE5\u7ED9\u4F60\u8F6C\uFF0C\u4F46\u6BCF\u5929\u665A\u4E0A\u89C6\u9891\u68C0\u67E5\u5BBF\u820D\u536B\u751F\uFF0C\u76F4\u5230\u4E0B\u4E2A\u6708\u3002",
-                    "keyboard": "\u952E\u76D8\u574F\u4E86\uFF1F\u6211\u770B\u4F60\u4E0A\u5B66\u671F\u624D\u6362\u4E86\u4E00\u4E2A\u3002\u884C\uFF0C\u8F6C\u4F60\u53EF\u4EE5\uFF0C\u4F46\u4E0B\u4E2A\u6708\u751F\u6D3B\u8D39\u51CF\u4E24\u767E\u3002",
-                    "skincare": "\u62A4\u80A4\u54C1\u7528\u5B8C\u4E86\uFF1F\u4F60\u4E0A\u4E2A\u6708\u4E0D\u662F\u521A\u4E70\u8FC7\u3002\u884C\uFF0C\u8F6C\u4F60\uFF0C\u4F46\u6761\u4EF6\u8DDF\u4E0A\u6B21\u4E00\u6837\uFF1A\u89C6\u9891\u67E5\u5BBF\u820D\u5230\u6708\u5E95\u3002",
-                    "coat": "\u4E70\u5927\u8863\uFF1F\u73B0\u5728\u53C8\u4E0D\u662F\u51AC\u5929\u3002\u884C\uFF0C\u7ED9\u4F60\u8F6C\uFF0C\u4E0B\u4E2A\u6708\u751F\u6D3B\u8D39\u6263\u4E24\u767E\u3002",
-                    "general": "\u53C8\u4E0D\u591F\u4E86\uFF1F\u4E0A\u4E2A\u6708\u521A\u8F6C\u5B8C\u4F60\u5C31\u4E70\u4E86\u4E2A\u6CA1\u7528\u7684\u3002\u8FD9\u6B21\u6211\u53EA\u8F6C\u57FA\u672C\u4F19\u98DF\u8D39\uFF0C\u522B\u7684\u81EA\u5DF1\u60F3\u529E\u6CD5\u3002"
+                    "earphone": "买耳机？上次说要买键盘，这次又换花样。行，我可以给你转，但每天晚上视频检查宿舍卫生，直到下个月。",
+                    "keyboard": "键盘坏了？我看你上学期才换了一个。行，转你可以，但下个月生活费减两百。",
+                    "skincare": "护肤品用完了？你上个月不是刚买过。行，转你，但条件跟上次一样：视频查宿舍到月底。",
+                    "coat": "买大衣？现在又不是冬天。行，给你转，下个月生活费扣两百。",
+                    "general": "又不够了？上个月刚转完你就买了个没用的。这次我只转基本伙食费，别的自己想办法。"
                 },
                 choices: [
-                    { text: "\u8C22\u8C22\u5988\uFF01\u6211\u4E00\u5B9A\u7701\u7740\u82B1", next: "r9_final", isAgree: true },
-                    { text: "\u5988\u60A8\u8BF4\uFF0C\u6211\u542C\u7740", next: "r9_final", isAgree: true },
-                    { text: "\u7B97\u4E86\uFF0C\u4E0D\u8981\u4E86\uFF0C\u6211\u81EA\u5DF1\u60F3\u529E\u6CD5", next: "ending_check_giveup",
-                        heartChange: -10, isEnding: true }
+                    { text: "谢谢妈！我一定省着花", next: "r9_final", isAgree: true },
+                    { text: "妈您说，我听着", next: "r9_final", isAgree: true },
+                    { text: "算了，不要了，我自己想办法", next: "ending_check_giveup", heartChange: -10,
+                isEnding: true }
                 ]
             };
 
             // 第9轮：妈妈最后叮嘱
             storyNodes['r9_final'] = {
-                speaker: "\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA",
+                speaker: "👩 母后大人",
                 textDynamic: true,
                 textByDemand: {
-                    "earphone": "\u8F6C\u4E86\uFF0C\u6CE8\u610F\u67E5\u6536\u3002\u522B\u5FD8\u4E86\u4F60\u7B54\u5E94\u6211\u7684\u4E8B\u3002",
-                    "keyboard": "\u8F6C\u4E86\uFF0C\u6CE8\u610F\u67E5\u6536\u3002\u522B\u5FD8\u4E86\u4F60\u7B54\u5E94\u6211\u7684\u4E8B\u3002",
-                    "skincare": "\u8F6C\u4E86\uFF0C\u4E0B\u4E0D\u4E3A\u4F8B\u3002\u65E9\u70B9\u7761\u3002",
-                    "coat": "\u8F6C\u4E86\uFF0C\u4E0B\u4E0D\u4E3A\u4F8B\u3002\u65E9\u70B9\u7761\u3002",
-                    "general": "\u8F6C\u8FC7\u53BB\u4E86\uFF0C\u7701\u7740\u70B9\u82B1\u3002\u8FD9\u4E2A\u6708\u522B\u518D\u95EE\u6211\u8981\u4E86\u3002"
+                    "earphone": "转了，注意查收。别忘了你答应我的事。",
+                    "keyboard": "转了，注意查收。别忘了你答应我的事。",
+                    "skincare": "转了，下不为例。早点睡。",
+                    "coat": "转了，下不为例。早点睡。",
+                    "general": "转过去了，省着点花。这个月别再问我要了。"
                 },
                 isFinalBubble: true,
                 nextEndingType: 'agree'
@@ -1002,7 +997,7 @@
                 bubble.className = 'bubble ' + (isPlayer ? 'player' : 'mom');
                 var label = document.createElement('span');
                 label.className = 'speaker-label';
-                label.textContent = isPlayer ? '\u6211' : speaker;
+                label.textContent = isPlayer ? '我' : speaker;
                 bubble.appendChild(label);
                 var textSpan = document.createElement('span');
                 textSpan.textContent = text;
@@ -1094,7 +1089,7 @@
                 lastNodeId = currentNodeId;
 
                 // 显示玩家气泡
-                addBubble("\uD83D\uDC69 \u6BCD\u540E\u5927\u4EBA", playerText, true);
+                addBubble("👩 母后大人", playerText, true);
 
                 // 移除选项按钮
                 removeChoices();
@@ -1167,7 +1162,6 @@
 
                 var node = storyNodes[nodeId];
                 if (!node) {
-                    // 检查是否是结局
                     if (nodeId && nodeId.indexOf('ending_') === 0) {
                         showEnding(nodeId);
                         return;
@@ -1225,9 +1219,8 @@
                 html += '<div class="ending-emoji">' + ending.emoji + '</div>';
                 html += '<div class="ending-name">' + ending.name + '</div>';
                 html += '<div class="ending-desc">' + ending.desc + '</div>';
-                html += '<div class="ending-rank">\u51FB\u8D25\u4E86\u5168\u56FD ' + ending.rank +
-                    ' \u7684\u5927\u5B66\u751F</div>';
-                html += '<button class="replay-btn" id="replayBtn">\u518D\u6765\u4E00\u6B21</button>';
+                html += '<div class="ending-rank">击败了全国 ' + ending.rank + ' 的大学生</div>';
+                html += '<button class="replay-btn" id="replayBtn">再来一次</button>';
 
                 endingCard.innerHTML = html;
                 endingOverlay.classList.remove('hidden');
@@ -1328,9 +1321,8 @@
 
             document.addEventListener('touchmove', function(e) {}, { passive: true });
 
-            console.log('\u6DF1\u591C\u6BCD\u5B50\u5BF9\u8BDD - \u804A\u5929\u53D9\u4E8B\u6E38\u620F \u5DF2\u5C31\u7EEA');
-            console.log(
-                '\u2764\uFE0F \u5B5D\u5FC3\u503C\u7CFB\u7EDF | 12\u4E2A\u7ED3\u5C40 | \u7537\u5973\u5206\u652F | 9\u8F6E\u5BF9\u8BDD | \u903B\u8F91\u95ED\u73AF');
+            console.log('深夜母子对话 - 聊天叙事游戏 已就绪');
+            console.log('❤️ 孝心值系统 | 12个结局 | 男女分支 | 9轮对话 | 逻辑闭环');
         })();
     </script>
 </body>
