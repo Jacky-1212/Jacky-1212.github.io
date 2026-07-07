@@ -728,7 +728,7 @@
                 return '';
             }
 
-            // ============ storyNodes定义 ============
+            // ============ storyNodes定义（已修复失忆和牛头不对马嘴问题） ============
             var storyNodes = {};
 
             // 第1轮
@@ -742,7 +742,7 @@
                 ]
             };
 
-            // 第2轮 - r2_a中铺垫实习/考研话题
+            // 第2轮 - r2_a铺垫实习/考研话题
             storyNodes['r2_a'] = {
                 speaker: "👩 母后大人",
                 text: "哦哦那你快睡，明天早八别迟到。对了，你上次说那个实习/考研/考公，最近有消息吗？",
@@ -822,15 +822,14 @@
                 storyNodes['r3_' + r3Suffixes[i]] = buildR3Node(r3Suffixes[i]);
             }
 
-            // 第4轮
+            // 第4轮（修复选项与台词匹配问题）
             storyNodes['r4_a'] = {
                 speaker: "👩 母后大人",
                 text: "你是不是有什么事瞒着我？",
                 choices: [
                     { text: "没有啊妈，能有什么事", next: "r5_deny" },
                     { text: "嗯……有点小事", next: "r5_half" },
-                    { text: "您怎么知道的？", next: "r5_exposed", heartChange: -5,
-                    setFlagDisrespect: true }
+                    { text: "您怎么知道的？", next: "r5_exposed", heartChange: -5, setFlagDisrespect: true }
                 ]
             };
             storyNodes['r4_b'] = {
@@ -838,9 +837,8 @@
                 text: "又出去潇洒？你最近花销很大吧？",
                 choices: [
                     { text: "不是啊妈，我省着呢", next: "r5_deny" },
-                    { text: "嗯……有点大", next: "r5_half" },
-                    { text: "您怎么知道我吃什么了？", next: "r5_exposed", heartChange: -5,
-                    setFlagDisrespect: true }
+                    { text: "嗯……确实有点大", next: "r5_half" },
+                    { text: "您怎么知道我花销大？", next: "r5_exposed", heartChange: -5, setFlagDisrespect: true }
                 ]
             };
             storyNodes['r4_c'] = {
@@ -849,12 +847,11 @@
                 choices: [
                     { text: "多着呢妈，不用操心", next: "r5_deny" },
                     { text: "剩余不多了……", next: "r5_half" },
-                    { text: "您怎么什么都知道了？", next: "r5_exposed", heartChange: -5,
-                    setFlagDisrespect: true }
+                    { text: "您怎么什么都知道？", next: "r5_exposed", heartChange: -5, setFlagDisrespect: true }
                 ]
             };
 
-            // 第5轮 - 改为追问进展，而非重复提问
+            // 第5轮（衔接更自然的追问）
             storyNodes['r5_deny'] = {
                 speaker: "👩 母后大人",
                 text: "真的没事？那我问你，上次说的实习/考研，你还没给我个准话。你可别又敷衍我。",
@@ -879,8 +876,7 @@
                 choices: [
                     { text: "妈您还翻我朋友圈！！", next: "r6_transition" },
                     { text: "对不起妈……我确实没准备好", next: "r6_transition" },
-                    { text: "那又怎样，我自己的事", next: "ending_rebel", heartChange: -50,
-                    setFlagDisrespect: true, isEnding: true }
+                    { text: "那又怎样，我自己的事", next: "ending_rebel", heartChange: -50, setFlagDisrespect: true, isEnding: true }
                 ]
             };
 
@@ -911,7 +907,7 @@
                 ]
             };
 
-            // 第8轮：妈妈反击
+            // 第8轮：妈妈反击（台词根据需求动态变化）
             storyNodes['r8_mom_reply'] = {
                 speaker: "👩 母后大人",
                 textDynamic: true,
@@ -925,8 +921,7 @@
                 choices: [
                     { text: "谢谢妈！我一定省着花", next: "r9_final", isAgree: true },
                     { text: "妈您说，我听着", next: "r9_final", isAgree: true },
-                    { text: "算了，不要了，我自己想办法", next: "ending_check_giveup", heartChange: -10,
-                isEnding: true }
+                    { text: "算了，不要了，我自己想办法", next: "ending_check_giveup", heartChange: -10, isEnding: true }
                 ]
             };
 
@@ -1321,8 +1316,8 @@
 
             document.addEventListener('touchmove', function(e) {}, { passive: true });
 
-            console.log('深夜母子对话 - 聊天叙事游戏 已就绪');
-            console.log('❤️ 孝心值系统 | 12个结局 | 男女分支 | 9轮对话 | 逻辑闭环');
+            console.log('深夜母子对话 - 聊天叙事游戏 已就绪（逻辑修复版）');
+            console.log('❤️ 孝心值系统 | 12个结局 | 男女分支 | 9轮对话 | 无失忆无错位选项');
         })();
     </script>
 </body>
