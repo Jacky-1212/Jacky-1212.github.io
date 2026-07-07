@@ -551,7 +551,6 @@
             <div class="ending-card" id="endingCard"></div>
         </div>
     </div>
-
     <script>
         (function() {
             var gender = null;
@@ -571,27 +570,82 @@
             var btnFemale = document.getElementById('btnFemale');
 
             var endings = {
-                "ending_earphone": { emoji: "\uD83C\uDFA7", name: "\uD83C\uDFA7 耳机战士（男）", desc: "要了两三百买耳机，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。", rank: "60%" },
-                "ending_skincare": { emoji: "\uD83D\uDC84", name: "\uD83D\uDC84 护肤品守护者（女）", desc: "要了两三百买护肤品，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。", rank: "60%" },
-                "ending_keyboard": { emoji: "\u2328\uFE0F", name: "\u2328\uFE0F 键盘败家子（男）", desc: "要了五百买键盘，妈妈转了。但附言是\u201C下个月的生活费减两百\u201D。", rank: "45%" },
-                "ending_coat": { emoji: "\uD83D\uDC57", name: "\uD83D\uDC57 大衣梦想家（女）", desc: "要了五百买大衣，妈妈转了。但附言是\u201C下个月的生活费减两百\u201D。", rank: "45%" },
-                "ending_giveup": { emoji: "\uD83C\uDF19", name: "\uD83C\uDF19 深夜emo", desc: "你放弃了要钱。妈妈回了一个\u201C嗯\u201D，然后对话框安静了。你盯着天花板，有点后悔。", rank: "35%" },
-                "ending_negotiate": { emoji: "\uD83D\uDCB8", name: "\uD83D\uDCB8 谈判专家", desc: "你成功把扣款从两百砍到了一百。妈妈叹了口气说\u201C你也就这点出息\u201D。", rank: "55%" },
-                "ending_accept": { emoji: "\uD83E\uDD10", name: "\uD83E\uDD10 忍气吞声", desc: "你接受了减两百的条件。钱到手了，但你已经开始心疼下个月了。", rank: "40%" },
-                "ending_debt_small": { emoji: "\uD83E\uDD1D", name: "\uD83E\uDD1D 母子和解", desc: "你坦白欠了几百块。妈妈骂了你一顿，但还是把钱转给你了。附言：\u201C下不为例\u201D。", rank: "30%" },
-                "ending_debt_big": { emoji: "\uD83D\uDC80", name: "\uD83D\uDC80 爸的审判", desc: "妈妈挂了电话。五分钟后，爸爸的电话打进来了。你颤抖着按下接听键……", rank: "15%" },
-                "ending_debt_explode": { emoji: "\uD83D\uDD25", name: "\uD83D\uDD25 彻底爆发", desc: "\u201C没敢算？\u201D妈妈的声音提高了八度。接下来是长达二十分钟的电话训话。你感觉耳朵在燃烧。", rank: "10%" },
-                "ending_rebel": { emoji: "\u26A1", name: "\u26A1 叛逆的代价", desc: "\u201C那又怎样，我自己的事\u201D——你听到电话那头沉默了三秒。第二天，爸爸的电话打来了。", rank: "20%" }
+                "ending_earphone": {
+                    emoji: "\uD83C\uDFA7",
+                    name: "\uD83C\uDFA7 耳机战士（男）",
+                    desc: "要了两三百买耳机，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。",
+                    rank: "60%"
+                },
+                "ending_skincare": {
+                    emoji: "\uD83D\uDC84",
+                    name: "\uD83D\uDC84 护肤品守护者（女）",
+                    desc: "要了两三百买护肤品，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。",
+                    rank: "60%"
+                },
+                "ending_keyboard": {
+                    emoji: "\u2328\uFE0F",
+                    name: "\u2328\uFE0F 键盘败家子（男）",
+                    desc: "要了五百买键盘，妈妈转了。但附言是\u201C下个月的生活费减两百\u201D。",
+                    rank: "45%"
+                },
+                "ending_coat": {
+                    emoji: "\uD83D\uDC57",
+                    name: "\uD83D\uDC57 大衣梦想家（女）",
+                    desc: "要了五百买大衣，妈妈转了。但附言是\u201C下个月的生活费减两百\u201D。",
+                    rank: "45%"
+                },
+                "ending_giveup": {
+                    emoji: "\uD83C\uDF19",
+                    name: "\uD83C\uDF19 深夜emo",
+                    desc: "你放弃了要钱。妈妈回了一个\u201C嗯\u201D，然后对话框安静了。你盯着天花板，有点后悔。",
+                    rank: "35%"
+                },
+                "ending_negotiate": {
+                    emoji: "\uD83D\uDCB8",
+                    name: "\uD83D\uDCB8 谈判专家",
+                    desc: "你成功把扣款从两百砍到了一百。妈妈叹了口气说\u201C你也就这点出息\u201D。",
+                    rank: "55%"
+                },
+                "ending_accept": {
+                    emoji: "\uD83E\uDD10",
+                    name: "\uD83E\uDD10 忍气吞声",
+                    desc: "你接受了减两百的条件。钱到手了，但你已经开始心疼下个月了。",
+                    rank: "40%"
+                },
+                "ending_debt_small": {
+                    emoji: "\uD83E\uDD1D",
+                    name: "\uD83E\uDD1D 母子和解",
+                    desc: "你坦白欠了几百块。妈妈骂了你一顿，但还是把钱转给你了。附言：\u201C下不为例\u201D。",
+                    rank: "30%"
+                },
+                "ending_debt_big": {
+                    emoji: "\uD83D\uDC80",
+                    name: "\uD83D\uDC80 爸的审判",
+                    desc: "妈妈挂了电话。五分钟后，爸爸的电话打进来了。你颤抖着按下接听键……",
+                    rank: "15%"
+                },
+                "ending_debt_explode": {
+                    emoji: "\uD83D\uDD25",
+                    name: "\uD83D\uDD25 彻底爆发",
+                    desc: "\u201C没敢算？\u201D妈妈的声音提高了八度。接下来是长达二十分钟的电话训话。你感觉耳朵在燃烧。",
+                    rank: "10%"
+                },
+                "ending_rebel": {
+                    emoji: "\u26A1",
+                    name: "\u26A1 叛逆的代价",
+                    desc: "\u201C那又怎样，我自己的事\u201D——你听到电话那头沉默了三秒。第二天，爸爸的电话打来了。",
+                    rank: "20%"
+                }
             };
 
-            function getGenderEnding(endingType) {
-                if (endingType === 'earphone_or_skincare') {
+            function getGenderEnding(type) {
+                if (type === 'earphone_or_skincare') {
                     return gender === 'male' ? 'ending_earphone' : 'ending_skincare';
                 }
-                if (endingType === 'keyboard_or_coat') {
+                if (type === 'keyboard_or_coat') {
                     return gender === 'male' ? 'ending_keyboard' : 'ending_coat';
                 }
-                return endingType;
+                return type;
             }
 
             var storyNodes = {};
@@ -639,45 +693,48 @@
             };
 
             function buildR3Node(suffix) {
-                var node = { speaker: "\uD83D\uDC69 母后大人", choices: [], genderChoices: true };
+                var node = {
+                    speaker: "\uD83D\uDC69 母后大人",
+                    genderChoices: true
+                };
                 if (suffix === 'a') {
                     node.text = "最近吃饭怎么样？别老吃外卖。";
                     node.os = "糟糕，她怎么知道我昨晚点外卖了……";
                     node.choicesMale = [
-                        { text: "挺好的，食堂随便吃吃", nextNode: "r4a" },
-                        { text: "偶尔跟室友出去撸串", nextNode: "r4b" },
-                        { text: "凑合过吧……月底了嘛", nextNode: "r4c" }
+                        { text: "挺好的，食堂随便吃吃", nextNode: "r4" },
+                        { text: "偶尔跟室友出去撸串", nextNode: "r4" },
+                        { text: "凑合过吧……月底了嘛", nextNode: "r4" }
                     ];
                     node.choicesFemale = [
-                        { text: "挺好的，跟室友搭伙做饭", nextNode: "r4a" },
-                        { text: "偶尔喝杯奶茶就当一顿了", nextNode: "r4b" },
-                        { text: "凑合过吧……月底了嘛", nextNode: "r4c" }
+                        { text: "挺好的，跟室友搭伙做饭", nextNode: "r4" },
+                        { text: "偶尔喝杯奶茶就当一顿了", nextNode: "r4" },
+                        { text: "凑合过吧……月底了嘛", nextNode: "r4" }
                     ];
                 } else if (suffix === 'b') {
                     node.text = "我就知道你又在玩。最近课业不忙吗？论文项目都搞完了？";
                     node.os = "完了完了，被抓现行了……";
                     node.choicesMale = [
-                        { text: "都搞完了，您放心", nextNode: "r4a" },
-                        { text: "还差个论文没写完……", nextNode: "r4b" },
-                        { text: "明天再说，不急", nextNode: "r4c" }
+                        { text: "都搞完了，您放心", nextNode: "r4" },
+                        { text: "还差个论文没写完……", nextNode: "r4" },
+                        { text: "明天再说，不急", nextNode: "r4" }
                     ];
                     node.choicesFemale = [
-                        { text: "都搞完了，您放心", nextNode: "r4a" },
-                        { text: "还差个报告没写完……", nextNode: "r4b" },
-                        { text: "明天再说，不急", nextNode: "r4c" }
+                        { text: "都搞完了，您放心", nextNode: "r4" },
+                        { text: "还差个报告没写完……", nextNode: "r4" },
+                        { text: "明天再说，不急", nextNode: "r4" }
                     ];
                 } else if (suffix === 'c') {
                     node.text = "想什么呢？跟妈说说。";
                     node.os = "她居然没骂我，有点意外……";
                     node.choicesMale = [
-                        { text: "在想毕业以后的事", nextNode: "r4a" },
-                        { text: "在想周末要不要跟同学出去玩", nextNode: "r4b" },
-                        { text: "没什么，就是有点累", nextNode: "r4c" }
+                        { text: "在想毕业以后的事", nextNode: "r4" },
+                        { text: "在想周末要不要跟同学出去玩", nextNode: "r4" },
+                        { text: "没什么，就是有点累", nextNode: "r4" }
                     ];
                     node.choicesFemale = [
-                        { text: "在想毕业以后的事", nextNode: "r4a" },
-                        { text: "在想周末要不要跟同学去逛街", nextNode: "r4b" },
-                        { text: "没什么，就是有点累", nextNode: "r4c" }
+                        { text: "在想毕业以后的事", nextNode: "r4" },
+                        { text: "在想周末要不要跟同学去逛街", nextNode: "r4" },
+                        { text: "没什么，就是有点累", nextNode: "r4" }
                     ];
                 }
                 return node;
@@ -686,132 +743,61 @@
             storyNodes['r3b'] = buildR3Node('b');
             storyNodes['r3c'] = buildR3Node('c');
 
-            storyNodes['r4a'] = {
+            storyNodes['r4'] = {
                 speaker: "\uD83D\uDC69 母后大人",
-                text: "食堂能吃这么好？我看你朋友圈昨天还晒火锅了呢。",
-                os: "忘记屏蔽她了……",
+                text: "行了不说这些了。对了，你上次说那个实习/考研/考公，怎么样了？",
+                os: "她怎么突然转到这个话题了……",
                 choices: [
-                    { text: "那是上周的事了，这周都很乖", nextNode: "r5a" },
-                    { text: "室友请客，我不好意思拒绝", nextNode: "r5b" },
-                    { text: "妈您还监视我朋友圈啊？", nextNode: "r5c" }
-                ]
-            };
-            storyNodes['r4b'] = {
-                speaker: "\uD83D\uDC69 母后大人",
-                text: "又出去吃吃喝喝，你上个月不是说要在宿舍省钱吗？",
-                os: "她记性也太好了吧……",
-                choices: [
-                    { text: "计划赶不上变化嘛……", nextNode: "r5a" },
-                    { text: "室友非要去，我一个人在宿舍多尴尬", nextNode: "r5b" },
-                    { text: "省钱也不能亏待自己啊", nextNode: "r5c" }
-                ]
-            };
-            storyNodes['r4c'] = {
-                speaker: "\uD83D\uDC69 母后大人",
-                text: "月底了知道省了？你月初大手大脚的时候怎么不想想月底？",
-                os: "她怎么什么都知道了……",
-                choices: [
-                    { text: "我知道了嘛……下个月一定改", nextNode: "r5a" },
-                    { text: "这不是还没到月底嘛，还有几天", nextNode: "r5b" },
-                    { text: "妈您就别念叨了，我心里有数", nextNode: "r5c" }
+                    { text: "投了几家了，等消息呢", nextNode: "r5" },
+                    { text: "在准备了，就是有点迷茫", nextNode: "r5" },
+                    { text: "妈您别急，我心里有数", nextNode: "r5", heartChange: 5 }
                 ]
             };
 
-            storyNodes['r5a'] = {
+            storyNodes['r5'] = {
                 speaker: "\uD83D\uDC69 母后大人",
-                text: "行了不说你了。对了，你上次说那个实习/考研/考公，怎么样了？",
-                os: "她怎么突然转到这个话题了……",
+                text: "行，你自己上点心就行。我也不想天天念叨你，免得你又嫌我烦。……不过话说回来，你最近手头怎么样？",
+                os: "等等，她怎么突然转到钱上了？",
                 choices: [
-                    { text: "投了几家了，等消息呢", nextNode: "r6a" },
-                    { text: "在准备了，就是有点迷茫", nextNode: "r6b" },
-                    { text: "妈您别急，我心里有数", nextNode: "r6c", heartChange: 5 }
-                ]
-            };
-            storyNodes['r5b'] = {
-                speaker: "\uD83D\uDC69 母后大人",
-                text: "我看你就是找借口。对了，你那个实习/考研/考公，到底打算怎么办？",
-                os: "完了完了，我根本没投……",
-                choices: [
-                    { text: "我真有在准备，就是进度慢了点儿", nextNode: "r6a" },
-                    { text: "最近课多，等放假了再全力搞", nextNode: "r6b" },
-                    { text: "您别催了，越催我越焦虑", nextNode: "r6c" }
-                ]
-            };
-            storyNodes['r5c'] = {
-                speaker: "\uD83D\uDC69 母后大人",
-                text: "你别跟我扯这些。说正事，你那个实习/考研/考公，到底有没有在搞？",
-                os: "她今天怎么这么较真……",
-                choices: [
-                    { text: "在搞在搞，您放心", nextNode: "r6a" },
-                    { text: "说实话……还没开始", nextNode: "r6b" },
-                    { text: "那又怎样，我自己的事", nextNode: "ending_rebel", heartChange: -50, isEnding: true }
+                    { text: "挺好的，够花", nextNode: "r6a" },
+                    { text: "还行吧，就是最近花销大了点", nextNode: "r6b" },
+                    { text: "呃……其实我想跟您商量个事儿", nextNode: "r6c" }
                 ]
             };
 
             storyNodes['r6a'] = {
                 speaker: "\uD83D\uDC69 母后大人",
-                text: "行，你自己上点心就行。我也不想天天念叨你。……不过话说回来，你最近手头怎么样？",
-                os: "等等，她怎么突然转到钱上了？",
-                choices: [
-                    { text: "挺好的，够花", nextNode: "r7a" },
-                    { text: "还行吧，就是最近花销大了点", nextNode: "r7b" },
-                    { text: "呃……其实我想跟您商量个事儿", nextNode: "r7c" }
-                ]
-            };
-            storyNodes['r6b'] = {
-                speaker: "\uD83D\uDC69 母后大人",
-                text: "算了，我也不逼你。你自己看着办吧。……对了，你最近钱还够用吗？",
-                os: "她怎么一副早就料到的表情……",
-                choices: [
-                    { text: "够用够用，妈您别操心", nextNode: "r7a" },
-                    { text: "嗯……有点紧张", nextNode: "r7b" },
-                    { text: "正想跟您说这个事儿呢", nextNode: "r7c" }
-                ]
-            };
-            storyNodes['r6c'] = {
-                speaker: "\uD83D\uDC69 母后大人",
-                text: "行行行，我不说了。省得你说我烦。……对了，你生活费还够吗？",
-                os: "她居然没生气……不对劲",
-                choices: [
-                    { text: "够，不用操心", nextNode: "r7a" },
-                    { text: "不太够……", nextNode: "r7b" },
-                    { text: "妈您这是转移话题吗？", nextNode: "r7c" }
-                ]
-            };
-
-            storyNodes['r7a'] = {
-                speaker: "\uD83D\uDC69 母后大人",
                 text: "行，那你自己省着点花。别又像上个月一样，月中就跑来说没钱了。",
                 os: "被她看穿了……",
                 choices: [
-                    { text: "不会的不会的，我有计划", nextNode: "r8a" },
-                    { text: "其实……可能还是有点悬", nextNode: "r8b" },
-                    { text: "妈您就这么不相信我？", nextNode: "r8c", heartChange: -5 }
+                    { text: "不会的不会的，我有计划", nextNode: "r7a" },
+                    { text: "其实……可能还是有点悬", nextNode: "r7b" },
+                    { text: "妈您就这么不相信我？", nextNode: "r7c", heartChange: -5 }
                 ]
             };
-            storyNodes['r7b'] = {
+            storyNodes['r6b'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 textMale: "花销大？你上个月也说花销大，结果转完钱你又买了个耳机吧？",
                 textFemale: "花销大？你上个月也说花销大，结果转完钱你又买了件衣服吧？",
                 os: "她记性也太好了吧……这下不好糊弄了",
                 choices: [
-                    { text: "妈您记性也太好了吧……", nextNode: "r8a" },
-                    { text: "那次是意外！这次是真的有需要", nextNode: "r8b" },
-                    { text: "您到底给不给嘛\uD83D\uDE05", nextNode: "r8c" }
+                    { text: "妈您记性也太好了吧……", nextNode: "r7a" },
+                    { text: "那次是意外！这次是真的有需要", nextNode: "r7b" },
+                    { text: "您到底给不给嘛\uD83D\uDE05", nextNode: "r7c" }
                 ]
             };
-            storyNodes['r7c'] = {
+            storyNodes['r6c'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 text: "我就知道你小子/丫头没憋好屁。说吧，要多少？",
                 os: "终于到这一步了……",
                 choices: [
-                    { text: "不多，就两三百", nextNode: "r8a" },
-                    { text: "五百……", nextNode: "r8b" },
-                    { text: "其实我欠了室友点钱……", nextNode: "r8c" }
+                    { text: "不多，就两三百", nextNode: "r7a" },
+                    { text: "五百……", nextNode: "r7b" },
+                    { text: "其实我欠了室友点钱……", nextNode: "r7c" }
                 ]
             };
 
-            storyNodes['r8a'] = {
+            storyNodes['r7a'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 text: "行了行了，看你这可怜样。我给你转点，但你听好了——",
                 os: "终于到这一步了……",
@@ -821,7 +807,7 @@
                     { text: "算了，不要了，我自己想办法", nextNode: "ending_giveup", isEnding: true, heartChange: -10 }
                 ]
             };
-            storyNodes['r8b'] = {
+            storyNodes['r7b'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 text: "行吧，我给你转，但你下个月的生活费要减两百。你自己掂量着花。",
                 os: "果然没那么简单……",
@@ -831,7 +817,7 @@
                     { text: "那算了，我不要了", nextNode: "ending_giveup", isEnding: true, heartChange: -10 }
                 ]
             };
-            storyNodes['r8c'] = {
+            storyNodes['r7c'] = {
                 speaker: "\uD83D\uDC69 母后大人",
                 text: "欠了多少？你怎么不早说！你知不知道借钱这事儿有多严重？",
                 os: "完了完了，这下真完了……",
@@ -975,30 +961,32 @@
                 if (isProcessing) return;
                 isProcessing = true;
                 var choice = choices[index];
-                var playerText = choice.text;
-                addBubble("\uD83D\uDC69 母后大人", playerText, true);
+                addBubble("\uD83D\uDC69 母后大人", choice.text, true);
                 removeChoices();
+
                 if (typeof choice.heartChange !== 'undefined') {
                     heart += choice.heartChange;
                     if (heart < 0) heart = 0;
                     if (heart > 200) heart = 200;
                 }
                 updateTopbar();
+
                 var nextId = choice.nextNode;
                 if (choice.genderEnding) {
                     nextId = getGenderEnding(choice.genderEnding);
                 }
-                if (nextId && (nextId.indexOf('ending_') === 0 || storyNodes[nextId] && storyNodes[nextId].isEnding)) {
+
+                var node = storyNodes[nextId];
+                if (node && node.isEnding) {
+                    var finalEndingId = node.endingId || nextId;
+                    if (node.genderEnding) finalEndingId = getGenderEnding(node.genderEnding);
                     setTimeout(function() {
-                        var finalEndingId = nextId;
-                        var node = storyNodes[nextId];
-                        if (node && node.endingId) finalEndingId = node.endingId;
-                        if (node && node.genderEnding) finalEndingId = getGenderEnding(node.genderEnding);
                         showEnding(finalEndingId);
                         isProcessing = false;
                     }, 1200);
                     return;
                 }
+
                 setTimeout(function() {
                     addTypingBubble();
                     setTimeout(function() {
@@ -1013,29 +1001,17 @@
                 currentNode = nodeId;
                 round += 1;
                 var node = storyNodes[nodeId];
-                if (!node) {
-                    if (nodeId && nodeId.indexOf('ending_') === 0) {
-                        showEnding(nodeId);
-                        return;
-                    }
-                    return;
-                }
-                if (node.isEnding) {
-                    var endingId = node.endingId || nodeId;
-                    if (node.genderEnding) {
-                        endingId = getGenderEnding(node.genderEnding);
-                    }
-                    showEnding(endingId);
-                    return;
-                }
+                if (!node) return;
+
                 var nodeText = getNodeText(node);
                 addBubble(node.speaker, nodeText, false);
-                var osText = node.os || '';
-                if (osText) {
+
+                if (node.os) {
                     setTimeout(function() {
-                        addInnerOS(osText);
+                        addInnerOS(node.os);
                     }, 300);
                 }
+
                 updateTopbar();
                 var choices = getChoicesForNode(node);
                 setTimeout(function() {
@@ -1044,19 +1020,19 @@
             }
 
             function showEnding(endingId) {
-                var ending = endings[endingId];
-                if (!ending) {
-                    ending = endings['ending_giveup'];
-                }
+                var ending = endings[endingId] || endings['ending_giveup'];
                 updateTopbar();
+
                 var html = '';
                 html += '<div class="ending-emoji">' + ending.emoji + '</div>';
                 html += '<div class="ending-name">' + ending.name + '</div>';
                 html += '<div class="ending-desc">' + ending.desc + '</div>';
                 html += '<div class="ending-rank">击败了全国 ' + ending.rank + ' 的大学生</div>';
                 html += '<button class="replay-btn" id="replayBtn">再来一次</button>';
+
                 endingCard.innerHTML = html;
                 endingOverlay.classList.remove('hidden');
+
                 setTimeout(function() {
                     var replayBtn = document.getElementById('replayBtn');
                     if (replayBtn) {
@@ -1135,8 +1111,8 @@
             init();
 
             document.addEventListener('touchmove', function(e) {}, { passive: true });
-            console.log('深夜母子对话 - 聊天叙事游戏 已就绪（大学语境版）');
-            console.log('12个结局 | 8轮对话 | 性别分流 | 节点状态机');
+            console.log('深夜母子对话 - 聊天叙事游戏 已就绪（汇合节点版）');
+            console.log('12个结局 | 节点状态机 | 自然汇合');
         })();
     </script>
 </body>
