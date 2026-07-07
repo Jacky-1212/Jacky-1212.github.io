@@ -2,222 +2,31 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小树洞 · 大学生的情绪角落</title>
+    <title>小树洞</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background: #667eea;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            color: #333;
+            height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
         }
-
-        .container {
-            max-width: 520px;
-            width: 100%;
-        }
-
-        /* 头部 */
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            color: white;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .subtitle {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-
-        /* 卡片 */
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 22px;
-            margin-bottom: 18px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .card-tag {
-            background: #f0f0ff;
-            color: #667eea;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .card-time {
-            color: #aaa;
-            font-size: 0.75rem;
-        }
-
-        .card-text {
-            line-height: 1.7;
-            color: #444;
-            font-size: 0.95rem;
-            margin-bottom: 14px;
-        }
-
-        .hug-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-
-        .hug-btn:hover {
-            background: #ee5a24;
-            transform: scale(1.05);
-        }
-
-        /* 投稿入口 */
-        .submit-area {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 26px;
-            text-align: center;
-            margin-top: 10px;
-            border: 2px dashed rgba(255,255,255,0.3);
-        }
-
-        .submit-area p {
-            color: white;
-            font-size: 1rem;
-            margin-bottom: 16px;
-            line-height: 1.6;
-        }
-
-        .submit-btn {
-            display: inline-block;
+        .box {
             background: white;
-            color: #667eea;
-            padding: 14px 38px;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1.05rem;
-            text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .submit-btn:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .footer-note {
+            padding: 40px;
+            border-radius: 20px;
             text-align: center;
-            margin-top: 24px;
-            color: rgba(255,255,255,0.6);
-            font-size: 0.8rem;
         }
-
-        .footer-note a {
-            color: white;
-            text-decoration: underline;
-        }
+        h1 { color: #333; }
+        p { color: #666; margin-top: 10px; }
     </style>
 </head>
 <body>
-
-    <div class="container">
-
-        <!-- 头部 -->
-        <header>
-            <h1>🌳 小树洞</h1>
-            <p class="subtitle">把烦恼留在这里，轻装前行
-        </header>
-
-        <!-- 示例卡片 1 -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-tag">📚 期末焦虑</span>
-                <span class="card-time">刚刚</span>
-            </div>
-            <div class="card-text">
-                下周连着三场考试，复习不完根本复习不完。图书馆坐了一天，脑子还是嗡嗡的。室友看起来都很淡定，只有我慌得要命……
-            </div>
-            <button class="hug-btn" onclick="this.textContent = '🤗 抱抱 ' + (parseInt(this.textContent.match(/\d+/)?.[0] || 0) + 1)">🤗 抱抱 27</button>
-        </div>
-
-        <!-- 示例卡片 2 -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-tag">💬 人际困扰</span>
-                <span class="card-time">5分钟前</span>
-            </div>
-            <div class="card-text">
-                小组作业队友全程划水，我一个人熬了三个大夜做完。汇报的时候TA倒是积极上台了，老师还夸他讲得好。
-            </div>
-            <button class="hug-btn" onclick="this.textContent = '🤗 抱抱 ' + (parseInt(this.textContent.match(/\d+/)?.[0] || 0) + 1)">🤗 抱抱 43</button>
-        </div>
-
-        <!-- 投稿入口 -->
-        <div class="submit-area">
-            <p>
-                ✨ 你也有烦恼想说出口吗？<br>
-                匿名写下来，会有人在这里接住你。
-            </p>
-            <a href="#" class="submit-btn">✏️ 写下我的心事</a>
-            <p style="margin-top:12px;font-size:0.8rem;opacity:0.7;">
-                投稿将匿名展示在墙上 · 每一条都会被温柔对待
-            </p>
-        </div>
-
-        <!-- 底部 -->
-        <div class="footer-note">
-            撑不住的时候，记得拨打<br>
-            🇨🇳 北京心理危机 010-82951332 · 🇦🇺 Lifeline 13 11 14
-        </div>
-
+    <div class="box">
+        <h1>🌳 小树洞</h1>
+        <p>成功了！First Nice Try </p>
     </div>
-
-    <script>
-        // 抱抱按钮累加逻辑
-        document.querySelectorAll('.hug-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                let match = this.textContent.match(/(\d+)/);
-                let count = match ? parseInt(match[0]) + 1 : 1;
-                this.textContent = '🤗 抱抱 ' + count;
-            });
-        });
-    </script>
-
 </body>
 </html>
