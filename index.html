@@ -26,8 +26,48 @@
 <body>
     <div class="box">
         <h1>🌳 小树洞</h1>
-        <p>成功了！First Nice Try </p>
+        <p>欢迎光临正在开发的小树洞 </p>
     </div>
 </body>
 </html>
-<a href="game.html" class="submit-btn" style="background:#e94560; margin-top:10px;">🎮 玩个小游戏</a>
+<!-- 游戏入口卡片 -->
+<a href="game.html" style="text-decoration: none; display: block; margin-top: 16px;">
+    <div style="
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 2px solid rgba(255,255,255,0.15);
+        border-radius: 20px;
+        padding: 28px 24px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        transition: all 0.3s;
+        backdrop-filter: blur(10px);
+    " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 40px rgba(233,69,96,0.3)'; this.style.borderColor='rgba(233,69,96,0.5)';" onmouseout="this.style.transform=''; this.style.boxShadow=''; this.style.borderColor='rgba(255,255,255,0.15)';">
+
+        <!-- 游戏机图标 -->
+        <div style="
+            width: 64px;
+            height: 64px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            flex-shrink: 0;
+            background: rgba(233,69,96,0.1);
+        ">
+            🎮
+        </div>
+
+        <!-- 文字区 -->
+        <div style="text-align: left;">
+            <div style="color: white; font-size: 18px; font-weight: 600; margin-bottom: 4px;">开始游戏</div>
+            <div style="color: rgba(255,255,255,0.5); font-size: 13px;">深夜对话框 · 你的每个选择都通向不同结局</div>
+        </div>
+
+        <!-- 右箭头 -->
+        <div style="margin-left: auto; color: rgba(255,255,255,0.3); font-size: 20px;">→</div>
+
+    </div>
+</a>
