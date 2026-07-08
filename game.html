@@ -482,7 +482,7 @@
                 choices: [
                     { text: "不会的不会的，我有计划", nextNode: "r7a" },
                     { text: "其实……可能还是有点悬", nextNode: "r7b" },
-                    { text: "妈您就这么不相信我？", nextNode: "r7d", heartChange: -5 }
+                    { text: "妈您就这么不相信我？", nextNode: "r7d", heartChange:  }
                 ]
             };
             storyNodes['r6b'] = {
@@ -502,7 +502,7 @@
                 choices: [
                     { text: "不多，就两三百", nextNode: "r7a" },
                     { text: "五百……", nextNode: "r7b" },
-                    { text: "其实我欠了室友点钱……", nextNode: "r7c" }
+                    { text: "其实我欠了室友点钱……", nextNode: "r7c"：-10 }
                 ]
             };
 
@@ -514,31 +514,10 @@
                 choices: [
                     { text: "谢谢妈！我一定省着花", nextNode: "ending_gender1", isEnding: true, genderEnding: 'earphone_or_skincare' },
                     { text: "那我可以用它买个一直想要的吗？", nextNode: "ending_gender2", isEnding: true, genderEnding: 'keyboard_or_coat' },
-                    { text: "算了，不要了，我自己想办法", nextNode: "ending_giveup", isEnding: true, heartChange: -10 }
+                    { text: "算了，不要了，我自己想办法", nextNode: "ending_giveup", isEnding: true, heartChange:  }
                 ]
             };
-            storyNodes['r7b'] = {
-                speaker: "👩 母后大人",
-                text: "行，那你自己省着点花。别又像上个月一样，月中就跑来说没钱了。",
-                os: "被她看穿了……",
-                choices: [
-                    { text: "不会的不会的，我有计划", nextNode: "ending_gender1", isEnding: true, genderEnding: 'earphone_or_skincare' },
-                    { text: "其实……可能还是有点悬", nextNode: "ending_gender2", isEnding: true, genderEnding: 'keyboard_or_coat' },
-                    { text: "妈您就这么不相信我？", nextNode: "ending_rebel", isEnding: true, heartChange: -5 }
-                ]
-            };
-            // r7c: 欠债结局
-            storyNodes['r7c'] = {
-                speaker: "👩 母后大人",
-                text: "欠了多少？你怎么不早说！你知不知道借钱这事儿有多严重？",
-                os: "完了完了，这下真完了……",
-                choices: [
-                    { text: "就几百块……我自己能还", nextNode: "ending_debt_small", isEnding: true, heartChange: -8 },
-                    { text: "一千出头……妈您别告诉我爸", nextNode: "ending_debt_big", isEnding: true, heartChange: -15 },
-                    { text: "我也不知道欠了多少，没敢算", nextNode: "ending_debt_explode", isEnding: true, heartChange: -20 }
-                ]
-            };
-            // r7d: "妈您就这么不相信我" → 温柔回应，不是叛逆结局
+            // r7b: "妈您就这么不相信我" → 温柔回应，不是叛逆结局
             storyNodes['r7d'] = {
                 speaker: "👩 母后大人",
                 text: "不是不相信你，是当妈的都这样，总忍不住操心。你要是真缺钱就跟我说，别硬撑。",
@@ -546,9 +525,20 @@
                 choices: [
                     { text: "谢谢妈，我真没事", nextNode: "ending_giveup", isEnding: true },
                     { text: "其实……能再给我转两百吗", nextNode: "ending_gender1", isEnding: true, genderEnding: 'earphone_or_skincare', heartChange: -3 },
-                    { text: "那……五百行吗", nextNode: "ending_gender2", isEnding: true, genderEnding: 'keyboard_or_coat', heartChange: -8 }
+                    { text: "那……五百行吗", nextNode: "ending_gender2", isEnding: true, genderEnding: 'keyboard_or_coat', heartChange: -5 }
                 ]
             };
+            };
+            // r7c: 欠债结局
+            storyNodes['r7c'] = {
+                speaker: "👩 母后大人",
+                text: "欠了多少？你怎么不早说！你知不知道借钱这事儿有多严重？",
+                os: "完了完了，这下真完了……",
+                choices: [
+                    { text: "就几百块……我自己能还", nextNode: "ending_debt_small", isEnding: true, heartChange: -10 },
+                    { text: "一千出头……妈您别告诉我爸", nextNode: "ending_debt_big", isEnding: true, heartChange: -15 },
+                    { text: "我也不知道欠了多少，没敢算", nextNode: "ending_debt_explode", isEnding: true, heartChange: -20 }
+                ]
 
             // ========== 工具函数 ==========
             function getChoicesForNode(node) {
