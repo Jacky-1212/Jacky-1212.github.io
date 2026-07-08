@@ -1,450 +1,880 @@
-<div class="chat-area" id="chatArea"></div>
-
-<div class="choices-container" id="currentChoices"></div>
-
-<div class="intro-overlay" id="introOverlay">
-    <h2 style="font-weight:600; color:#444;">深夜，宿舍熄灯了...</h2>
-    <p style="color:#666; font-size:14px;">妈妈发来了一条微信，你该怎么回？
-    <div class="gender-btns">
-        <div class="g-btn" id="btnMale">
-            <div class="icon">👦</div>
-            <div>男</div>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>深夜母子对话 - 最终完善版 v4</title>
+    <style>
+        * { margin:0; padding:0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #0a0a0f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 470px;
+            height: 100vh;
+            height: 100dvh;
+            background: #111118;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(0,0,0,0.5);
+        }
+        .topbar {
+            background: #14141c;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            flex-shrink: 0;
+            min-height: 50px;
+        }
+        .topbar .info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #e0e0e0;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .topbar .info .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #4caf50; display: inline-block;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%,100% { box-shadow: 0 0 0 0 rgba(76,175,80,0.6); }
+            50% { box-shadow: 0 0 0 8px rgba(76,175,80,0); }
+        }
+        .topbar .stats {
+            display: flex;
+            gap: 8px;
+            font-size: 11px;
+            color: #999;
+        }
+        .topbar .stats span {
+            background: rgba(255,255,255,0.04);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+        .heart-val { color: #ff7b7b; font-weight: 600; }
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 28px;
+        }
+        .chat-area::-webkit-scrollbar { width: 3px; }
+        .chat-area::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        .bubble-row {
+            display: flex;
+            width: 100%;
+            animation: fadeInUp 0.35s ease-out;
+        }
+        .bubble-row.mom { justify-content: flex-start; }
+        .bubble-row.player { justify-content: flex-end; }
+        .bubble {
+            max-width: 82%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.55;
+            word-break: break-word;
+        }
+        .bubble.mom {
+            background: #2a2a35;
+            color: #d0d0d0;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .bubble.player {
+            background: #1a3c2a;
+            color: #c8e8c8;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            border: 1px solid #2a5a3a;
+        }
+        .bubble .label {
+            font-size: 10px;
+            color: #888;
+            margin-bottom: 3px;
+            display: block;
+        }
+        .bubble.player .label { color: #7ab87a; text-align: right; }
+        .typing-bubble {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+            min-width: 50px;
+            justify-content: center;
+        }
+        .typing-bubble .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #888;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+        .typing-bubble .dot:nth-child(1) { animation-delay: 0s; }
+        .typing-bubble .dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-bubble .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce {
+            0%,80%,100% { transform: translateY(0); opacity: 0.4; }
+            40% { transform: translateY(-8px); opacity: 1; }
+        }
+        .inner-os {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            padding: 4px 0 6px;
+            font-style: italic;
+            animation: fadeInUp 0.5s ease-out 0.3s both;
+        }
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            padding: 6px 0;
+            animation: fadeInUp 0.4s ease-out 0.15s both;
+        }
+        .choice-btn {
+            display: block;
+            width: 100%;
+            padding: 11px 15px;
+            background: #1a1a25;
+            border: 1.5px solid #444;
+            border-radius: 12px;
+            color: #ccc;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            outline: none;
+        }
+        .choice-btn:hover {
+            border-color: #e0c080;
+            color: #e0c080;
+            background: #1e1e2a;
+            box-shadow: 0 0 16px rgba(201,169,110,0.15);
+            transform: translateX(2px);
+        }
+        .choice-btn:active {
+            transform: scale(0.98);
+            background: #1c1c28;
+        }
+        .choice-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 30px;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .overlay.hidden { display: none; }
+        .overlay .time-display {
+            font-size: 62px;
+            font-weight: 200;
+            color: #fff;
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 40px rgba(255,255,255,0.3);
+        }
+        .overlay .subtitle { font-size: 15px; color: #999; margin-bottom: 4px; }
+        .overlay .subtitle2 { font-size: 13px; color: #777; margin-bottom: 10px; }
+        .overlay .goal-text {
+            font-size: 12px; color: #888; max-width: 260px; text-align: center;
+            line-height: 1.6; margin-bottom: 20px;
+            background: rgba(255,255,255,0.03); padding: 8px 14px;
+            border-radius: 12px; border: 1px solid #333;
+        }
+        .overlay .gender-btns {
+            display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; justify-content: center;
+        }
+        .overlay .gender-btn {
+            padding: 14px 34px; font-size: 18px; border-radius: 30px;
+            border: 2px solid #555; background: transparent; color: #ccc;
+            cursor: pointer; transition: all 0.3s ease; font-family: inherit;
+            min-width: 90px; text-align: center; outline: none;
+        }
+        .overlay .gender-btn:hover { border-color: #999; color: #fff; }
+        .overlay .gender-btn.selected {
+            border-color: #c9a96e; color: #c9a96e;
+            background: rgba(201,169,110,0.1);
+            box-shadow: 0 0 20px rgba(201,169,110,0.2);
+        }
+        .overlay .start-btn {
+            padding: 13px 44px; font-size: 16px; border-radius: 30px;
+            border: 2px solid #c9a96e; background: rgba(201,169,110,0.15);
+            color: #c9a96e; cursor: pointer; letter-spacing: 2px;
+            transition: all 0.4s ease; font-family: inherit; outline: none;
+            opacity: 0; transform: translateY(10px); pointer-events: none;
+        }
+        .overlay .start-btn.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .overlay .start-btn:hover { background: rgba(201,169,110,0.3); box-shadow: 0 0 24px rgba(201,169,110,0.3); }
+        .overlay .start-btn:active { transform: scale(0.95); }
+        .ending-overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.88);
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; z-index: 60; padding: 30px;
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            animation: fadeIn 0.5s ease-out;
+        }
+        .ending-overlay.hidden { display: none; }
+        .ending-card {
+            background: #1a1a28; border: 1px solid #333; border-radius: 20px;
+            padding: 28px 22px; text-align: center; max-width: 320px; width: 100%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6); animation: scaleIn 0.5s ease-out;
+        }
+        .ending-card .ending-emoji { font-size: 52px; margin-bottom: 10px; }
+        .ending-card .ending-name { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .ending-card .ending-desc { font-size: 14px; color: #aaa; line-height: 1.6; margin-bottom: 12px; }
+        .ending-card .ending-rank { font-size: 13px; color: #c9a96e; font-weight: 600; margin-bottom: 18px; }
+        .ending-card .replay-btn {
+            padding: 12px 36px; font-size: 15px; border-radius: 25px;
+            border: 2px solid #c9a96e; background: rgba(201,169,110,0.15);
+            color: #c9a96e; cursor: pointer; letter-spacing: 1px;
+            transition: all 0.3s ease; font-family: inherit; outline: none;
+        }
+        .ending-card .replay-btn:hover { background: rgba(201,169,110,0.3); box-shadow: 0 0 20px rgba(201,169,110,0.25); }
+        .ending-card .replay-btn:active { transform: scale(0.93); }
+        .heart-float {
+            position: fixed; top: 65px; left: 50%; transform: translateX(-50%);
+            pointer-events: none; z-index: 99; font-size: 20px; font-weight: bold;
+            animation: floatUp 1.5s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-50px); }
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+        @media (max-width: 490px) {
+            .app-container { max-width: 100%; height: 100vh; height: 100dvh; border-radius: 0; }
+            .chat-area { padding: 10px 8px; gap: 6px; }
+            .bubble { font-size: 14px; padding: 8px 12px; border-radius: 14px; max-width: 86%; }
+            .choice-btn { font-size: 13px; padding: 10px 13px; border-radius: 10px; }
+            .topbar { padding: 10px 10px; font-size: 13px; }
+            .overlay .time-display { font-size: 48px; }
+            .overlay .gender-btn { padding: 12px 24px; font-size: 16px; min-width: 70px; }
+            .ending-card { padding: 22px 16px; border-radius: 16px; }
+            .ending-card .ending-emoji { font-size: 40px; }
+            .ending-card .ending-name { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container" id="appContainer">
+        <div class="topbar">
+            <div class="info">
+                <span class="dot"></span> 👩 母后大人 · 在线
+            </div>
+            <div class="stats">
+                <span>❤️ 孝心值: <span class="heart-val" id="heartDisplay">100</span></span>
+                <span>第<span id="roundDisplay">1</span>幕</span>
+            </div>
         </div>
-        <div class="g-btn" id="btnFemale">
-            <div class="icon">👧</div>
-            <div>女</div>
+        <div class="chat-area" id="chatArea"></div>
+        <div class="overlay" id="introOverlay">
+            <div class="time-display">23:47</div>
+            <div class="subtitle">你妈发来一条消息</div>
+            <div class="subtitle2">每一个大学生都经历过的深夜拷问</div>
+            <div class="goal-text">
+                目标：在不惹怒妈妈的前提下，尽可能多地要到生活费。<br>
+                每一步选择都会影响「孝心值」和最终结局。
+            </div>
+            <div class="gender-btns" id="genderBtns">
+                <button class="gender-btn" data-gender="male" id="btnMale">♂ 男</button>
+                <button class="gender-btn" data-gender="female" id="btnFemale">♀ 女</button>
+            </div>
+            <button class="start-btn" id="startBtn">开始挑战</button>
+        </div>
+        <div class="ending-overlay hidden" id="endingOverlay">
+            <div class="ending-card" id="endingCard"></div>
         </div>
     </div>
-    <button class="start-btn" id="startBtn">开始对话</button>
-</div>
 
-<div class="ending-overlay hidden" id="endingOverlay">
-    <div class="ending-card" id="endingCard">
-        <!-- 结局内容由JS生成 -->
-    </div>
-</div>
-</div>
+    <script>
+        (function() {
+            // ===== 状态 =====
+            var gender = null;
+            var heart = 100;
+            var round = 1;
+            var currentNode = 'r1';
+            var isProcessing = false;
 
-<script>
-(function() {
-    // 状态变量
-    var heart = 100, round = 1, currentNode = 'r1', isProcessing = false, gender = null;
-    var chatArea = document.getElementById('chatArea'), heartNum = document.getElementById('heartNum');
-    var roundNum = document.getElementById('roundNum'), choicesContainer = document.getElementById('currentChoices');
-    var introOverlay = document.getElementById('introOverlay'), endingOverlay = document.getElementById('endingOverlay');
-    var btnMale = document.getElementById('btnMale'), btnFemale = document.getElementById('btnFemale');
-    var startBtn = document.getElementById('startBtn');
+            // ===== DOM 引用 =====
+            var chatArea = document.getElementById('chatArea');
+            var heartDisplay = document.getElementById('heartDisplay');
+            var roundDisplay = document.getElementById('roundDisplay');
+            var introOverlay = document.getElementById('introOverlay');
+            var endingOverlay = document.getElementById('endingOverlay');
+            var endingCard = document.getElementById('endingCard');
+            var startBtn = document.getElementById('startBtn');
+            var btnMale = document.getElementById('btnMale');
+            var btnFemale = document.getElementById('btnFemale');
 
-    // 获取节点文本（处理多行）
-    function getNodeText(node) {
-        if (!node.text) return '';
-        return Array.isArray(node.text) ? node.text.join('') : node.text;
-    }
+            // ===== 结局数据 =====
+            var endings = {
+                "ending_giveup": {
+                    emoji: "🌙",
+                    name: "🌙 深夜emo",
+                    desc: "你放弃了要钱。妈妈回了一个「嗯」，然后对话框安静了。你盯着天花板，有点后悔。",
+                    rank: "35%"
+                },
+                "ending_cotton": {
+                    emoji: "🧸",
+                    name: "🧸 妈妈的贴心小棉袄",
+                    desc: "你撒了个娇，妈妈笑了。「好啦好啦，就知道你会这么说。妈相信你，但也别太省，该花就花。」她给你转了五百块，备注写着「乖宝专用」。",
+                    rank: "75%"
+                },
+                "ending_earphone": {
+                    emoji: "🎧",
+                    name: "🎧 耳机战士（男）",
+                    desc: "要了两三百买耳机，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。",
+                    rank: "60%"
+                },
+                "ending_skincare": {
+                    emoji: "💄",
+                    name: "💄 护肤品守护者（女）",
+                    desc: "要了两三百买护肤品，妈妈转了。但附加了一条：每天晚上视频通话检查宿舍卫生，直到下个月。",
+                    rank: "60%"
+                },
+                "ending_keyboard": {
+                    emoji: "⌨️",
+                    name: "⌨️ 键盘败家子（男）",
+                    desc: "要了五百买键盘，妈妈转了。但附言是「下个月的生活费减两百」。",
+                    rank: "45%"
+                },
+                "ending_coat": {
+                    emoji: "🧥",
+                    name: "🧥 大衣梦想家（女）",
+                    desc: "要了五百买大衣，妈妈转了。但附言是「下个月的生活费减两百」。",
+                    rank: "45%"
+                },
+                "ending_debt_small": {
+                    emoji: "🤝",
+                    name: "🤝 母子和解",
+                    desc: "你坦白欠了几百块。妈妈骂了你一顿，但还是把钱转给你了。附言：「下不为例」。",
+                    rank: "30%"
+                },
+                "ending_debt_big": {
+                    emoji: "💀",
+                    name: "💀 爸的审判",
+                    desc: "妈妈挂了电话。五分钟后，爸爸的电话打进来了。你颤抖着按下接听键……",
+                    rank: "15%"
+                },
+                "ending_debt_explode": {
+                    emoji: "🔥",
+                    name: "🔥 彻底爆发",
+                    desc: "「没敢算？」妈妈的声音提高了八度。接下来是长达二十分钟的电话训话。你感觉耳朵在燃烧。",
+                    rank: "10%"
+                }
+            };
 
-    // 更新顶部栏
-    function updateTopbar() {
-        heartNum.textContent = heart; roundNum.textContent = round;
-        heartNum.style.color = (heart >= 100) ? '#333' : '#ff4757';
-    }
+            // ===== 辅助函数 =====
+            function getGenderEnding(type) {
+                if (type === 'earphone_or_skincare') return gender === 'male' ? 'ending_earphone' : 'ending_skincare';
+                if (type === 'keyboard_or_coat') return gender === 'male' ? 'ending_keyboard' : 'ending_coat';
+                return type;
+            }
 
-    // 添加飘字动画
-    function showHeartFloat(diff) {
-        var float = document.createElement('div');
-        float.className = 'heart-float ' + (diff > 0 ? 'plus' : 'minus');
-        float.textContent = (diff > 0 ? '+' : '') + diff + ' ❤️';
-        float.style.left = (Math.random() * 60 + 20) + '%';
-        float.style.top = (Math.random() * 20 + 40) + '%';
-        document.body.appendChild(float);
-        setTimeout(function() { float.remove(); }, 1000);
-    }
+            // ===== 故事节点 =====
+            var storyNodes = {};
 
-    // 添加气泡
-    function addBubble(speaker, text, isPlayer) {
-        var bubble = document.createElement('div');
-        bubble.className = 'bubble ' + (isPlayer ? 'bubble-me' : 'bubble-mom');
-        bubble.innerHTML = '<strong>' + speaker + ':</strong>' + text.replace(/\n/g, '');
-        chatArea.appendChild(bubble);
-        scrollToBottom();
-        return bubble;
-    }
+            storyNodes['r1'] = {
+                speaker: "👩 母后大人",
+                text: "还没睡？",
+                os: "呼，还好没被发现我在熬夜……",
+                choices: [
+                    { text: "正准备睡呢妈😊", nextNode: "r2a" },
+                    { text: "刚忙完，准备睡了", nextNode: "r2b" },
+                    { text: "还没呢……", nextNode: "r2c" }
+                ]
+            };
 
-    // 添加内心OS
-    function addInnerOS(osText) {
-        var os = document.createElement('div');
-        os.className = 'os-text'; os.textContent = osText;
-        chatArea.appendChild(os); scrollToBottom();
-    }
+            storyNodes['r2a'] = {
+                speaker: "👩 母后大人",
+                text: "那你快睡，明天不是还要上课吗？",
+                os: "糟糕，说漏嘴了……",
+                choices: [
+                    { text: "嗯嗯，马上就睡了", nextNode: "r3a" },
+                    { text: "其实明天没课，骗您的😅", nextNode: "r3b" },
+                    { text: "睡不着……在想事情", nextNode: "r3c" }
+                ]
+            };
+            storyNodes['r2b'] = {
+                speaker: "👩 母后大人",
+                text: "忙什么呢忙到现在？别跟我说又在打游戏。",
+                os: "她怎么知道我在打游戏……",
+                choices: [
+                    { text: "在赶论文呢，明天要交", nextNode: "r3a" },
+                    { text: "跟室友开了两把黑……", nextNode: "r3b" },
+                    { text: "在刷招聘信息，看看实习", nextNode: "r3d" }
+                ]
+            };
+            storyNodes['r2c'] = {
+                speaker: "👩 母后大人",
+                text: "我就知道你没睡。干嘛呢？",
+                os: "随便编个理由吧……",
+                choices: [
+                    { text: "刷手机呢，睡不着", nextNode: "r3a" },
+                    { text: "在看剧，最后一集了", nextNode: "r3b" },
+                    { text: "在跟同学聊天", nextNode: "r3d" }
+                ]
+            };
 
-    // 打字机效果占位符
-    function addTypingBubble() {
-        var typing = document.createElement('div');
-        typing.className = 'typing-bubble';
-        typing.id = 'typingIndicator';
-        typing.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div> 对方正在输入...';
-        chatArea.appendChild(typing); scrollToBottom();
-    }
-    function removeTypingBubble() {
-        var typing = document.getElementById('typingIndicator');
-        if (typing) typing.remove();
-    }
+            // r3a: 妈问吃饭
+            storyNodes['r3a'] = {
+                speaker: "👩 母后大人",
+                genderChoices: true,
+                text: "最近吃饭怎么样？别老吃外卖。",
+                os: "糟糕，她怎么知道我昨晚点外卖了……",
+                choicesMale: [
+                    { text: "挺好的，食堂随便吃吃", nextNode: "r4" },
+                    { text: "偶尔跟室友出去撸串", nextNode: "r4" },
+                    { text: "凑合过吧……月底了嘛", nextNode: "r4" }
+                ],
+                choicesFemale: [
+                    { text: "挺好的，跟室友搭伙做饭", nextNode: "r4" },
+                    { text: "偶尔喝杯奶茶就当一顿了", nextNode: "r4" },
+                    { text: "凑合过吧……月底了嘛", nextNode: "r4" }
+                ]
+            };
+            // r3b: 妈说在打游戏/玩
+            storyNodes['r3b'] = {
+                speaker: "👩 母后大人",
+                genderChoices: true,
+                text: "我就知道你又在玩。最近课业不忙吗？论文项目都搞完了？",
+                os: "完了完了，被抓现行了……",
+                choicesMale: [
+                    { text: "都搞完了，您放心", nextNode: "r4" },
+                    { text: "还差个论文没写完……", nextNode: "r4" },
+                    { text: "明天再说，不急", nextNode: "r4" }
+                ],
+                choicesFemale: [
+                    { text: "都搞完了，您放心", nextNode: "r4" },
+                    { text: "还差个报告没写完……", nextNode: "r4" },
+                    { text: "明天再说，不急", nextNode: "r4" }
+                ]
+            };
+            // r3c: 妈追问"想什么呢"
+            storyNodes['r3c'] = {
+                speaker: "👩 母后大人",
+                genderChoices: true,
+                text: "想什么呢？跟妈说说。",
+                os: "她居然没骂我，有点意外……",
+                choicesMale: [
+                    { text: "在想毕业以后的事", nextNode: "r4" },
+                    { text: "在想周末要不要跟同学出去玩", nextNode: "r4" },
+                    { text: "没什么，就是有点累", nextNode: "r4" }
+                ],
+                choicesFemale: [
+                    { text: "在想毕业以后的事", nextNode: "r4" },
+                    { text: "在想周末要不要跟同学去逛街", nextNode: "r4" },
+                    { text: "没什么，就是有点累", nextNode: "r4" }
+                ]
+            };
+            // r3d: 刷招聘/聊天 → 妈妈温和回应，避免重复问实习
+            storyNodes['r3d'] = {
+                speaker: "👩 母后大人",
+                text: "哦，那挺好的。别太累了就行。",
+                os: "她今天怎么这么温柔……",
+                choices: [
+                    { text: "嗯嗯，我知道啦", nextNode: "r4" },
+                    { text: "妈您也是，早点休息", nextNode: "r4", heartChange: 3 },
+                    { text: "还行吧，不算累", nextNode: "r4" }
+                ]
+            };
 
-    // 移除选项
-    function removeChoices() {
-        var old = document.getElementById('currentChoices');
-        if (old) old.remove();
-    }
+            // r4: 实习话题（统一为实习）
+            storyNodes['r4'] = {
+                speaker: "👩 母后大人",
+                text: "对了，你实习找得怎么样了？",
+                os: "她怎么突然转到这个话题了……",
+                choices: [
+                    { text: "投了几家了，等消息呢", nextNode: "r5" },
+                    { text: "在准备了，就是有点迷茫", nextNode: "r5" },
+                    { text: "妈您别急，我心里有数", nextNode: "r5", heartChange: 5 }
+                ]
+            };
 
-    // 滚动到底部
-    function scrollToBottom() {
-        setTimeout(function() { chatArea.scrollTop = chatArea.scrollHeight; }, 50);
-    }
+            // r5: 过渡到钱
+            storyNodes['r5'] = {
+                speaker: "👩 母后大人",
+                text: "嗯，你自己有数就行，我也不想天天催你。……对了，你最近生活费还够花吗？手头怎么样？",
+                os: "等等，她怎么突然问到钱上了？",
+                choices: [
+                    { text: "挺好的，够花", nextNode: "r6a" },
+                    { text: "还行吧，就是最近花销大了点", nextNode: "r6b" },
+                    { text: "呃……其实我想跟您商量个事儿", nextNode: "r6c" }
+                ]
+            };
 
-    // 获取当前节点的选项
-    function getChoicesForNode(node) {
-        if (gender === 'male' && node.choicesMale) return node.choicesMale;
-        if (gender === 'female' && node.choicesFemale) return node.choicesFemale;
-        return node.choices || [];
-    }
+            // r6a: 够花 -> 质疑
+            storyNodes['r6a'] = {
+                speaker: "👩 母后大人",
+                text: "行，那你自己省着点花。别又像上个月一样，月中就跑来说没钱了。",
+                os: "被她看穿了……",
+                choices: [
+                    { text: "不会的不会的，我有计划", nextNode: "r7a" },
+                    { text: "其实……可能还是有点悬", nextNode: "r7b" },
+                    { text: "妈，您就这么不相信我？", nextNode: "r7c" }
+                ]
+            };
+            // r6b: 花销大 -> 质疑
+            storyNodes['r6b'] = {
+                speaker: "👩 母后大人",
+                text: "花销大？你平时不是挺省的嘛。我看你也不乱花钱，这次是有什么正事儿？",
+                os: "她居然夸我省钱？太阳打西边出来了……",
+                choices: [
+                    { text: "其实想买个学习用的东西", nextNode: "r7a" },
+                    { text: "没什么，就是最近物价涨了", nextNode: "r7b" },
+                    { text: "妈，您就这么不相信我？", nextNode: "r7c" }
+                ]
+            };
+            // r6c: 想商量 -> 直球
+            storyNodes['r6c'] = {
+                speaker: "👩 母后大人",
+                text: "我就知道你小子/丫头没憋好屁。说吧，要多少？",
+                os: "终于到这一步了……",
+                choices: [
+                    { text: "不多，就两三百", nextNode: "r7a" },
+                    { text: "五百……", nextNode: "r7b" },
+                    { text: "其实我欠了室友点钱……", nextNode: "r7d" }
+                ]
+            };
 
-    // 核心选择处理函数
-    function handleChoiceClick(index, choices) {
-        if (isProcessing) return; isProcessing = true;
-        var choice = choices[index];
-        
-        addBubble('我', choice.text, true); removeChoices();
+            // r7a: 否认 -> 威胁
+            storyNodes['r7a'] = {
+                speaker: "👩 母后大人",
+                text: "看你平时也挺省的，这次就不跟你计较了。我给你转点，就当奖励，不过别乱花啊。",
+                os: "她突然这么温柔，我都有点不好意思了……",
+                choices: [
+                    { text: "谢谢妈！我一定省着花", nextNode: "ending_gender1", isEnding: true, genderEnding: 'earphone_or_skincare' },
+                    { text: "那我可以用它买个一直想要的吗？", nextNode: "ending_gender2", isEnding: true, genderEnding: 'keyboard_or_coat' },
+                    { text: "算了，不要了，我自己想办法", nextNode: "ending_giveup", isEnding: true, }
+                ]
+            };
+            // r7b: 继续试探 -> 威胁
+            storyNodes['r7b'] = {
+                speaker: "👩 母后大人",
+                text: "行，那你自己省着点花。别又像上个月一样，月中就跑来说没钱了。",
+                os: "被她看穿了……",
+                choices: [
+                    { text: "不会的不会的，我有计划", nextNode: "ending_gender1", isEnding: true, genderEnding: 'earphone_or_skincare' },
+                    { text: "其实……可能还是有点悬", nextNode: "ending_gender2", isEnding: true, genderEnding: 'keyboard_or_coat' },
+                    { text: "妈，您就这么不相信我？", nextNode: "ending_cotton", isEnding: true }
+                ]
+            };
+            // r7c: 撒娇选项（从r6a/r6b过来）
+            storyNodes['r7c'] = {
+                speaker: "👩 母后大人",
+                text: "哎哟，还跟妈撒娇呢？好啦好啦，妈当然相信你。不过你要是真缺钱，一定要跟我说，别自己扛着。",
+                os: "她居然没生气……",
+                choices: [
+                    { text: "谢谢妈！我最爱你了❤️", nextNode: "ending_cotton", isEnding: true },
+                    { text: "嗯嗯，我知道啦", nextNode: "ending_cotton", isEnding: true },
+                    { text: "那……能给我转点钱吗？", nextNode: "ending_gender1", isEnding: true, genderEnding: 'earphone_or_skincare' }
+                ]
+            };
+            // r7d: 坦白欠债
+            storyNodes['r7d'] = {
+                speaker: "👩 母后大人",
+                text: "欠了多少？你怎么不早说！你知不知道借钱这事儿有多严重？",
+                os: "完了完了，这下真完了……",
+                choices: [
+                    { text: "就几百块……我自己能还", nextNode: "ending_debt_small", isEnding: true, heartChange: -8 },
+                    { text: "一千出头……妈您别告诉我爸", nextNode: "ending_debt_big", isEnding: true, heartChange: -15 },
+                    { text: "我也不知道欠了多少，没敢算", nextNode: "ending_debt_explode", isEnding: true, heartChange: -20 }
+                ]
+            };
 
-        if (typeof choice.heartChange !== 'undefined') {
-            var oldHeart = heart; heart += choice.heartChange;
-            if (heart < 0) heart = 0; if (heart > 200) heart = 200;
-            if (heart !== oldHeart) showHeartFloat(heart - oldHeart);
-        }
-        updateTopbar();
+            // ===== 工具函数 =====
+            function getChoicesForNode(node) {
+                if (node.genderChoices === true) {
+                    if (gender === 'male' && node.choicesMale) return node.choicesMale;
+                    if (gender === 'female' && node.choicesFemale) return node.choicesFemale;
+                    return node.choicesMale || node.choicesFemale || [];
+                }
+                if (node.choices) return node.choices;
+                return [];
+            }
 
-        if (choice.isEnding) {
-            var finalEndingId;
-            if (choice.genderEnding) finalEndingId = getGenderEnding(choice.genderEnding);
-            else finalEndingId = choice.nextNode;
-            setTimeout(function() {
-                showEnding(finalEndingId); isProcessing = false;
-            }, 1400);
-            return;
-        }
+            function getNodeText(node) {
+                if (node.textMale && gender === 'male') return node.textMale;
+                if (node.textFemale && gender === 'female') return node.textFemale;
+                return node.text || '';
+            }
 
-        setTimeout(function() {
-            addTypingBubble();
-            setTimeout(function() {
-                removeTypingBubble(); processNode(choice.nextNode);
+            function updateTopbar() {
+                heartDisplay.textContent = heart;
+                roundDisplay.textContent = round;
+                if (heart < 30) heartDisplay.style.color = '#ff4444';
+                else if (heart < 60) heartDisplay.style.color = '#ff9966';
+                else heartDisplay.style.color = '#ff7b7b';
+            }
+
+            function showHeartFloat(change) {
+                if (change === 0) return;
+                var el = document.createElement('div');
+                el.className = 'heart-float';
+                el.textContent = (change >= 0 ? '+' : '') + change + ' ❤️';
+                el.style.color = change >= 0 ? '#4caf50' : '#ff4444';
+                document.body.appendChild(el);
+                setTimeout(function() { el.remove(); }, 1600);
+            }
+
+            function scrollToBottom() {
+                setTimeout(function() { chatArea.scrollTop = chatArea.scrollHeight; }, 80);
+            }
+
+            function addBubble(speaker, text, isPlayer) {
+                var row = document.createElement('div');
+                row.className = 'bubble-row ' + (isPlayer ? 'player' : 'mom');
+                var bubble = document.createElement('div');
+                bubble.className = 'bubble ' + (isPlayer ? 'player' : 'mom');
+                var label = document.createElement('span');
+                label.className = 'label';
+                label.textContent = isPlayer ? '我' : speaker;
+                bubble.appendChild(label);
+                var textSpan = document.createElement('span');
+                textSpan.textContent = text;
+                bubble.appendChild(textSpan);
+                row.appendChild(bubble);
+                chatArea.appendChild(row);
+                scrollToBottom();
+                return row;
+            }
+
+            function addTypingBubble() {
+                var row = document.createElement('div');
+                row.className = 'bubble-row mom';
+                row.id = 'typingBubbleRow';
+                var bubble = document.createElement('div');
+                bubble.className = 'bubble mom typing-bubble';
+                for (var i = 0; i < 3; i++) {
+                    var dot = document.createElement('span');
+                    dot.className = 'dot';
+                    bubble.appendChild(dot);
+                }
+                row.appendChild(bubble);
+                chatArea.appendChild(row);
+                scrollToBottom();
+                return row;
+            }
+
+            function removeTypingBubble() {
+                var row = document.getElementById('typingBubbleRow');
+                if (row) row.remove();
+            }
+
+            function addInnerOS(osText) {
+                if (!osText) return;
+                var osDiv = document.createElement('div');
+                osDiv.className = 'inner-os';
+                osDiv.textContent = osText;
+                chatArea.appendChild(osDiv);
+                scrollToBottom();
+            }
+
+            function removeChoices() {
+                var container = document.getElementById('currentChoices');
+                if (container) container.remove();
+            }
+
+            // ===== 核心交互 =====
+            function handleChoiceClick(index, choices) {
+                if (isProcessing) return;
+                isProcessing = true;
+
+                var choice = choices[index];
+                addBubble('我', choice.text, true);
+                removeChoices();
+
+                if (typeof choice.heartChange !== 'undefined') {
+                    var oldHeart = heart;
+                    heart += choice.heartChange;
+                    if (heart < 0) heart = 0;
+                    if (heart > 200) heart = 200;
+                    var diff = heart - oldHeart;
+                    if (diff !== 0) showHeartFloat(diff);
+                }
+                updateTopbar();
+
+                if (choice.isEnding) {
+                    var finalEndingId;
+                    if (choice.genderEnding) {
+                        finalEndingId = getGenderEnding(choice.genderEnding);
+                    } else {
+                        finalEndingId = choice.nextNode;
+                    }
+                    setTimeout(function() {
+                        showEnding(finalEndingId);
+                        isProcessing = false;
+                    }, 1400);
+                    return;
+                }
+
+                var nextId = choice.nextNode;
+                setTimeout(function() {
+                    addTypingBubble();
+                    setTimeout(function() {
+                        removeTypingBubble();
+                        processNode(nextId);
+                        isProcessing = false;
+                    }, 1800);
+                }, 500);
+            }
+
+            function processNode(nodeId) {
+                currentNode = nodeId;
+                round += 1;
+                var node = storyNodes[nodeId];
+                if (!node) {
+                    console.error('Node not found: ' + nodeId);
+                    isProcessing = false;
+                    return;
+                }
+                var nodeText = getNodeText(node);
+                addBubble(node.speaker, nodeText, false);
+                if (node.os) {
+                    setTimeout(function() { addInnerOS(node.os); }, 350);
+                }
+                updateTopbar();
+                var choices = getChoicesForNode(node);
+                setTimeout(function() { renderChoices(choices); }, 550);
+            }
+
+            function renderChoices(choices) {
+                removeChoices();
+                var container = document.createElement('div');
+                container.className = 'choices-container';
+                container.id = 'currentChoices';
+                for (var i = 0; i < choices.length; i++) {
+                    var btn = document.createElement('button');
+                    btn.className = 'choice-btn';
+                    btn.textContent = choices[i].text;
+                    btn.setAttribute('data-index', i);
+                    (function(idx, chArr) {
+                        btn.addEventListener('click', function() {
+                            if (isProcessing) return;
+                            handleChoiceClick(idx, chArr);
+                        });
+                    })(i, choices);
+                    container.appendChild(btn);
+                }
+                chatArea.appendChild(container);
+                scrollToBottom();
+                return container;
+            }
+
+            function showEnding(endingId) {
+                var ending = endings[endingId] || endings['ending_giveup'];
+                updateTopbar();
+                var html = '';
+                html += '<div class="ending-emoji">' + ending.emoji + '</div>';
+                html += '<div class="ending-name">' + ending.name + '</div>';
+                html += '<div class="ending-desc">' + ending.desc + '</div>';
+                html += '<div class="ending-rank">击败了全国 ' + ending.rank + ' 的大学生</div>';
+                html += '<button class="replay-btn" id="replayBtn">再来一次</button>';
+                endingCard.innerHTML = html;
+                endingOverlay.classList.remove('hidden');
+                setTimeout(function() {
+                    var replayBtn = document.getElementById('replayBtn');
+                    if (replayBtn) {
+                        replayBtn.addEventListener('click', function() { resetGame(); });
+                    }
+                }, 130);
+                scrollToBottom();
+            }
+
+            function resetGame() {
+                heart = 100; round = 1; currentNode = 'r1';
+                isProcessing = false; gender = null;
+                updateTopbar();
+                chatArea.innerHTML = '';
+                endingOverlay.classList.add('hidden');
+                endingCard.innerHTML = '';
+                introOverlay.classList.remove('hidden');
+                btnMale.classList.remove('selected');
+                btnFemale.classList.remove('selected');
+                startBtn.classList.remove('visible');
+                chatArea.scrollTop = 0;
+            }
+
+            function startGame() {
+                if (!gender) return;
+                introOverlay.classList.add('hidden');
+                chatArea.innerHTML = '';
+                heart = 100; round = 1; currentNode = 'r1';
                 isProcessing = false;
-            }, 1700);
-        }, 450);
-    }
+                updateTopbar();
+                processNode('r1');
+            }
 
-    // 处理节点
-    function processNode(nodeId) {
-        currentNode = nodeId; round += 1;
-        var node = storyNodes[nodeId];
-        if (!node) { console.error('Node not found: ' + nodeId); isProcessing = false; return; }
-        
-        var nodeText = getNodeText(node);
-        addBubble(node.speaker, nodeText, false);
-        if (node.os) setTimeout(function() { addInnerOS(node.os); }, 350);
-        
-        updateTopbar();
-        var choices = getChoicesForNode(node);
-        setTimeout(function() { renderChoices(choices); }, 520);
-    }
+            // ===== 事件绑定 =====
+            btnMale.addEventListener('click', function() {
+                if (isProcessing && gender) return;
+                gender = 'male';
+                btnMale.classList.add('selected');
+                btnFemale.classList.remove('selected');
+                startBtn.classList.add('visible');
+            });
+            btnFemale.addEventListener('click', function() {
+                if (isProcessing && gender) return;
+                gender = 'female';
+                btnFemale.classList.add('selected');
+                btnMale.classList.remove('selected');
+                startBtn.classList.add('visible');
+            });
+            startBtn.addEventListener('click', function() {
+                if (!gender) return;
+                if (startBtn.classList.contains('visible')) startGame();
+            });
 
-    // 渲染选项
-    function renderChoices(choices) {
-        removeChoices();
-        var container = document.createElement('div');
-        container.className = 'choices-container'; container.id = 'currentChoices';
-        for (var i = 0; i < choices.length; i++) {
-            var btn = document.createElement('button');
-            btn.className = 'choice-btn'; btn.textContent = choices[i].text;
-            btn.setAttribute('data-index', i);
-            (function(idx, chArr) {
-                btn.addEventListener('click', function() {
-                    if (isProcessing) return; handleChoiceClick(idx, chArr);
-                });
-            })(i, choices);
-            container.appendChild(btn);
-        }
-        chatArea.appendChild(container); scrollToBottom();
-    }
-
-    // 结局判定
-    function getGenderEnding(key) {
-        if (gender === 'male') return {
-            'giveup': 'ending_giveup', 'cotton': 'ending_cotton',
-            'earphone': 'ending_male1', 'skincare': 'ending_male2',
-            'keyboard': 'ending_male3', 'coat': 'ending_male4'
-        }[key];
-        else return {
-            'giveup': 'ending_giveup', 'cotton': 'ending_cotton',
-            'earphone': 'ending_female1', 'skincare': 'ending_female2',
-            'keyboard': 'ending_female3', 'coat': 'ending_female4'
-        }[key];
-    }
-
-    function showEnding(endingId) {
-        var ending = endings[endingId] || endings['ending_giveup'];
-        updateTopbar();
-        var html = '';
-        html += '<div class="ending-emoji">' + ending.emoji + '</div>';
-        html += '<div class="ending-name">' + ending.name + '</div>';
-        html += '<div class="ending-desc">' + ending.desc + '</div>';
-        html += '<div class="ending-rank">击败了全国 ' + ending.rank + ' 的大学生</div>';
-        html += '<button class="replay-btn" id="replayBtn">再来一次</button>';
-        endingCard.innerHTML = html; endingOverlay.classList.remove('hidden');
-        setTimeout(function() {
-            var replayBtn = document.getElementById('replayBtn');
-            if (replayBtn) replayBtn.addEventListener('click', resetGame);
-        }, 130);
-        scrollToBottom();
-    }
-
-    // 重置游戏
-    function resetGame() {
-        heart = 100; round = 1; currentNode = 'r1'; isProcessing = false; gender = null;
-        updateTopbar(); chatArea.innerHTML = ''; endingOverlay.classList.add('hidden');
-        endingCard.innerHTML = ''; introOverlay.classList.remove('hidden');
-        btnMale.classList.remove('selected'); btnFemale.classList.remove('selected');
-        startBtn.classList.remove('visible'); chatArea.scrollTop = 0;
-    }
-
-    function startGame() {
-        if (!gender) return;
-        introOverlay.classList.add('hidden'); chatArea.innerHTML = '';
-        heart = 100; round = 1; currentNode = 'r1'; isProcessing = false;
-        updateTopbar(); processNode('r1');
-    }
-
-    // 开局按钮事件
-    btnMale.addEventListener('click', function() {
-        if (isProcessing && gender) return;
-        gender = 'male'; btnMale.classList.add('selected'); btnFemale.classList.remove('selected');
-        startBtn.classList.add('visible');
-    });
-    btnFemale.addEventListener('click', function() {
-        if (isProcessing && gender) return;
-        gender = 'female'; btnFemale.classList.add('selected'); btnMale.classList.remove('selected');
-        startBtn.classList.add('visible');
-    });
-    startBtn.addEventListener('click', function() {
-        if (!gender) return; if (startBtn.classList.contains('visible')) startGame();
-    });
-
-    // ==================== 剧情节点数据 ====================
-    var storyNodes = {};
-
-    // r1: 开局
-    storyNodes['r1'] = {
-        speaker: "📱 妈妈", text: "儿子/闺女，睡了吗？\n刚才整理房间看到你的体检报告，视力那栏好像不太乐观。别老熬夜玩手机啊。",
-        os: "这么晚还找我，肯定没好事……",
-        choices: [
-            { text: "还没呢，马上睡", nextNode: "r2a" },
-            { text: "困死了，先睡了哈", nextNode: "r2b" },
-            { text: "怎么了妈？", nextNode: "r2c" }
-        ]
-    };
-
-    // r2a: 妈追问
-    storyNodes['r2a'] = {
-        speaker: "👩 母后大人", text: "别装睡。我看你朋友圈昨晚两点还在点赞，到底在干嘛？",
-        os: "啧，被抓包了……", choices: [
-            { text: "在想毕业以后的事", nextNode: "r3c" },
-            { text: "在刷招聘信息，看看实习", nextNode: "r3d" },
-            { text: "跟室友开黑呢", nextNode: "r3b" }
-        ]
-    };
-    // r2b: 妈追问
-    storyNodes['r2b'] = {
-        speaker: "👩 母后大人", text: "行了别装。妈不是不懂你们年轻人，但身体要紧。到底在干嘛？",
-        os: "这语气……看来是发现了什么。", choices: [
-            { text: "在想毕业以后的事", nextNode: "r3c" },
-            { text: "在刷招聘信息，看看实习", nextNode: "r3d" },
-            { text: "跟室友开黑呢", nextNode: "r3b" }
-        ]
-    };
-    // r2c: 妈追问
-    storyNodes['r2c'] = {
-        speaker: "👩 母后大人", text: "妈跟你说话呢。别以为装睡就能躲过去。",
-        os: "她怎么这么执着……", choices: [
-            { text: "在想毕业以后的事", nextNode: "r3c" },
-            { text: "在刷招聘信息，看看实习", nextNode: "r3d" },
-            { text: "跟室友开黑呢", nextNode: "r3b" }
-        ]
-    };
-
-    // r3a: 妈问吃饭
-    storyNodes['r3a'] = {
-        speaker: "👩 母后大人", genderChoices: true, text: "最近吃饭怎么样？别老吃外卖。",
-        os: "糟糕，她怎么知道我昨晚点外卖了……", choicesMale: [
-            { text: "挺好的，食堂随便吃吃", nextNode: "r4" },
-            { text: "偶尔跟室友出去撸串", nextNode: "r4" },
-            { text: "凑合过吧……月底了嘛", nextNode: "r4" }
-        ], choicesFemale: [
-            { text: "挺好的，跟室友搭伙做饭", nextNode: "r4" },
-            { text: "偶尔喝杯奶茶就当一顿了", nextNode: "r4" },
-            { text: "凑合过吧……月底了嘛", nextNode: "r4" }
-        ]
-    };
-    // r3b: 妈说在打游戏/玩
-    storyNodes['r3b'] = {
-        speaker: "👩 母后大人", genderChoices: true, text: "我就知道你又在玩。最近课业不忙吗？论文项目都搞完了？",
-        os: "完了完了，被抓现行了……", choicesMale: [
-            { text: "都搞完了，您放心", nextNode: "r4" },
-            { text: "还差个论文没写完……", nextNode: "r4" },
-            { text: "明天再说，不急", nextNode: "r4" }
-        ], choicesFemale: [
-            { text: "都搞完了，您放心", nextNode: "r4" },
-            { text: "还差个报告没写完……", nextNode: "r4" },
-            { text: "明天再说，不急", nextNode: "r4" }
-        ]
-    };
-    // r3c: 妈追问"想什么呢"
-    storyNodes['r3c'] = {
-        speaker: "👩 母后大人", genderChoices: true, text: "想什么呢？跟妈说说。",
-        os: "她居然没骂我，有点意外……", choicesMale: [
-            { text: "在想毕业以后的事", nextNode: "r4" },
-            { text: "在想周末要不要跟同学出去玩", nextNode: "r4" },
-            { text: "没什么，就是有点累", nextNode: "r4" }
-        ], choicesFemale: [
-            { text: "在想毕业以后的事", nextNode: "r4" },
-            { text: "在想周末要不要跟同学去逛街", nextNode: "r4" },
-            { text: "没什么，就是有点累", nextNode: "r4" }
-        ]
-    };
-    // r3d: 刷招聘/聊天 → 妈妈温和回应，避免重复问实习
-    storyNodes['r3d'] = {
-        speaker: "👩 母后大人", text: "哦，那挺好的。别太累了就行。",
-        os: "她今天怎么这么温柔……", choices: [
-            { text: "嗯嗯，我知道啦", nextNode: "r4" },
-            { text: "妈您也是，早点休息", nextNode: "r4", heartChange: 3 },
-            { text: "还行吧，不算累", nextNode: "r4" }
-        ]
-    };
-
-    // r4: 实习话题（统一为实习）
-    storyNodes['r4'] = {
-        speaker: "👩 母后大人", text: "对了，你实习找得怎么样了？",
-        os: "她怎么突然转到这个话题了……", choices: [
-            { text: "投了几家了，等消息呢", nextNode: "r5" },
-            { text: "在准备了，就是有点迷茫", nextNode: "r5" },
-            { text: "妈您别急，我心里有数", nextNode: "r5", heartChange: 5 }
-        ]
-    };
-
-    // r5: 过渡到钱
-    storyNodes['r5'] = {
-        speaker: "👩 母后大人", text: "嗯，你自己有数就行，我也不想天天催你。……对了，你最近生活费还够花吗？手头怎么样？",
-        os: "等等，她怎么突然问到钱上了？", choices: [
-            { text: "挺好的，够花", nextNode: "r6a" },
-            { text: "还行吧，就是实习面试要花钱", nextNode: "r6b" },
-            { text: "妈，您怎么突然问这个", nextNode: "r6c" }
-        ]
-    };
-
-    // r6a: 够花 -> 质疑
-    storyNodes['r6a'] = {
-        speaker: "👩 母后大人", text: "够花就好。不过我看你上个月好像取了不少现金？是不是谈恋爱请客了？",
-        os: "她怎么连这都知道？！", choices: [
-            { text: "哪有，就是买点资料", nextNode: "r7a" },
-            { text: "偶尔请请同学，这很正常吧", nextNode: "r7a" },
-            { text: "妈，您查我银行卡？", nextNode: "r7b" }
-        ]
-    };
-    // r6b: 要花钱 -> 质疑
-    storyNodes['r6b'] = {
-        speaker: "👩 母后大人", text: "面试要不了几个钱。我看你支付宝账单，最近给游戏充了不少值吧？",
-        os: "这都能看出来？她是侦探吗？", choices: [
-            { text: "那是帮室友代练的", nextNode: "r7a" },
-            { text: "偶尔放松一下嘛", nextNode: "r7a" },
-            { text: "妈，您怎么什么都管", nextNode: "r7b" }
-        ]
-    };
-    // r6c: 敏感 -> 直球
-    storyNodes['r6c'] = {
-        speaker: "👩 母后大人", text: "妈就是关心你。最近行情不好，工作难找，别委屈了自己。钱不够跟妈说。",
-        os: "这话听着……怎么有点像是在激我？", choices: [
-            { text: "知道啦，我挺好的", nextNode: "r7a" },
-            { text: "其实……真有点紧", nextNode: "r7c" },
-            { text: "您怎么突然这么大方？", nextNode: "r7b" }
-        ]
-    };
-
-    // r7a: 否认 -> 威胁
-    storyNodes['r7a'] = {
-        speaker: "👩 母后大人", text: "最好是这样。妈可告诉你，现在骗子多，别乱借钱给人，也别乱投资。听到了吗？",
-        os: "典型的转移话题……她肯定不信我。", choices: [
-            { text: "知道了，您烦不烦", nextNode: "ending_giveup", isEnding: true },
-            { text: "知道了妈，别念了", nextNode: "ending_giveup", isEnding: true, heartChange: -5 },
-            { text: "妈，您就这么不相信我？", nextNode: "ending_cotton", isEnding: true }
-        ]
-    };
-    // r7b: 反感 -> 威胁
-    storyNodes['r7b'] = {
-        speaker: "👩 母后大人", text: "我是你妈！我不管你谁管你？你现在是翅膀硬了，敢跟妈顶嘴了？",
-        os: "完了，火气上来了……", choices: [
-            { text: "对不起妈，我错了", nextNode: "ending_giveup", isEnding: true },
-            { text: "您别生气，我不说了", nextNode: "ending_giveup", isEnding: true, heartChange: -5 },
-            { text: "妈，您就这么不相信我？", nextNode: "ending_cotton", isEnding: true }
-        ]
-    };
-
-    // 【重点修改】r7c: 坦白局
-    storyNodes['r7c'] = {
-        speaker: "👩 母后大人", text: "紧什么紧？你是不是在外面欠了钱？跟妈说实话，借了多少？",
-        os: "完了，被看穿了……", choices: [
-            // 原有的承认选项，扣除相应孝心值并显示飘字
-            { text: "就几百块……我自己能还", nextNode: "ending_gender1", isEnding: true, genderEnding: 'earphone_or_skincare', heartChange: -8 },
-            { text: "一千出头……妈您别告诉我爸", nextNode: "ending_gender1", isEnding: true, genderEnding: 'earphone_or_skincare', heartChange: -15 },
-            { text: "我也不知道欠了多少，没敢算", nextNode: "ending_gender1", isEnding: true, genderEnding: 'earphone_or_skincare', heartChange: -20 },
-            
-            // 【修改】：将原 r7d 的温柔回应移到这里作为选项 B
-            // 选择此项孝心值不变，触发“贴心小棉袄”好结局
-            { text: "妈，您就这么不相信我？", nextNode: "ending_cotton", isEnding: true }
-        ]
-    };
-
-    // ==================== 结局数据 ====================
-    var endings = {
-        ending_giveup: {
-            emoji: "😶‍🌫️", name: "冷战的开始", rank: "45%",
-            desc: "妈妈叹了口气，没再说什么。你看着手机屏幕，心里五味杂陈。也许她真的是为你好，但这种被监控的感觉让你喘不过气。这一关，你选择了对抗。"
-        },
-        ending_cotton: {
-            emoji: "🧸", name: "妈妈的贴心小棉袄", rank: "88%",
-            desc: "听到你的反问，妈妈愣了一下，语气软了下来：“傻孩子，妈不是不信你，是当妈的忍不住操心。你要是真缺钱就跟我说，别硬撑。”你们冰释前嫌，她在你的心里永远是那个最温暖的依靠。"
-        },
-        ending_male1: {
-            emoji: "🎧", name: "实用主义理工男", rank: "60%",
-            desc: "既然坦白从宽，那就用行动证明。妈妈给你转了钱，还额外塞给你一副降噪耳机，让你“好好学习，少听那些乱七八糟的”。你收下了，心里却觉得有点沉甸甸的。"
-        },
-        ending_female1: {
-            emoji: "💄", name: "精致护肤达人", rank: "60%",
-            desc: "妈妈一边念叨你乱花钱，一边给你下单了一套昂贵的护肤品。“女孩子家家要注意形象，但也别太省了。”你看着购物车里的东西，无奈地笑了笑。"
-        },
-        ending_male2: {
-            emoji: "⌨️", name: "电竞宅男的妥协", rank: "55%",
-            desc: "为了填补窟窿，妈妈给你买了新的机械键盘，条件是你必须每周给她发一次成绩单。你答应了，从此过上了半工半读、敲代码抵债的生活。"
-        },
-        ending_female2: {
-            emoji: "🧥", name: "时尚穿搭博主", rank: "55%",
-            desc: "妈妈给你转了账，还发来了一个购物链接：“男朋友/女朋友送的？不行，妈也得给你准备一份。这件大衣看着不错，买回去相亲穿。”你看着余额，欲哭无泪。"
-        }
-    };
-
-    // 初始化
-    function init() {
-        updateTopbar(); chatArea.innerHTML = '';
-        introOverlay.classList.remove('hidden');
-        endingOverlay.classList.add('hidden');
-        btnMale.classList.remove('selected'); btnFemale.classList.remove('selected');
-        startBtn.classList.remove('visible');
-        gender = null; heart = 100; round = 1;
-        currentNode = 'r1'; isProcessing = false;
-    }
-    init();
-    document.addEventListener('touchmove
+            // ===== 初始化 =====
+            function init() {
+                updateTopbar();
+                chatArea.innerHTML = '';
+                introOverlay.classList.remove('hidden');
+                endingOverlay.classList.add('hidden');
+                btnMale.classList.remove('selected');
+                btnFemale.classList.remove('selected');
+                startBtn.classList.remove('visible');
+                gender = null; heart = 100; round = 1;
+                currentNode = 'r1'; isProcessing = false;
+            }
+            init();
+            document.addEventListener('touchmove', function(e) {}, { passive: true });
+            console.log('深夜母子对话 - 最终完善版 v4 (交互已修复)');
+        })();
+    </script>
+</body>
+</html>
