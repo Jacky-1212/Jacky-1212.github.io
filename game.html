@@ -219,8 +219,8 @@
         os: "随便编个理由吧……",
         choices: [
             { text: "刷手机呢，睡不着", nextNode: "r3a" },
-            { text: "在看剧，最后一集了", nextNode: "r3b" },
-            { text: "在跟同学聊天", nextNode: "r3d" }
+            { text: "在看动画，最后一集了", nextNode: "r3b" },
+            { text: "在想事情呢", nextNode: "r3c" }
         ]
     };
 
@@ -261,7 +261,7 @@
         speaker: "👩 母后大人",
         genderChoices: true,
         text: "想什么呢？跟妈说说。",
-        os: "她居然没骂我，有点意外……",
+        os: "妈妈今天好暖心，有点意外……",
         choicesMale: [
             { text: "在想毕业以后的事", nextNode: "r4" },
             { text: "在想周末要不要跟同学出去玩", nextNode: "r4" },
@@ -278,8 +278,8 @@
         text: "哦，那挺好的。别太累了就行。",
         os: "她今天怎么这么温柔……",
         choices: [
-            { text: "嗯嗯，我知道啦", nextNode: "r4" },
-            { text: "妈您也是，早点休息", nextNode: "r4", heartChange: 3 },
+            { text: "嗯嗯，我知道啦", nextNode: "r5" },
+            { text: "妈您也是，早点休息", nextNode: "r5", heartChange: 3 },
             { text: "还行吧，不算累", nextNode: "r4" }
         ]
     };
@@ -299,7 +299,7 @@
     // ----- 第5轮 -----
     storyNodes['r5'] = {
         speaker: "👩 母后大人",
-        text: "嗯，你自己有数就行，我也不想天天催你。……对了，你最近生活费还够花吗？手头怎么样？",
+        text: "嗯，你自己有数就行。……对了，你最近生活费还够花吗？手头怎么样？",
         os: "等等，她怎么突然问到钱上了？",
         choices: [
             { text: "挺好的，够花", nextNode: "r6a" },
